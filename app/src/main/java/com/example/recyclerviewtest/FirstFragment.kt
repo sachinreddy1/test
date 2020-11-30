@@ -20,6 +20,8 @@ class FirstFragment : Fragment() {
     private var isTesting = false
     private var testThread: Thread? = null
 
+//    var counter = 0
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,21 +55,24 @@ class FirstFragment : Fragment() {
     private fun startTestingThread() {
         testThread = object : Thread() {
             override fun run() {
-                    val counter = 0
+                requireActivity().runOnUiThread {
+                    var counter = 0
                     while (isTesting) {
-                            counter.toString().let {
-                                adapter.itemList = listOf(
-                                    ListItem("0", it),
-                                    ListItem("1", it),
-                                    ListItem("2", it),
-                                    ListItem("3", it),
-                                    ListItem("4", it),
-                                    ListItem("5", it),
-                                    ListItem("6", it)
-                                )
-                            }
-                            sleep(1000000)
+                        counter.toString().let {
+                            adapter.itemList = listOf(
+                                ListItem("0", it),
+                                ListItem("1", it),
+                                ListItem("2", it),
+                                ListItem("3", it),
+                                ListItem("4", it),
+                                ListItem("5", it),
+                                ListItem("6", it)
+                            )
                         }
+                        counter += 1
+                        sleep(1000000)
+                    }
+                }
             }
         }
 
