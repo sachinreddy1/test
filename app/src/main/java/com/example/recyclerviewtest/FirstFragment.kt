@@ -2,14 +2,12 @@ package com.example.recyclerviewtest
 
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
-//import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import kotlinx.android.synthetic.main.fragment_first.*
-
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -17,10 +15,13 @@ import kotlinx.android.synthetic.main.fragment_first.*
 class FirstFragment : Fragment() {
 
     lateinit var adapter: RecyclerViewAdapter<ListItem>
-    private var isTesting = false
-    private var testThread: Thread? = null
+    lateinit var testTimer: TextView
 
-//    var counter = 0
+    private var handler: Handler? = null
+    private var thread: Thread? = null
+
+    private var counter = 0
+    private var isTesting = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,6 +32,7 @@ class FirstFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        // RecyclerView
         adapter = RecyclerViewAdapter({ R.layout.item_test }, BR.item)
         recyclerView.adapter = adapter
         adapter.itemList = listOf(
@@ -43,59 +45,56 @@ class FirstFragment : Fragment() {
             ListItem("6", "6")
         )
 
-        test_button.setOnClickListener {
-            requireActivity().runOnUiThread {
-                startTestingThread()
-            }
-        }
+        handler = Handler()
+        testTimer = requireActivity().findViewById(R.id.test_timer) as TextView
 
+        test_button.setOnClickListener(StartTimer())
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun startTestingThread() {
-        testThread = object : Thread() {
-            override fun run() {
-                requireActivity().runOnUiThread {
-                    var counter = 0
-                    while (isTesting) {
-                        counter.toString().let {
-                            adapter.itemList = listOf(
-                                ListItem("0", it),
-                                ListItem("1", it),
-                                ListItem("2", it),
-                                ListItem("3", it),
-                                ListItem("4", it),
-                                ListItem("5", it),
-                                ListItem("6", it)
-                            )
-                        }
-                        counter += 1
-                        sleep(1000000)
-                    }
-                }
+    private inner class StartTimer : View.OnClickListener {
+        override fun onClick(v: View) {
+            if (isTesting) {
+                counter = 0
+                isTesting = false
+                test_button.setImageResource(R.drawable.ic_baseline_play_arrow_24)
+
+                thread?.join()
+                thread?.stop()
+                thread = null
+            } else {
+                isTesting = true
+                test_button.setImageResource(R.drawable.ic_baseline_stop_24)
+
+                thread = Thread(Runner())
+                thread?.start()
             }
         }
-
-        isTesting = true
-        testThread?.start()
     }
 
-    private fun stopTestingThread() {
-        isTesting = false
-        testThread?.stop()
+    private inner class Runner : Runnable {
+        var i = 0
+        override fun run() {
+            i = 0
+            while (i < 2000) {
+                handler?.post(Runnable {
+                    testTimer?.text = "index: $i"
+                    i.toString().let {
+                        adapter.itemList = listOf(
+                            ListItem("0", it),
+                            ListItem("1", it),
+                            ListItem("2", it),
+                            ListItem("3", it),
+                            ListItem("4", it),
+                            ListItem("5", it),
+                            ListItem("6", it)
+                        )
+                    }
+                })
+                i++
+                Thread.sleep(100)
+            }
+        }
     }
 
-//    private fun testMethod() {
-//        counter.toString().let {
-//            adapter.itemList = listOf(
-//                ListItem("0", it),
-//                ListItem("1", it),
-//                ListItem("2", it),
-//                ListItem("3", it),
-//                ListItem("4", it),
-//                ListItem("5", it),
-//                ListItem("6", it)
-//            )
-//        }
-//    }
 }
