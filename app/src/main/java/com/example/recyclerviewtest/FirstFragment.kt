@@ -46,7 +46,7 @@ class FirstFragment : Fragment() {
         )
 
         handler = Handler()
-        testTimer = requireActivity().findViewById(R.id.test_timer) as TextView
+        testTimer = requireActivity().findViewById(R.id.test_timer)
 
         test_button.setOnClickListener(StartTimer())
         super.onViewCreated(view, savedInstanceState)
