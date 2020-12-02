@@ -1,4 +1,4 @@
-package com.example.recyclerviewtest
+package com.example.recyclerviewtest.presentation.view
 
 import android.os.Bundle
 import android.os.Handler
@@ -7,6 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.example.recyclerviewtest.BR
+import com.example.recyclerviewtest.presentation.adapter.ListItem
+import com.example.recyclerviewtest.R
+import com.example.recyclerviewtest.presentation.adapter.RecyclerViewAdapter
 import kotlinx.android.synthetic.main.fragment_first.*
 
 /**
@@ -32,7 +36,11 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         // RecyclerView
-        adapter = RecyclerViewAdapter({ R.layout.item_test }, BR.item)
+        adapter =
+            RecyclerViewAdapter(
+                { R.layout.item_test },
+                BR.item
+            )
         recyclerView.adapter = adapter
         adapter.itemList = listOf(
             ListItem("0", "0"),
@@ -80,14 +88,38 @@ class FirstFragment : Fragment() {
                         testTimer.text = it
 
                         adapter.itemList = listOf(
-                            ListItem("0", it),
-                            ListItem("1", it),
-                            ListItem("2", it),
-                            ListItem("3", it),
-                            ListItem("4", it),
-                            ListItem("5", it),
-                            ListItem("6", it),
-                            ListItem("7", it)
+                            ListItem(
+                                "0",
+                                it
+                            ),
+                            ListItem(
+                                "1",
+                                it
+                            ),
+                            ListItem(
+                                "2",
+                                it
+                            ),
+                            ListItem(
+                                "3",
+                                it
+                            ),
+                            ListItem(
+                                "4",
+                                it
+                            ),
+                            ListItem(
+                                "5",
+                                it
+                            ),
+                            ListItem(
+                                "6",
+                                it
+                            ),
+                            ListItem(
+                                "7",
+                                it
+                            )
                         )
                     }
                 }

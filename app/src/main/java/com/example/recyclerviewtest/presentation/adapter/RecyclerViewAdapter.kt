@@ -1,6 +1,5 @@
-package com.example.recyclerviewtest
+package com.example.recyclerviewtest.presentation.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,14 +7,22 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.recyclerviewtest.IRecyclerViewAdapter
+import com.example.recyclerviewtest.Identifiable
+import com.example.recyclerviewtest.R
 
 class RecyclerViewAdapter<T>(private val viewTypeProvider: ViewTypeProvider<T>,
-                             private val itemResId: Int) : RecyclerView.Adapter<RecyclerViewAdapter.CustomViewHolder<T>>(), IRecyclerViewAdapter<T>
-where T : Identifiable{
+                             private val itemResId: Int) : RecyclerView.Adapter<RecyclerViewAdapter.CustomViewHolder<T>>(),
+    IRecyclerViewAdapter<T>
+where T : Identifiable {
 
     override var itemList : List<T> = listOf()
         set(value) {
-            val diff = DiffUtil.calculateDiff(ListDiffCallback(itemList, value), true)
+            val diff = DiffUtil.calculateDiff(
+                ListDiffCallback(
+                    itemList,
+                    value
+                ), true)
             field = value
             diff.dispatchUpdatesTo(this)
         }
@@ -29,7 +36,10 @@ where T : Identifiable{
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder<T> {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_test, parent, false)
-        return CustomViewHolder(view, itemResId)
+        return CustomViewHolder(
+            view,
+            itemResId
+        )
     }
 
     override fun onBindViewHolder(holder: CustomViewHolder<T>, position: Int) {
