@@ -20,7 +20,6 @@ class FirstFragment : Fragment() {
     private var handler: Handler? = null
     private var thread: Thread? = null
 
-    private var counter = 0
     private var isTesting = false
 
     override fun onCreateView(
@@ -42,7 +41,8 @@ class FirstFragment : Fragment() {
             ListItem("3", "3"),
             ListItem("4", "4"),
             ListItem("5", "5"),
-            ListItem("6", "6")
+            ListItem("6", "6"),
+            ListItem("7", "7")
         )
 
         handler = Handler()
@@ -55,12 +55,10 @@ class FirstFragment : Fragment() {
     private inner class StartTimer : View.OnClickListener {
         override fun onClick(v: View) {
             if (isTesting) {
-                counter = 0
                 isTesting = false
                 test_button.setImageResource(R.drawable.ic_baseline_play_arrow_24)
 
                 thread?.join()
-                thread?.stop()
                 thread = null
             } else {
                 isTesting = true
@@ -76,10 +74,11 @@ class FirstFragment : Fragment() {
         var i = 0
         override fun run() {
             i = 0
-            while (i < 2000) {
-                handler?.post(Runnable {
-                    testTimer?.text = "index: $i"
+            while (isTesting) {
+                handler?.post {
                     i.toString().let {
+                        testTimer.text = it
+
                         adapter.itemList = listOf(
                             ListItem("0", it),
                             ListItem("1", it),
@@ -87,10 +86,11 @@ class FirstFragment : Fragment() {
                             ListItem("3", it),
                             ListItem("4", it),
                             ListItem("5", it),
-                            ListItem("6", it)
+                            ListItem("6", it),
+                            ListItem("7", it)
                         )
                     }
-                })
+                }
                 i++
                 Thread.sleep(100)
             }
