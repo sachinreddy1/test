@@ -11,18 +11,22 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.recyclerviewtest.BR
 import com.example.recyclerviewtest.presentation.adapter.ListItem
 import com.example.recyclerviewtest.R
+import com.example.recyclerviewtest.databinding.FragmentTestBinding
+import com.example.recyclerviewtest.di.appComponent
 import com.example.recyclerviewtest.presentation.adapter.RecyclerViewAdapter
+import com.example.recyclerviewtest.presentation.viewmodel.TestViewModel
 import kotlinx.android.synthetic.main.fragment_test.*
 import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class TestFragment
-//@Inject constructor(
-//    private val viewModelFactory: ViewModelProvider.Factory
-//)
-    : Fragment() {
+class TestFragment : Fragment() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private lateinit var binding: FragmentTestBinding
 
     lateinit var adapter: RecyclerViewAdapter<ListItem>
     lateinit var testTimer: TextView
@@ -36,8 +40,15 @@ class TestFragment
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_test, container, false)
+        appComponent!!.inject(this)
+
+        binding = FragmentTestBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this
+        binding.vm =
+            ViewModelProvider(this@TestFragment, viewModelFactory).get(TestViewModel::class.java)
+
+        binding.executePendingBindings()
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,19 +79,21 @@ class TestFragment
 
     private inner class StartTimer : View.OnClickListener {
         override fun onClick(v: View) {
-            if (isTesting) {
-                isTesting = false
-                test_button.setImageResource(R.drawable.ic_baseline_play_arrow_24)
-
-                thread?.join()
-                thread = null
-            } else {
-                isTesting = true
-                test_button.setImageResource(R.drawable.ic_baseline_stop_24)
-
-                thread = Thread(Runner())
-                thread?.start()
-            }
+            println(binding.vm?.testValue)
+//            if (isTesting) {
+//                isTesting = false
+//                test_button.setImageResource(R.drawable.ic_baseline_play_arrow_24)
+//
+//                thread?.join()
+//                thread = null
+//            } else {
+//                isTesting = true
+//                test_button.setImageResource(R.drawable.ic_baseline_stop_24)
+//
+//                thread = Thread(Runner())
+//                thread?.start()
+//            }
+            binding.vm?.testValue = "SOMETHING"
         }
     }
 

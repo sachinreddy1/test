@@ -6,5 +6,5 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 class TestViewModel @Inject constructor() : ViewModel() {
-    val testValue = "Hello World"
+    var testValue = "Hello World"
 }
