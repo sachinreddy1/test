@@ -7,16 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.recyclerviewtest.BR
 import com.example.recyclerviewtest.presentation.adapter.ListItem
 import com.example.recyclerviewtest.R
 import com.example.recyclerviewtest.presentation.adapter.RecyclerViewAdapter
 import kotlinx.android.synthetic.main.fragment_test.*
+import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class TestFragment : Fragment() {
+class TestFragment
+//@Inject constructor(
+//    private val viewModelFactory: ViewModelProvider.Factory
+//)
+    : Fragment() {
 
     lateinit var adapter: RecyclerViewAdapter<ListItem>
     lateinit var testTimer: TextView
