@@ -11,12 +11,12 @@ import com.example.recyclerviewtest.BR
 import com.example.recyclerviewtest.presentation.adapter.ListItem
 import com.example.recyclerviewtest.R
 import com.example.recyclerviewtest.presentation.adapter.RecyclerViewAdapter
-import kotlinx.android.synthetic.main.fragment_first.*
+import kotlinx.android.synthetic.main.fragment_test.*
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class FirstFragment : Fragment() {
+class TestFragment : Fragment() {
 
     lateinit var adapter: RecyclerViewAdapter<ListItem>
     lateinit var testTimer: TextView
@@ -31,7 +31,7 @@ class FirstFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_first, container, false)
+        return inflater.inflate(R.layout.fragment_test, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
