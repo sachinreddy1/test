@@ -27,14 +27,10 @@ class TestFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var binding: FragmentTestBinding
-
     lateinit var adapter: RecyclerViewAdapter<ListItem>
-    lateinit var testTimer: TextView
-
-    private var handler: Handler? = null
-    private var thread: Thread? = null
 
     private var isTesting = false
+    private var counter = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,8 +40,7 @@ class TestFragment : Fragment() {
 
         binding = FragmentTestBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        binding.vm =
-            ViewModelProvider(this@TestFragment, viewModelFactory).get(TestViewModel::class.java)
+        binding.vm = ViewModelProvider(this@TestFragment, viewModelFactory).get(TestViewModel::class.java)
 
         binding.executePendingBindings()
         return binding.root
@@ -70,82 +65,21 @@ class TestFragment : Fragment() {
             ListItem("7", "7")
         )
 
-        handler = Handler()
-        testTimer = requireActivity().findViewById(R.id.test_timer)
-
         test_button.setOnClickListener(StartTimer())
         super.onViewCreated(view, savedInstanceState)
     }
 
     private inner class StartTimer : View.OnClickListener {
         override fun onClick(v: View) {
-            println(binding.vm?.testValue)
 //            if (isTesting) {
 //                isTesting = false
 //                test_button.setImageResource(R.drawable.ic_baseline_play_arrow_24)
-//
-//                thread?.join()
-//                thread = null
 //            } else {
 //                isTesting = true
 //                test_button.setImageResource(R.drawable.ic_baseline_stop_24)
-//
-//                thread = Thread(Runner())
-//                thread?.start()
 //            }
-            binding.vm?.testValue = "SOMETHING"
+            binding.vm?.testValue?.setValue(counter.toString())
+            counter += 1
         }
     }
-
-    private inner class Runner : Runnable {
-        var i = 0
-        override fun run() {
-            i = 0
-            while (isTesting) {
-                handler?.post {
-                    i.toString().let {
-                        testTimer.text = it
-
-                        adapter.itemList = listOf(
-                            ListItem(
-                                "0",
-                                it
-                            ),
-                            ListItem(
-                                "1",
-                                it
-                            ),
-                            ListItem(
-                                "2",
-                                it
-                            ),
-                            ListItem(
-                                "3",
-                                it
-                            ),
-                            ListItem(
-                                "4",
-                                it
-                            ),
-                            ListItem(
-                                "5",
-                                it
-                            ),
-                            ListItem(
-                                "6",
-                                it
-                            ),
-                            ListItem(
-                                "7",
-                                it
-                            )
-                        )
-                    }
-                }
-                i++
-                Thread.sleep(100)
-            }
-        }
-    }
-
 }
