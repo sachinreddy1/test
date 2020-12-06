@@ -44,31 +44,17 @@ class TestFragment : Fragment() {
         binding.vm =
             ViewModelProvider(this@TestFragment, viewModelFactory).get(TestViewModel::class.java)
 
-        binding.executePendingBindings()
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         // RecyclerView
         adapter =
             RecyclerViewAdapter(
                 { R.layout.item_test },
                 BR.item
             )
-        recyclerView.adapter = adapter
-        adapter.itemList = listOf(
-            ListItem("0", "0"),
-            ListItem("1", "1"),
-            ListItem("2", "2"),
-            ListItem("3", "3"),
-            ListItem("4", "4"),
-            ListItem("5", "5"),
-            ListItem("6", "6"),
-            ListItem("7", "7")
-        )
+        binding.recyclerView.adapter = adapter
+        binding.testButton.setOnClickListener(StartTimer())
 
-        test_button.setOnClickListener(StartTimer())
-        super.onViewCreated(view, savedInstanceState)
+        binding.executePendingBindings()
+        return binding.root
     }
 
     private inner class StartTimer : View.OnClickListener {
@@ -94,19 +80,22 @@ class TestFragment : Fragment() {
         override fun run() {
             i = 0
             while (isTesting) {
-                i.toString().let {
-                    binding.vm?.testValue?.setValue(it)
-
-//                    adapter.itemList = listOf(
-//                        ListItem("0", it),
-//                        ListItem("1", it),
-//                        ListItem("2", it),
-//                        ListItem("3", it),
-//                        ListItem("4", it),
-//                        ListItem("5", it),
-//                        ListItem("6", it),
-//                        ListItem("7", it)
-//                    )
+                i.toString().let { count ->
+                    binding.vm?.testValue?.let {
+                        it.setValue(count)
+                        it.setList(
+                            listOf(
+                                ListItem("0", count),
+                                ListItem("1", count),
+                                ListItem("2", count),
+                                ListItem("3", count),
+                                ListItem("4", count),
+                                ListItem("5", count),
+                                ListItem("6", count),
+                                ListItem("7", count)
+                            )
+                        )
+                    }
                 }
                 i++
                 Thread.sleep(100)
