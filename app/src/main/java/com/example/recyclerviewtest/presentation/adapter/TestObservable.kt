@@ -5,18 +5,15 @@ import androidx.databinding.Bindable
 import com.example.recyclerviewtest.BR
 
 class TestObservable : BaseObservable() {
+    @get:Bindable
+    var value: String = "0"
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.value)
+        }
 
-    private var value: String = "hello"
-
-    @Bindable
-    fun getValue(): String = this.value
-
-    fun setValue(value: String) {
-        this.value = value
-        notifyPropertyChanged(BR.value)
-    }
-
-    private var list: List<ListItem> = listOf(
+    @get:Bindable
+    var list: List<ListItem> = listOf(
         ListItem("0", "0"),
         ListItem("1", "1"),
         ListItem("2", "2"),
@@ -26,13 +23,8 @@ class TestObservable : BaseObservable() {
         ListItem("6", "6"),
         ListItem("7", "7")
     )
-
-    @Bindable
-    fun getList(): List<ListItem> = this.list
-
-    fun setList(list: List<ListItem>) {
-        this.list = list
-        notifyPropertyChanged(BR.list)
-    }
-
+        set(list) {
+            field = list
+            notifyPropertyChanged(BR.list)
+        }
 }
