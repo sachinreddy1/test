@@ -41,8 +41,7 @@ class TestFragment : Fragment() {
 
         binding = FragmentTestBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        binding.vm =
-            ViewModelProvider(this@TestFragment, viewModelFactory).get(TestViewModel::class.java)
+        binding.vm = ViewModelProvider(this@TestFragment, viewModelFactory).get(TestViewModel::class.java)
 
         // RecyclerView
         adapter =

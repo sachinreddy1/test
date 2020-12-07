@@ -1,8 +1,9 @@
-package com.example.recyclerviewtest.presentation.adapter
+package com.example.recyclerviewtest.presentation.viewmodel
 
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import com.example.recyclerviewtest.BR
+import com.example.recyclerviewtest.presentation.adapter.ListItem
 
 class TestObservable : BaseObservable() {
     @get:Bindable
