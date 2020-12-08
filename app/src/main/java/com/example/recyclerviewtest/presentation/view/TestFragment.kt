@@ -80,9 +80,9 @@ class TestFragment : Fragment() {
             i = 0
             while (isTesting) {
                 i.toString().let { count ->
-                    binding.vm?.testValue?.let {
-                        it.value = count
-                        it.list = listOf(
+                    binding.vm?.testValue?.apply {
+                        value = count
+                        list = listOf(
                             ListItem("0", count),
                             ListItem("1", count),
                             ListItem("2", count),
