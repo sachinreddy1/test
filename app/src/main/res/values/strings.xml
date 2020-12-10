@@ -3,6 +3,7 @@
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="test_fragment_label">Test Fragment</string>
+    <string name="table_test_fragment_label">Table Test Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 

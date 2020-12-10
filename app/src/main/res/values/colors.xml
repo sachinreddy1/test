@@ -4,4 +4,8 @@
     <color name="colorPrimaryDark">#414A7C</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="whitesmoke">#f5f5f5</color>
+
+    <color name="cellColor">#FFEB3B</color>
+    <color name="rowHeaderColor">#FFC107</color>
+    <color name="columnHeaderColor">#FF9800</color>
 </resources>

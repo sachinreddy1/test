@@ -50,6 +50,10 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
+    //TableView
+    implementation 'com.evrencoskun.library:tableview:0.8.9.2'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+
     // Dagger
     implementation "com.google.dagger:dagger:$project.dagger_version"
     implementation "com.google.dagger:dagger-android:$project.dagger_version"
