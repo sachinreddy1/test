@@ -18,7 +18,7 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:items="@{vm.testValue.list}"
+            android:items="@{vm.testList}"
 
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="3"
@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:text="@={vm.testValue.value}"
+            android:text="@={vm.testValue}"
 
             android:textSize="24sp"
             android:textColor="@color/colorPrimaryDark"

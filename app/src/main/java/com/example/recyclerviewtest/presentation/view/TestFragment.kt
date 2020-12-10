@@ -80,17 +80,15 @@ class TestFragment : Fragment() {
             i = 0
             while (isTesting) {
                 i.toString().let { count ->
-                    binding.vm?.testValue?.apply {
-                        value = count
-                        list = listOf(
-                            ListItem("0", count),
-                            ListItem("1", count),
-                            ListItem("2", count),
-                            ListItem("3", count),
-                            ListItem("4", count),
-                            ListItem("5", count),
-                            ListItem("6", count),
-                            ListItem("7", count)
+                    binding.vm?.apply {
+                        testValue.postValue(count)
+                        testList.postValue(
+                            listOf(
+                                ListItem("0", count),
+                                ListItem("1", count),
+                                ListItem("2", count),
+                                ListItem("3", count)
+                            )
                         )
                     }
                 }
