@@ -17,6 +17,8 @@ import com.example.recyclerviewtest.databinding.FragmentTestBinding
 import com.example.recyclerviewtest.di.appComponent
 import com.example.recyclerviewtest.presentation.adapter.RecyclerViewAdapter
 import com.example.recyclerviewtest.presentation.adapter.TableViewAdapter
+import com.example.recyclerviewtest.presentation.table.data.Cell
+import com.example.recyclerviewtest.presentation.table.data.ColumnHeader
 import com.example.recyclerviewtest.presentation.viewmodel.TableTestViewModel
 import com.example.recyclerviewtest.presentation.viewmodel.TestViewModel
 import kotlinx.android.synthetic.main.fragment_test.*
@@ -46,16 +48,10 @@ class TableTestFragment : Fragment() {
 
         binding = FragmentTableTestBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        binding.vm = ViewModelProvider(this@TableTestFragment, viewModelFactory).get(TableTestViewModel::class.java)
-
-        binding.testButton.setOnClickListener(StartTimer())
-
-        binding.executePendingBindings()
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        binding.vm = ViewModelProvider(
+            this@TableTestFragment,
+            viewModelFactory
+        ).get(TableTestViewModel::class.java)
 
         // Setting up tableView and adapter
         tableView = TableView(requireContext())
@@ -63,10 +59,13 @@ class TableTestFragment : Fragment() {
             requireContext()
         )
         tableView.setAdapter(adapter)
-        binding.vm?.apply {
-            adapter.setAllItems(columnHeaders, rowHeaders, cells)
-        }
         binding.tableView.setAdapter(adapter)
+
+        // FAB
+        binding.testButton.setOnClickListener(StartTimer())
+
+        binding.executePendingBindings()
+        return binding.root
     }
 
     private inner class StartTimer : View.OnClickListener {
@@ -94,13 +93,30 @@ class TableTestFragment : Fragment() {
             while (isTesting) {
                 i.toString().let { count ->
                     binding.vm?.apply {
-                        testValue.postValue(count)
-                        testList.postValue(
+                        cells.postValue(
                             listOf(
-                                ListItem("0", count),
-                                ListItem("1", count),
-                                ListItem("2", count),
-                                ListItem("3", count)
+                                listOf(
+                                    Cell(count),
+                                    Cell(count),
+                                    Cell(count),
+                                    Cell(count),
+                                    Cell(count),
+                                    Cell(count),
+                                    Cell(count),
+                                    Cell(count)
+                                )
+                            )
+                        )
+                        columnHeaders.postValue(
+                            listOf(
+                                ColumnHeader(count),
+                                ColumnHeader(count),
+                                ColumnHeader(count),
+                                ColumnHeader(count),
+                                ColumnHeader(count),
+                                ColumnHeader(count),
+                                ColumnHeader(count),
+                                ColumnHeader(count)
                             )
                         )
                     }

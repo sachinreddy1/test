@@ -20,19 +20,55 @@ class TableViewAdapter @Inject constructor(
     val context: Context
 ) : AbstractTableAdapter<ColumnHeader?, RowHeader?, Cell?>() {
 
-    var itemList : List<List<Cell>> = listOf()
+    var cells : List<List<Cell>> = listOf()
         set(value) {
             val diff = DiffUtil.calculateDiff(
-                ListDiffCallback(
-                    itemList,
+                CellDiffCallback(
+                    cells,
                     value
                 ), true)
             field = value
             diff.dispatchUpdatesTo(cellRecyclerViewAdapter)
         }
 
-    class ListDiffCallback(val old: List<List<Cell>>, val updated: List<List<Cell>>): DiffUtil.Callback() {
+    var rowHeaders : List<RowHeader> = listOf()
+        set(value) {
+            val diff = DiffUtil.calculateDiff(
+                RowHeaderDiffCallback(
+                    rowHeaders,
+                    value
+                ), true)
+            field = value
+            diff.dispatchUpdatesTo(rowHeaderRecyclerViewAdapter)
+        }
+
+    var columnHeaders : List<ColumnHeader> = listOf()
+        set(value) {
+            val diff = DiffUtil.calculateDiff(
+                ColumnHeaderDiffCallback(
+                    columnHeaders,
+                    value
+                ), true)
+            field = value
+            diff.dispatchUpdatesTo(columnHeaderRecyclerViewAdapter)
+        }
+
+    class CellDiffCallback(val old: List<List<Cell>>, val updated: List<List<Cell>>): DiffUtil.Callback() {
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = old[oldItemPosition].containsAll(updated[newItemPosition])
+        override fun getOldListSize(): Int = old.size
+        override fun getNewListSize(): Int = updated.size
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = old[oldItemPosition] == updated[newItemPosition]
+    }
+
+    class RowHeaderDiffCallback(val old: List<RowHeader>, val updated: List<RowHeader>): DiffUtil.Callback() {
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = old[oldItemPosition] == updated[newItemPosition]
+        override fun getOldListSize(): Int = old.size
+        override fun getNewListSize(): Int = updated.size
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = old[oldItemPosition] == updated[newItemPosition]
+    }
+
+    class ColumnHeaderDiffCallback(val old: List<ColumnHeader>, val updated: List<ColumnHeader>): DiffUtil.Callback() {
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = old[oldItemPosition] == updated[newItemPosition]
         override fun getOldListSize(): Int = old.size
         override fun getNewListSize(): Int = updated.size
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = old[oldItemPosition] == updated[newItemPosition]
@@ -50,9 +86,7 @@ class TableViewAdapter @Inject constructor(
         columnPosition: Int,
         rowPosition: Int
     ) {
-        (holder as CellViewHolder).apply {
-            cellItemModel?.let { bind() }
-        }
+        (holder as CellViewHolder).cell = cells[rowPosition][columnPosition]
     }
 
     override fun onCreateColumnHeaderViewHolder(
@@ -68,9 +102,7 @@ class TableViewAdapter @Inject constructor(
         timelineHeaderItemModel: ColumnHeader?,
         columnPosition: Int
     ) {
-        (holder as ColumnHeaderViewHolder).apply {
-            timelineHeaderItemModel?.let { bind() }
-        }
+        (holder as ColumnHeaderViewHolder).columnHeader = columnHeaders[columnPosition]
     }
 
     override fun onCreateRowHeaderViewHolder(
@@ -86,9 +118,7 @@ class TableViewAdapter @Inject constructor(
         rowHeaderItemModel: RowHeader?,
         rowPosition: Int
     ) {
-        (holder as RowHeaderViewHolder).apply {
-            bind()
-        }
+        (holder as RowHeaderViewHolder).rowHeader = rowHeaders[rowPosition]
     }
 
     override fun onCreateCornerView(parent: ViewGroup): View = LayoutInflater.from(parent.context)
@@ -99,4 +129,5 @@ class TableViewAdapter @Inject constructor(
     override fun getRowHeaderItemViewType(rowPosition: Int): Int = 0
 
     override fun getCellItemViewType(columnPosition: Int): Int = 0
+
 }

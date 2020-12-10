@@ -20,31 +20,37 @@ class TableTestViewModel @Inject constructor() : ViewModel() {
         )
     )
 
-    var cells: List<List<Cell>> = listOf(
+    var cells: MutableLiveData<List<List<Cell>>> = MutableLiveData(
         listOf(
-            Cell("0"),
-            Cell("1"),
-            Cell("2"),
-            Cell("3"),
-            Cell("4"),
-            Cell("5"),
-            Cell("6"),
-            Cell("7")
+            listOf(
+                Cell("0"),
+                Cell("1"),
+                Cell("2"),
+                Cell("3"),
+                Cell("4"),
+                Cell("5"),
+                Cell("6"),
+                Cell("7")
+            )
         )
     )
 
-    var rowHeaders: List<RowHeader> = listOf(
-        RowHeader("")
+    var rowHeaders: MutableLiveData<List<RowHeader>> = MutableLiveData(
+        listOf(
+            RowHeader("")
+        )
     )
 
-    var columnHeaders: List<ColumnHeader> = listOf(
-        ColumnHeader("0"),
-        ColumnHeader("1"),
-        ColumnHeader("2"),
-        ColumnHeader("3"),
-        ColumnHeader("4"),
-        ColumnHeader("5"),
-        ColumnHeader("6"),
-        ColumnHeader("7")
+    var columnHeaders: MutableLiveData<List<ColumnHeader>> = MutableLiveData(
+        listOf(
+            ColumnHeader("0"),
+            ColumnHeader("1"),
+            ColumnHeader("2"),
+            ColumnHeader("3"),
+            ColumnHeader("4"),
+            ColumnHeader("5"),
+            ColumnHeader("6"),
+            ColumnHeader("7")
+        )
     )
 }

@@ -9,18 +9,14 @@ import com.example.recyclerviewtest.presentation.table.data.Cell
 class CellViewHolder(
     itemView: View
 ) : AbstractViewHolder(itemView) {
+    private var _cell: Cell? = null
+    val binding: TableViewCellLayoutBinding? = try { DataBindingUtil.bind(itemView) } catch (t: Throwable) { null }
 
-//    private var _cell: Cell? = null
-//    val binding: TableViewCellLayoutBinding? = try { DataBindingUtil.bind(itemView) } catch (t: Throwable) { null }
-//
-//    var cell: Cell?
-//        set(value) {
-//            _cell = value
-//            binding?.executePendingBindings()
-//        }
-//        get() = _cell
-
-    fun bind() {
-
-    }
+    var cell: Cell?
+        set(value) {
+            _cell = value
+            binding?.cell = value
+            binding?.executePendingBindings()
+        }
+        get() = _cell
 }
