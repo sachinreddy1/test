@@ -19,6 +19,7 @@ import com.example.recyclerviewtest.presentation.adapter.RecyclerViewAdapter
 import com.example.recyclerviewtest.presentation.adapter.TableViewAdapter
 import com.example.recyclerviewtest.presentation.table.data.Cell
 import com.example.recyclerviewtest.presentation.table.data.ColumnHeader
+import com.example.recyclerviewtest.presentation.table.data.RowHeader
 import com.example.recyclerviewtest.presentation.viewmodel.TableTestViewModel
 import com.example.recyclerviewtest.presentation.viewmodel.TestViewModel
 import kotlinx.android.synthetic.main.fragment_test.*
@@ -37,7 +38,6 @@ class TableTestFragment : Fragment() {
     private lateinit var adapter: TableViewAdapter
 
     private var thread: Thread? = null
-
     private var isTesting = false
 
     override fun onCreateView(
@@ -117,6 +117,11 @@ class TableTestFragment : Fragment() {
                                 ColumnHeader(count),
                                 ColumnHeader(count),
                                 ColumnHeader(count)
+                            )
+                        )
+                        rowHeaders.postValue(
+                            listOf(
+                                RowHeader(count)
                             )
                         )
                     }

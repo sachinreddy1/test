@@ -37,7 +37,7 @@ class TableTestViewModel @Inject constructor() : ViewModel() {
 
     var rowHeaders: MutableLiveData<List<RowHeader>> = MutableLiveData(
         listOf(
-            RowHeader("")
+            RowHeader("0")
         )
     )
 
