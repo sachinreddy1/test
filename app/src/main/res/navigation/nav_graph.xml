@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/TableTestFragment">
+    app:startDestination="@id/TimelineFragment">
 
 <!--    <fragment-->
 <!--        android:id="@+id/TestFragment"-->
@@ -11,10 +11,16 @@
 <!--        android:label="@string/test_fragment_label"-->
 <!--        tools:layout="@layout/fragment_test"/>-->
 
+<!--    <fragment-->
+<!--        android:id="@+id/TableTestFragment"-->
+<!--        android:name="com.example.recyclerviewtest.presentation.view.TableTestFragment"-->
+<!--        android:label="@string/test_fragment_label"-->
+<!--        tools:layout="@layout/fragment_table_test"/>-->
+
     <fragment
-        android:id="@+id/TableTestFragment"
-        android:name="com.example.recyclerviewtest.presentation.view.TableTestFragment"
+        android:id="@+id/TimelineFragment"
+        android:name="com.example.recyclerviewtest.presentation.view.TimelineFragment"
         android:label="@string/test_fragment_label"
-        tools:layout="@layout/fragment_table_test"/>
+        tools:layout="@layout/fragment_timeline"/>
 
 </navigation>
