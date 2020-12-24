@@ -2,8 +2,8 @@ package com.example.recyclerviewtest.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.recyclerviewtest.presentation.viewmodel.TableTestViewModel
 import com.example.recyclerviewtest.presentation.viewmodel.TestViewModel
+import com.example.recyclerviewtest.presentation.viewmodel.TimelineViewModel
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module
@@ -30,10 +30,10 @@ abstract class ViewModelBindings {
     @IntoMap
     abstract fun test(vm: TestViewModel): ViewModel
 
-    @ViewModelKey(TableTestViewModel::class)
+    @ViewModelKey(TimelineViewModel::class)
     @Binds
     @IntoMap
-    abstract fun tableTest(vm: TableTestViewModel): ViewModel
+    abstract fun timeline(vm: TimelineViewModel): ViewModel
 }
 
 @Target(AnnotationTarget.FUNCTION)

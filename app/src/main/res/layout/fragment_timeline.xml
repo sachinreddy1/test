@@ -14,227 +14,39 @@
         android:layout_height="match_parent"
         tools:context=".presentation.view.TimelineFragment">
 
-        <HorizontalScrollView
-            android:id="@+id/top_scrollbar"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/topbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+
+            android:items="@{vm.topList}"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_timeline_test"
 
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            >
+            />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="1"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="2"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="3"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="4"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="5"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="6"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="7"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="8"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="9"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="10"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="11"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="12"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="13"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="14"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="15"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="16"
-                    android:gravity="center"
-                    />
-
-            </LinearLayout>
-
-        </HorizontalScrollView>
-
-        <HorizontalScrollView
-            android:id="@+id/bottom_scrollbar"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/bottombar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            app:layout_constraintTop_toBottomOf="@id/top_scrollbar"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+
+            android:items="@{vm.bottomList}"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_timeline_test"
+
+            app:layout_constraintTop_toBottomOf="@id/topbar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="1"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="2"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="3"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="4"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="5"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="6"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="7"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="8"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="9"
-                    android:gravity="center"
-                    />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="10"
-                    android:gravity="center"
-                    />
-
-            </LinearLayout>
-
-        </HorizontalScrollView>
+            />
 
 
 

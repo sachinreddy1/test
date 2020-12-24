@@ -35,7 +35,7 @@ where T : Identifiable {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder<T> {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_test, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return CustomViewHolder(
             view,
             itemResId
