@@ -1,13 +1,12 @@
 package com.example.recyclerviewtest.presentation.listener
 
 import android.view.MotionEvent
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 
 class TimelineListener(
-    val topbar: RecyclerView,
-    val bottomBar: RecyclerView
+    private val topBar: RecyclerView,
+    private val bottomBar: RecyclerView
 ) : RecyclerView.OnScrollListener(), OnItemTouchListener {
 
     private var mIsMoved = false
@@ -24,9 +23,9 @@ class TimelineListener(
             mCurrentRVTouched = rv
             if (rv.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
                 if (mLastTouchedRecyclerView != null && rv !== mLastTouchedRecyclerView) {
-                    if (mLastTouchedRecyclerView === topbar) {
-                        topbar.removeOnScrollListener(this)
-                        topbar.stopScroll()
+                    if (mLastTouchedRecyclerView === topBar) {
+                        topBar.removeOnScrollListener(this)
+                        topBar.stopScroll()
                     } else {
                         bottomBar.removeOnScrollListener(this)
                         bottomBar.stopScroll()
@@ -60,12 +59,12 @@ class TimelineListener(
     override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-        if (recyclerView === topbar) {
+        if (recyclerView === topBar) {
             super.onScrolled(recyclerView, dx, dy)
             bottomBar.scrollBy(dx, 0)
         } else {
             super.onScrolled(recyclerView, dx, dy)
-            topbar.scrollBy(dx, 0)
+            topBar.scrollBy(dx, 0)
         }
     }
 
