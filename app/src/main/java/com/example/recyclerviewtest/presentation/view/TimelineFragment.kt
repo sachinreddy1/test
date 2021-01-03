@@ -6,15 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
 import com.example.recyclerviewtest.BR
 import com.example.recyclerviewtest.presentation.adapter.ListItem
 import com.example.recyclerviewtest.R
 import com.example.recyclerviewtest.databinding.FragmentTimelineBinding
 import com.example.recyclerviewtest.di.appComponent
+import com.example.recyclerviewtest.presentation.adapter.BottomRecyclerViewAdapter
 import com.example.recyclerviewtest.presentation.adapter.RecyclerViewAdapter
-import com.example.recyclerviewtest.presentation.listener.TimelineListener
 import com.example.recyclerviewtest.presentation.viewmodel.TimelineViewModel
+import com.example.timelineview.RecyclerView
 import javax.inject.Inject
 
 /**
@@ -41,13 +41,12 @@ class TimelineFragment : Fragment() {
             { R.layout.item_timeline_test },
             BR.item
         )
-        binding.bottombar.adapter = RecyclerViewAdapter<ListItem>(
+        binding.bottombar.adapter = BottomRecyclerViewAdapter<ListItem>(
             { R.layout.item_timeline_test },
             BR.item
         )
 
-        binding.topbar.addOnItemTouchListener(TimelineListener(binding.topbar, binding.bottombar))
-        binding.bottombar.addOnItemTouchListener(TimelineListener(binding.topbar, binding.bottombar))
+        binding.bottombar.setTopRecyclerView(binding.topbar)
 
         binding.executePendingBindings()
         return binding.root

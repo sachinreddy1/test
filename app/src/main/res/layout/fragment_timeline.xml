@@ -31,15 +31,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             />
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.example.timelineview.RecyclerView
             android:id="@+id/bottombar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
             android:orientation="horizontal"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layoutManager="com.example.timelineview.LinearLayoutManager"
 
-            android:items="@{vm.bottomList}"
+            android:timelineItems="@{vm.bottomList}"
             tools:itemCount="3"
             tools:listitem="@layout/item_timeline_test"
 
@@ -47,8 +47,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             />
-
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

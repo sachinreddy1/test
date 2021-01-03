@@ -5,13 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
+import com.example.timelineview.DiffUtil
+import com.example.timelineview.RecyclerView
 import com.example.recyclerviewtest.IRecyclerViewAdapter
 import com.example.recyclerviewtest.Identifiable
+import com.example.recyclerviewtest.R
 
-class RecyclerViewAdapter<T>(private val viewTypeProvider: ViewTypeProvider<T>,
-                             private val itemResId: Int) : RecyclerView.Adapter<RecyclerViewAdapter.CustomViewHolder<T>>(),
+class BottomRecyclerViewAdapter<T>(private val viewTypeProvider: ViewTypeProvider<T>,
+                             private val itemResId: Int) : RecyclerView.Adapter<BottomRecyclerViewAdapter.BottomCustomViewHolder<T>>(),
     IRecyclerViewAdapter<T>
 where T : Identifiable {
 
@@ -33,15 +34,15 @@ where T : Identifiable {
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = old[oldItemPosition] == updated[newItemPosition]
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder<T> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BottomCustomViewHolder<T> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return CustomViewHolder(
+        return BottomCustomViewHolder(
             view,
             itemResId
         )
     }
 
-    override fun onBindViewHolder(holder: CustomViewHolder<T>, position: Int) {
+    override fun onBindViewHolder(holder: BottomCustomViewHolder<T>, position: Int) {
         holder.item = itemList[position]
     }
 
@@ -49,7 +50,7 @@ where T : Identifiable {
 
     override fun getItemViewType(position: Int): Int = viewTypeProvider(itemList[position])
 
-    class CustomViewHolder<T>(itemView: View, private val itemResId: Int) : RecyclerView.ViewHolder(itemView) {
+    class BottomCustomViewHolder<T>(itemView: View, private val itemResId: Int) : RecyclerView.ViewHolder(itemView) {
         private var _item: T? = null
         var item: T?
             set(value) {
@@ -62,5 +63,3 @@ where T : Identifiable {
         val binding: ViewDataBinding? = try { DataBindingUtil.bind(itemView) } catch (t: Throwable) { null }
     }
 }
-
-typealias  ViewTypeProvider<T> = (T) -> Int

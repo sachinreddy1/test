@@ -1,2 +1,3 @@
+include ':timelineview'
 include ':app'
 rootProject.name = "RecyclerViewTest"

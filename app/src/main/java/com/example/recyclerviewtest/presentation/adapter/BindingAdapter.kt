@@ -9,3 +9,10 @@ fun setItems(recyclerView: RecyclerView, items: List<ListItem>) {
         (recyclerView.adapter as RecyclerViewAdapter<ListItem>).itemList = items
     }
 }
+
+@BindingAdapter("android:timelineItems")
+fun setTimelineItems(recyclerView: com.example.timelineview.RecyclerView, items: List<ListItem>) {
+    if (recyclerView.adapter is BottomRecyclerViewAdapter<*>) {
+        (recyclerView.adapter as BottomRecyclerViewAdapter<ListItem>).itemList = items
+    }
+}

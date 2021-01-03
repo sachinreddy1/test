@@ -52,7 +52,9 @@ dependencies {
 
     //TableView
     implementation 'com.evrencoskun.library:tableview:0.8.9.2'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+
+    //RecyclerView
+    implementation project(path: ':timelineview')
 
     // Dagger
     implementation "com.google.dagger:dagger:$project.dagger_version"
