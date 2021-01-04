@@ -3533,17 +3533,27 @@ RecyclerView extends ViewGroup implements ScrollingView,
                     mLastTouchX = x - mScrollOffset[0];
                     mLastTouchY = y - mScrollOffset[1];
 
+                    Integer xTopRecyclerView = topRecyclerView.computeHorizontalScrollOffset();
+                    Integer mTopWidth = topRecyclerView.computeHorizontalScrollRange() - topRecyclerView.computeHorizontalScrollExtent();
+                    Integer mBottomWidth = computeHorizontalScrollRange() - computeHorizontalScrollExtent();
+                    Integer xThreshold = (mTopWidth - mBottomWidth) / 2;
+
+                    // scroll top recyclerview
                     topRecyclerView.scrollBy(
                             canScrollHorizontally ? dx : 0,
                             canScrollVertically ? dy : 0
                     );
 
-                    if (scrollByInternal(
-                            canScrollHorizontally ? dx : 0,
-                            canScrollVertically ? dy : 0,
-                            e, TYPE_TOUCH)) {
-                        getParent().requestDisallowInterceptTouchEvent(true);
+                    if (xTopRecyclerView > xThreshold && xTopRecyclerView < mTopWidth - xThreshold) {
+                        // scroll bottom recyclerview
+                        if (scrollByInternal(
+                                canScrollHorizontally ? dx : 0,
+                                canScrollVertically ? dy : 0,
+                                e, TYPE_TOUCH)) {
+                            getParent().requestDisallowInterceptTouchEvent(true);
+                        }
                     }
+
                     if (mGapWorker != null && (dx != 0 || dy != 0)) {
                         mGapWorker.postFromTraversal(this, dx, dy);
                     }
