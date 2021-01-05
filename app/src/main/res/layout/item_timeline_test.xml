@@ -4,57 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="item"
             type="com.example.recyclerviewtest.presentation.adapter.ListItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/cell_length"
+        android:layout_height="@dimen/cell_length"
+        android:background="@color/colorPrimaryDark"
         >
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/artist_card"
-            android:layout_width="@dimen/cell_length"
-            android:layout_height="@dimen/cell_length"
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
 
-            android:layout_marginLeft="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-
-            app:cardCornerRadius="8dp"
-            app:cardElevation="5dp"
-
+            android:text="@{item.text}"
+            android:textColor="@color/whitesmoke"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimaryDark">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-
-                    android:text="@{item.text}"
-                    tools:text="0"
-                    android:textSize="12sp"
-                    android:textColor="@color/whitesmoke"
-
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.cardview.widget.CardView>
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

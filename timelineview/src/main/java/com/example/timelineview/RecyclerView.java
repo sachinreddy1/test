@@ -1545,7 +1545,30 @@ RecyclerView extends ViewGroup implements ScrollingView,
 
 
     private androidx.recyclerview.widget.RecyclerView topRecyclerView;
-    public void setTopRecyclerView(androidx.recyclerview.widget.RecyclerView recyclerView) { topRecyclerView = recyclerView; }
+    public void setTopRecyclerView(androidx.recyclerview.widget.RecyclerView recyclerView) {
+        topRecyclerView = recyclerView;
+
+        System.out.println(topRecyclerView.getAdapter().getItemCount());
+
+        topRecyclerView.addOnScrollListener(new androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull androidx.recyclerview.widget.RecyclerView recyclerView, int dx, int dy) {
+                Integer xTopRecyclerView = recyclerView.computeHorizontalScrollOffset();
+                Integer mTopWidth = recyclerView.computeHorizontalScrollRange() - recyclerView.computeHorizontalScrollExtent();
+
+                Integer xBottomRecyclerView = computeHorizontalScrollOffset();
+                Integer mBottomWidth = computeHorizontalScrollRange() - computeHorizontalScrollExtent();
+
+                Integer xThreshold = (mTopWidth - mBottomWidth) / 2;
+
+                if (xTopRecyclerView < xThreshold || xTopRecyclerView > mTopWidth - xThreshold) {
+                    System.out.println(xTopRecyclerView - xBottomRecyclerView);
+                }
+
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+    }
 
     /**
      * Retrieve this RecyclerView's {@link RecycledViewPool}. This method will never return null;
@@ -2616,7 +2639,9 @@ RecyclerView extends ViewGroup implements ScrollingView,
                 velocityX = Math.max(-mMaxFlingVelocity, Math.min(velocityX, mMaxFlingVelocity));
                 velocityY = Math.max(-mMaxFlingVelocity, Math.min(velocityY, mMaxFlingVelocity));
                 mViewFlinger.fling(velocityX, velocityY);
-                topRecyclerView.fling(velocityX, velocityY);
+                if (topRecyclerView != null) {
+                    topRecyclerView.fling(velocityX, velocityY);
+                }
                 return true;
             }
         }
@@ -3533,19 +3558,29 @@ RecyclerView extends ViewGroup implements ScrollingView,
                     mLastTouchX = x - mScrollOffset[0];
                     mLastTouchY = y - mScrollOffset[1];
 
-                    Integer xTopRecyclerView = topRecyclerView.computeHorizontalScrollOffset();
-                    Integer mTopWidth = topRecyclerView.computeHorizontalScrollRange() - topRecyclerView.computeHorizontalScrollExtent();
-                    Integer mBottomWidth = computeHorizontalScrollRange() - computeHorizontalScrollExtent();
-                    Integer xThreshold = (mTopWidth - mBottomWidth) / 2;
+                    if (topRecyclerView != null) {
+                        Integer xTopRecyclerView = topRecyclerView.computeHorizontalScrollOffset();
+                        Integer mTopWidth = topRecyclerView.computeHorizontalScrollRange() - topRecyclerView.computeHorizontalScrollExtent();
+                        Integer xBottomRecyclerView = computeHorizontalScrollOffset();
+                        Integer mBottomWidth = computeHorizontalScrollRange() - computeHorizontalScrollExtent();
+                        Integer xThreshold = (mTopWidth - mBottomWidth) / 2;
 
-                    // scroll top recyclerview
-                    topRecyclerView.scrollBy(
-                            canScrollHorizontally ? dx : 0,
-                            canScrollVertically ? dy : 0
-                    );
+                        // scroll top recyclerview
+                        topRecyclerView.scrollBy(
+                                canScrollHorizontally ? dx : 0,
+                                canScrollVertically ? dy : 0
+                        );
 
-                    if (xTopRecyclerView > xThreshold && xTopRecyclerView < mTopWidth - xThreshold) {
-                        // scroll bottom recyclerview
+                        if (xTopRecyclerView > xThreshold && xTopRecyclerView < mTopWidth - xThreshold) {
+                            // scroll bottom recyclerview
+                            if (scrollByInternal(
+                                    canScrollHorizontally ? dx : 0,
+                                    canScrollVertically ? dy : 0,
+                                    e, TYPE_TOUCH)) {
+                                getParent().requestDisallowInterceptTouchEvent(true);
+                            }
+                        }
+                    } else {
                         if (scrollByInternal(
                                 canScrollHorizontally ? dx : 0,
                                 canScrollVertically ? dy : 0,
