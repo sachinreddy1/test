@@ -81,6 +81,8 @@ import androidx.core.view.accessibility.AccessibilityEventCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.core.widget.EdgeEffectCompat;
 import androidx.customview.view.AbsSavedState;
+import androidx.lifecycle.MutableLiveData;
+
 import com.example.timelineview.R;
 import com.example.timelineview.RecyclerView.ItemAnimator.ItemHolderInfo;
 
@@ -679,10 +681,16 @@ RecyclerView extends ViewGroup implements ScrollingView,
 
     public RecyclerView(@NonNull Context context) {
         this(context, null);
+        xOffset.postValue(0);
+        xOffsetWidth.postValue(0);
+        mTime.postValue(0);
     }
 
     public RecyclerView(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, R.attr.recyclerViewStyle);
+        xOffset.postValue(0);
+        xOffsetWidth.postValue(0);
+        mTime.postValue(0);
     }
 
     public RecyclerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -754,6 +762,10 @@ RecyclerView extends ViewGroup implements ScrollingView,
         }
         // Re-set whether nested scrolling is enabled so that it is set on all API levels
         setNestedScrollingEnabled(nestedScrollingEnabled);
+
+        xOffset.postValue(0);
+        xOffsetWidth.postValue(0);
+        mTime.postValue(0);
     }
 
     /**
@@ -1545,30 +1557,36 @@ RecyclerView extends ViewGroup implements ScrollingView,
 
 
     private androidx.recyclerview.widget.RecyclerView topRecyclerView;
+    public MutableLiveData<Integer> xOffset = new MutableLiveData<>();
+    public MutableLiveData<Integer> xOffsetWidth = new MutableLiveData<>();
+    public MutableLiveData<Integer> mTime = new MutableLiveData<>();
+
+
     public void setTopRecyclerView(androidx.recyclerview.widget.RecyclerView recyclerView) {
         topRecyclerView = recyclerView;
-
-        System.out.println(topRecyclerView.getAdapter().getItemCount());
 
         topRecyclerView.addOnScrollListener(new androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull androidx.recyclerview.widget.RecyclerView recyclerView, int dx, int dy) {
                 Integer xTopRecyclerView = recyclerView.computeHorizontalScrollOffset();
                 Integer mTopWidth = recyclerView.computeHorizontalScrollRange() - recyclerView.computeHorizontalScrollExtent();
-
                 Integer xBottomRecyclerView = computeHorizontalScrollOffset();
                 Integer mBottomWidth = computeHorizontalScrollRange() - computeHorizontalScrollExtent();
-
                 Integer xThreshold = (mTopWidth - mBottomWidth) / 2;
 
+                mTime.postValue(xTopRecyclerView);
+
                 if (xTopRecyclerView < xThreshold || xTopRecyclerView > mTopWidth - xThreshold) {
-                    System.out.println(xTopRecyclerView - xBottomRecyclerView);
+                    xOffset.postValue(xTopRecyclerView - xBottomRecyclerView);
+                    xOffsetWidth.postValue(mTopWidth - mBottomWidth);
                 }
 
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
     }
+
+    public androidx.recyclerview.widget.RecyclerView getTopRecyclerView() { return topRecyclerView; }
 
     /**
      * Retrieve this RecyclerView's {@link RecycledViewPool}. This method will never return null;

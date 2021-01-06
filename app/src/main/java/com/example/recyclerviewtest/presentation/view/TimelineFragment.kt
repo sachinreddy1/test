@@ -47,7 +47,8 @@ class TimelineFragment : Fragment() {
             BR.item
         )
 
-        binding.bottombar.setTopRecyclerView(binding.topbar)
+        binding.vm?.recyclerView = binding.bottombar
+        binding.bottombar.topRecyclerView = binding.topbar
 
         binding.executePendingBindings()
         return binding.root

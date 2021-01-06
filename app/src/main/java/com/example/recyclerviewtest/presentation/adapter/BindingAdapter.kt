@@ -1,5 +1,6 @@
 package com.example.recyclerviewtest.presentation.adapter
 
+import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 
@@ -15,4 +16,9 @@ fun setTimelineItems(recyclerView: com.example.timelineview.RecyclerView, items:
     if (recyclerView.adapter is BottomRecyclerViewAdapter<*>) {
         (recyclerView.adapter as BottomRecyclerViewAdapter<ListItem>).itemList = items
     }
+}
+
+@BindingAdapter("android:integer")
+fun setInteger(textView: TextView, value: Int) {
+    textView.text = value.toString()
 }

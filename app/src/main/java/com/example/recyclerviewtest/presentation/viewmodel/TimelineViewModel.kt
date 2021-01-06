@@ -6,6 +6,7 @@ import com.example.recyclerviewtest.presentation.adapter.ListItem
 import com.example.recyclerviewtest.presentation.table.data.Cell
 import com.example.recyclerviewtest.presentation.table.data.ColumnHeader
 import com.example.recyclerviewtest.presentation.table.data.RowHeader
+import com.example.timelineview.RecyclerView
 import javax.inject.Inject
 
 class TimelineViewModel @Inject constructor() : ViewModel() {
@@ -35,4 +36,6 @@ class TimelineViewModel @Inject constructor() : ViewModel() {
         ListItem("7", "7"),
         ListItem("8", "8")
     )
+
+    lateinit var recyclerView: RecyclerView
 }
