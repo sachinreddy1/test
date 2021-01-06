@@ -22,7 +22,6 @@
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 
-            android:items="@{vm.topList}"
             tools:itemCount="3"
             tools:listitem="@layout/item_timeline"
 

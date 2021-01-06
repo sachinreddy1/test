@@ -5,13 +5,6 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.timelineview.TimelineView
 
-@BindingAdapter("android:items")
-fun setItems(recyclerView: RecyclerView, items: List<ListItem>) {
-    if (recyclerView.adapter is RecyclerViewAdapter<*>) {
-        (recyclerView.adapter as RecyclerViewAdapter<ListItem>).itemList = items
-    }
-}
-
 @BindingAdapter("android:timelineItems")
 fun setTimelineItems(timelineView: TimelineView, items: List<ListItem>) {
     if (timelineView.adapter is BottomRecyclerViewAdapter<*>) {

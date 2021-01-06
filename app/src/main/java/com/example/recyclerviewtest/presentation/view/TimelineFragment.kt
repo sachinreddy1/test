@@ -24,7 +24,6 @@ class TimelineFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var binding: FragmentTimelineBinding
-    lateinit var adapter: RecyclerViewAdapter<ListItem>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,9 +35,9 @@ class TimelineFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.vm = ViewModelProvider(this@TimelineFragment, viewModelFactory).get(TimelineViewModel::class.java)
 
-        binding.topbar.adapter = RecyclerViewAdapter<ListItem>(
-            { R.layout.item_timeline },
-            BR.item
+        binding.topbar.adapter = RecyclerViewAdapter(
+            requireContext(),
+            (binding.vm?.bottomList?.size ?: 0) + 4
         )
 
         binding.bottombar.adapter = BottomRecyclerViewAdapter<ListItem>(

@@ -6,12 +6,6 @@
     app:startDestination="@id/TimelineFragment">
 
 <!--    <fragment-->
-<!--        android:id="@+id/TestFragment"-->
-<!--        android:name="com.example.recyclerviewtest.presentation.view.TestFragment"-->
-<!--        android:label="@string/test_fragment_label"-->
-<!--        tools:layout="@layout/fragment_test"/>-->
-
-<!--    <fragment-->
 <!--        android:id="@+id/TableTestFragment"-->
 <!--        android:name="com.example.recyclerviewtest.presentation.view.TableTestFragment"-->
 <!--        android:label="@string/test_fragment_label"-->

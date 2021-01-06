@@ -2,7 +2,6 @@ package com.example.recyclerviewtest.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.recyclerviewtest.presentation.viewmodel.TestViewModel
 import com.example.recyclerviewtest.presentation.viewmodel.TimelineViewModel
 import dagger.Binds
 import dagger.MapKey
@@ -24,11 +23,6 @@ import kotlin.reflect.KClass
 abstract class ViewModelBindings {
     @Binds
     abstract fun factory(factory: InjectedViewModelFactory): ViewModelProvider.Factory
-
-    @ViewModelKey(TestViewModel::class)
-    @Binds
-    @IntoMap
-    abstract fun test(vm: TestViewModel): ViewModel
 
     @ViewModelKey(TimelineViewModel::class)
     @Binds

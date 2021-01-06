@@ -62,3 +62,5 @@ where T : Identifiable {
         val binding: ViewDataBinding? = try { DataBindingUtil.bind(itemView) } catch (t: Throwable) { null }
     }
 }
+
+typealias  ViewTypeProvider<T> = (T) -> Int
