@@ -15,7 +15,7 @@
  */
 
 package com.example.timelineview;
-import static com.example.timelineview.RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY;
+import static com.example.timelineview.TimelineView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY;
 
 import android.annotation.SuppressLint;
 import android.view.ViewGroup;
@@ -23,8 +23,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Preconditions;
-import com.example.timelineview.RecyclerView.Adapter;
-import com.example.timelineview.RecyclerView.ViewHolder;
+import com.example.timelineview.TimelineView.Adapter;
+import com.example.timelineview.TimelineView.ViewHolder;
 
 /**
  * Wrapper for each adapter in {@link ConcatAdapter}.
@@ -44,8 +44,8 @@ class NestedAdapterWrapper {
     @SuppressWarnings("WeakerAccess")
     int mCachedItemCount;
 
-    private RecyclerView.AdapterDataObserver mAdapterObserver =
-            new RecyclerView.AdapterDataObserver() {
+    private TimelineView.AdapterDataObserver mAdapterObserver =
+            new TimelineView.AdapterDataObserver() {
                 @Override
                 public void onChanged() {
                     mCachedItemCount = adapter.getItemCount();

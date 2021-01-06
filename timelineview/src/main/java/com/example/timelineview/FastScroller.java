@@ -38,7 +38,7 @@ import java.lang.annotation.RetentionPolicy;
  * Class responsible to animate and provide a fast scroller.
  */
 @VisibleForTesting
-class FastScroller extends RecyclerView.ItemDecoration implements RecyclerView.OnItemTouchListener {
+class FastScroller extends TimelineView.ItemDecoration implements TimelineView.OnItemTouchListener {
     @IntDef({STATE_HIDDEN, STATE_VISIBLE, STATE_DRAGGING})
     @Retention(RetentionPolicy.SOURCE)
     private @interface State { }
@@ -104,7 +104,7 @@ class FastScroller extends RecyclerView.ItemDecoration implements RecyclerView.O
     private int mRecyclerViewWidth = 0;
     private int mRecyclerViewHeight = 0;
 
-    private RecyclerView mRecyclerView;
+    private TimelineView mRecyclerView;
     /**
      * Whether the document is long/wide enough to require scrolling. If not, we don't show the
      * relevant scroller.
@@ -126,19 +126,19 @@ class FastScroller extends RecyclerView.ItemDecoration implements RecyclerView.O
             hide(HIDE_DURATION_MS);
         }
     };
-    private final RecyclerView.OnScrollListener
-            mOnScrollListener = new RecyclerView.OnScrollListener() {
+    private final TimelineView.OnScrollListener
+            mOnScrollListener = new TimelineView.OnScrollListener() {
         @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        public void onScrolled(TimelineView recyclerView, int dx, int dy) {
             updateScrollPosition(recyclerView.computeHorizontalScrollOffset(),
                     recyclerView.computeVerticalScrollOffset());
         }
     };
 
-    FastScroller(RecyclerView recyclerView, StateListDrawable verticalThumbDrawable,
-            Drawable verticalTrackDrawable, StateListDrawable horizontalThumbDrawable,
-            Drawable horizontalTrackDrawable, int defaultWidth, int scrollbarMinimumRange,
-            int margin) {
+    FastScroller(TimelineView recyclerView, StateListDrawable verticalThumbDrawable,
+                 Drawable verticalTrackDrawable, StateListDrawable horizontalThumbDrawable,
+                 Drawable horizontalTrackDrawable, int defaultWidth, int scrollbarMinimumRange,
+                 int margin) {
         mVerticalThumbDrawable = verticalThumbDrawable;
         mVerticalTrackDrawable = verticalTrackDrawable;
         mHorizontalThumbDrawable = horizontalThumbDrawable;
@@ -160,7 +160,7 @@ class FastScroller extends RecyclerView.ItemDecoration implements RecyclerView.O
         attachToRecyclerView(recyclerView);
     }
 
-    public void attachToRecyclerView(@Nullable RecyclerView recyclerView) {
+    public void attachToRecyclerView(@Nullable TimelineView recyclerView) {
         if (mRecyclerView == recyclerView) {
             return; // nothing to do
         }
@@ -264,7 +264,7 @@ class FastScroller extends RecyclerView.ItemDecoration implements RecyclerView.O
     }
 
     @Override
-    public void onDrawOver(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
+    public void onDrawOver(Canvas canvas, TimelineView parent, TimelineView.State state) {
         if (mRecyclerViewWidth != mRecyclerView.getWidth()
                 || mRecyclerViewHeight != mRecyclerView.getHeight()) {
             mRecyclerViewWidth = mRecyclerView.getWidth();
@@ -375,7 +375,7 @@ class FastScroller extends RecyclerView.ItemDecoration implements RecyclerView.O
     }
 
     @Override
-    public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView,
+    public boolean onInterceptTouchEvent(@NonNull TimelineView recyclerView,
             @NonNull MotionEvent ev) {
         final boolean handled;
         if (mState == STATE_VISIBLE) {
@@ -405,7 +405,7 @@ class FastScroller extends RecyclerView.ItemDecoration implements RecyclerView.O
     }
 
     @Override
-    public void onTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent me) {
+    public void onTouchEvent(@NonNull TimelineView recyclerView, @NonNull MotionEvent me) {
         if (mState == STATE_HIDDEN) {
             return;
         }

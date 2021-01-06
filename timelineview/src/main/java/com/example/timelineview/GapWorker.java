@@ -31,7 +31,7 @@ final class GapWorker implements Runnable {
 
     static final ThreadLocal<GapWorker> sGapWorker = new ThreadLocal<>();
 
-    ArrayList<RecyclerView> mRecyclerViews = new ArrayList<>();
+    ArrayList<TimelineView> mRecyclerViews = new ArrayList<>();
     long mPostTimeNs;
     long mFrameIntervalNs;
 
@@ -39,7 +39,7 @@ final class GapWorker implements Runnable {
         public boolean immediate;
         public int viewVelocity;
         public int distanceToItem;
-        public RecyclerView view;
+        public TimelineView view;
         public int position;
 
         public void clear() {
@@ -63,7 +63,7 @@ final class GapWorker implements Runnable {
      */
     @SuppressLint("VisibleForTests")
     static class LayoutPrefetchRegistryImpl
-            implements RecyclerView.LayoutManager.LayoutPrefetchRegistry {
+            implements TimelineView.LayoutManager.LayoutPrefetchRegistry {
         int mPrefetchDx;
         int mPrefetchDy;
         int[] mPrefetchArray;
@@ -75,13 +75,13 @@ final class GapWorker implements Runnable {
             mPrefetchDy = dy;
         }
 
-        void collectPrefetchPositionsFromView(RecyclerView view, boolean nested) {
+        void collectPrefetchPositionsFromView(TimelineView view, boolean nested) {
             mCount = 0;
             if (mPrefetchArray != null) {
                 Arrays.fill(mPrefetchArray, -1);
             }
 
-            final RecyclerView.LayoutManager layout = view.mLayout;
+            final TimelineView.LayoutManager layout = view.mLayout;
             if (view.mAdapter != null
                     && layout != null
                     && layout.isItemPrefetchEnabled()) {
@@ -156,16 +156,16 @@ final class GapWorker implements Runnable {
         }
     }
 
-    public void add(RecyclerView recyclerView) {
-        if (RecyclerView.DEBUG && mRecyclerViews.contains(recyclerView)) {
+    public void add(TimelineView recyclerView) {
+        if (TimelineView.DEBUG && mRecyclerViews.contains(recyclerView)) {
             throw new IllegalStateException("RecyclerView already present in worker list!");
         }
         mRecyclerViews.add(recyclerView);
     }
 
-    public void remove(RecyclerView recyclerView) {
+    public void remove(TimelineView recyclerView) {
         boolean removeSuccess = mRecyclerViews.remove(recyclerView);
-        if (RecyclerView.DEBUG && !removeSuccess) {
+        if (TimelineView.DEBUG && !removeSuccess) {
             throw new IllegalStateException("RecyclerView removal failed!");
         }
     }
@@ -173,9 +173,9 @@ final class GapWorker implements Runnable {
     /**
      * Schedule a prefetch immediately after the current traversal.
      */
-    void postFromTraversal(RecyclerView recyclerView, int prefetchDx, int prefetchDy) {
+    void postFromTraversal(TimelineView recyclerView, int prefetchDx, int prefetchDy) {
         if (recyclerView.isAttachedToWindow()) {
-            if (RecyclerView.DEBUG && !mRecyclerViews.contains(recyclerView)) {
+            if (TimelineView.DEBUG && !mRecyclerViews.contains(recyclerView)) {
                 throw new IllegalStateException("attempting to post unregistered view!");
             }
             if (mPostTimeNs == 0) {
@@ -217,7 +217,7 @@ final class GapWorker implements Runnable {
         final int viewCount = mRecyclerViews.size();
         int totalTaskCount = 0;
         for (int i = 0; i < viewCount; i++) {
-            RecyclerView view = mRecyclerViews.get(i);
+            TimelineView view = mRecyclerViews.get(i);
             if (view.getWindowVisibility() == View.VISIBLE) {
                 view.mPrefetchRegistry.collectPrefetchPositionsFromView(view, false);
                 totalTaskCount += view.mPrefetchRegistry.mCount;
@@ -228,7 +228,7 @@ final class GapWorker implements Runnable {
         mTasks.ensureCapacity(totalTaskCount);
         int totalTaskIndex = 0;
         for (int i = 0; i < viewCount; i++) {
-            RecyclerView view = mRecyclerViews.get(i);
+            TimelineView view = mRecyclerViews.get(i);
             if (view.getWindowVisibility() != View.VISIBLE) {
                 // Invisible view, don't bother prefetching
                 continue;
@@ -261,11 +261,11 @@ final class GapWorker implements Runnable {
         Collections.sort(mTasks, sTaskComparator);
     }
 
-    static boolean isPrefetchPositionAttached(RecyclerView view, int position) {
+    static boolean isPrefetchPositionAttached(TimelineView view, int position) {
         final int childCount = view.mChildHelper.getUnfilteredChildCount();
         for (int i = 0; i < childCount; i++) {
             View attachedView = view.mChildHelper.getUnfilteredChildAt(i);
-            RecyclerView.ViewHolder holder = RecyclerView.getChildViewHolderInt(attachedView);
+            TimelineView.ViewHolder holder = TimelineView.getChildViewHolderInt(attachedView);
             // Note: can use mPosition here because adapter doesn't have pending updates
             if (holder.mPosition == position && !holder.isInvalid()) {
                 return true;
@@ -274,15 +274,15 @@ final class GapWorker implements Runnable {
         return false;
     }
 
-    private RecyclerView.ViewHolder prefetchPositionWithDeadline(RecyclerView view,
-            int position, long deadlineNs) {
+    private TimelineView.ViewHolder prefetchPositionWithDeadline(TimelineView view,
+                                                                 int position, long deadlineNs) {
         if (isPrefetchPositionAttached(view, position)) {
             // don't attempt to prefetch attached views
             return null;
         }
 
-        RecyclerView.Recycler recycler = view.mRecycler;
-        RecyclerView.ViewHolder holder;
+        TimelineView.Recycler recycler = view.mRecycler;
+        TimelineView.ViewHolder holder;
         try {
             view.onEnterLayoutOrScroll();
             holder = recycler.tryGetViewHolderForPositionByDeadline(
@@ -307,7 +307,7 @@ final class GapWorker implements Runnable {
         return holder;
     }
 
-    private void prefetchInnerRecyclerViewWithDeadline(@Nullable RecyclerView innerView,
+    private void prefetchInnerRecyclerViewWithDeadline(@Nullable TimelineView innerView,
             long deadlineNs) {
         if (innerView == null) {
             return;
@@ -326,7 +326,7 @@ final class GapWorker implements Runnable {
 
         if (innerPrefetchRegistry.mCount != 0) {
             try {
-                TraceCompat.beginSection(RecyclerView.TRACE_NESTED_PREFETCH_TAG);
+                TraceCompat.beginSection(TimelineView.TRACE_NESTED_PREFETCH_TAG);
                 innerView.mState.prepareForNestedPrefetch(innerView.mAdapter);
                 for (int i = 0; i < innerPrefetchRegistry.mCount * 2; i += 2) {
                     // Note that we ignore immediate flag for inner items because
@@ -341,8 +341,8 @@ final class GapWorker implements Runnable {
     }
 
     private void flushTaskWithDeadline(Task task, long deadlineNs) {
-        long taskDeadlineNs = task.immediate ? RecyclerView.FOREVER_NS : deadlineNs;
-        RecyclerView.ViewHolder holder = prefetchPositionWithDeadline(task.view,
+        long taskDeadlineNs = task.immediate ? TimelineView.FOREVER_NS : deadlineNs;
+        TimelineView.ViewHolder holder = prefetchPositionWithDeadline(task.view,
                 task.position, taskDeadlineNs);
         if (holder != null
                 && holder.mNestedRecyclerView != null
@@ -371,7 +371,7 @@ final class GapWorker implements Runnable {
     @Override
     public void run() {
         try {
-            TraceCompat.beginSection(RecyclerView.TRACE_PREFETCH_TAG);
+            TraceCompat.beginSection(TimelineView.TRACE_PREFETCH_TAG);
 
             if (mRecyclerViews.isEmpty()) {
                 // abort - no work to do
@@ -383,7 +383,7 @@ final class GapWorker implements Runnable {
             final int size = mRecyclerViews.size();
             long latestFrameVsyncMs = 0;
             for (int i = 0; i < size; i++) {
-                RecyclerView view = mRecyclerViews.get(i);
+                TimelineView view = mRecyclerViews.get(i);
                 if (view.getWindowVisibility() == View.VISIBLE) {
                     latestFrameVsyncMs = Math.max(view.getDrawingTime(), latestFrameVsyncMs);
                 }

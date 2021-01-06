@@ -206,7 +206,7 @@ class ChildHelper {
         final int count = mHiddenViews.size();
         for (int i = 0; i < count; i++) {
             final View view = mHiddenViews.get(i);
-            RecyclerView.ViewHolder holder = mCallback.getChildViewHolder(view);
+            TimelineView.ViewHolder holder = mCallback.getChildViewHolder(view);
             if (holder.getLayoutPosition() == position
                     && !holder.isInvalid()
                     && !holder.isRemoved()) {
@@ -524,7 +524,7 @@ class ChildHelper {
 
         void removeAllViews();
 
-        RecyclerView.ViewHolder getChildViewHolder(View view);
+        TimelineView.ViewHolder getChildViewHolder(View view);
 
         void attachViewToParent(View child, int index, ViewGroup.LayoutParams layoutParams);
 

@@ -3,6 +3,7 @@ package com.example.recyclerviewtest.presentation.adapter
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.timelineview.TimelineView
 
 @BindingAdapter("android:items")
 fun setItems(recyclerView: RecyclerView, items: List<ListItem>) {
@@ -12,9 +13,9 @@ fun setItems(recyclerView: RecyclerView, items: List<ListItem>) {
 }
 
 @BindingAdapter("android:timelineItems")
-fun setTimelineItems(recyclerView: com.example.timelineview.RecyclerView, items: List<ListItem>) {
-    if (recyclerView.adapter is BottomRecyclerViewAdapter<*>) {
-        (recyclerView.adapter as BottomRecyclerViewAdapter<ListItem>).itemList = items
+fun setTimelineItems(timelineView: TimelineView, items: List<ListItem>) {
+    if (timelineView.adapter is BottomRecyclerViewAdapter<*>) {
+        (timelineView.adapter as BottomRecyclerViewAdapter<ListItem>).itemList = items
     }
 }
 

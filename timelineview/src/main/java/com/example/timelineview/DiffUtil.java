@@ -362,7 +362,7 @@ public class DiffUtil {
          * DiffUtil uses this method to check equality instead of {@link Object#equals(Object)}
          * so that you can change its behavior depending on your UI.
          * For example, if you are using DiffUtil with a
-         * {@link RecyclerView.Adapter RecyclerView.Adapter}, you should
+         * {@link TimelineView.Adapter RecyclerView.Adapter}, you should
          * return whether the items' visual representations are the same.
          * <p>
          * This method is called only if {@link #areItemsTheSame(int, int)} returns
@@ -380,9 +380,9 @@ public class DiffUtil {
          * {@link #areContentsTheSame(int, int)} returns false for them, DiffUtil
          * calls this method to get a payload about the change.
          * <p>
-         * For example, if you are using DiffUtil with {@link RecyclerView}, you can return the
+         * For example, if you are using DiffUtil with {@link TimelineView}, you can return the
          * particular field that changed in the item and your
-         * {@link RecyclerView.ItemAnimator ItemAnimator} can use that
+         * {@link TimelineView.ItemAnimator ItemAnimator} can use that
          * information to run the correct animation.
          * <p>
          * Default implementation returns {@code null}.
@@ -432,7 +432,7 @@ public class DiffUtil {
          * change its behavior depending on your UI.
          * <p>
          * For example, if you are using DiffUtil with a
-         * {@link RecyclerView.Adapter RecyclerView.Adapter}, you should
+         * {@link TimelineView.Adapter RecyclerView.Adapter}, you should
          * return whether the items' visual representations are the same.
          * <p>
          * This method is called only if {@link #areItemsTheSame(T, T)} returns {@code true} for
@@ -453,9 +453,9 @@ public class DiffUtil {
          * {@link #areContentsTheSame(T, T)} returns false for them, this method is called to
          * get a payload about the change.
          * <p>
-         * For example, if you are using DiffUtil with {@link RecyclerView}, you can return the
+         * For example, if you are using DiffUtil with {@link TimelineView}, you can return the
          * particular field that changed in the item and your
-         * {@link RecyclerView.ItemAnimator ItemAnimator} can use that
+         * {@link TimelineView.ItemAnimator ItemAnimator} can use that
          * information to run the correct animation.
          * <p>
          * Default implementation returns {@code null}.
@@ -599,7 +599,7 @@ public class DiffUtil {
      * <p>
      * You can consume the updates in a DiffResult via
      * {@link #dispatchUpdatesTo(ListUpdateCallback)} or directly stream the results into a
-     * {@link RecyclerView.Adapter} via {@link #dispatchUpdatesTo(RecyclerView.Adapter)}.
+     * {@link TimelineView.Adapter} via {@link #dispatchUpdatesTo(TimelineView.Adapter)}.
      */
     public static class DiffResult {
         /**
@@ -807,7 +807,7 @@ public class DiffUtil {
         /**
          * Dispatches the update events to the given adapter.
          * <p>
-         * For example, if you have an {@link RecyclerView.Adapter Adapter}
+         * For example, if you have an {@link TimelineView.Adapter Adapter}
          * that is backed by a {@link List}, you can swap the list with the new one then call this
          * method to dispatch all updates to the RecyclerView.
          * <pre>
@@ -823,11 +823,11 @@ public class DiffUtil {
          * before RecyclerView tries to read it.
          * <p>
          * On the other hand, if you have another
-         * {@link RecyclerView.AdapterDataObserver AdapterDataObserver}
+         * {@link TimelineView.AdapterDataObserver AdapterDataObserver}
          * that tries to process events synchronously, this may confuse that observer because the
          * list is instantly moved to its final state while the adapter updates are dispatched later
          * on, one by one. If you have such an
-         * {@link RecyclerView.AdapterDataObserver AdapterDataObserver},
+         * {@link TimelineView.AdapterDataObserver AdapterDataObserver},
          * you can use
          * {@link #dispatchUpdatesTo(ListUpdateCallback)} to handle each modification
          * manually.
@@ -836,7 +836,7 @@ public class DiffUtil {
          *                displaying the new list.
          * @see AdapterListUpdateCallback
          */
-        public void dispatchUpdatesTo(@NonNull final RecyclerView.Adapter adapter) {
+        public void dispatchUpdatesTo(@NonNull final TimelineView.Adapter adapter) {
             dispatchUpdatesTo(new AdapterListUpdateCallback(adapter));
         }
 
@@ -847,7 +847,7 @@ public class DiffUtil {
          * comes after it (the same as RecyclerView).
          *
          * @param updateCallback The callback to receive the update operations.
-         * @see #dispatchUpdatesTo(RecyclerView.Adapter)
+         * @see #dispatchUpdatesTo(TimelineView.Adapter)
          */
         public void dispatchUpdatesTo(@NonNull ListUpdateCallback updateCallback) {
             final BatchingListUpdateCallback batchingCallback;

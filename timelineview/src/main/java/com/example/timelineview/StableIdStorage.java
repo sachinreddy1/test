@@ -35,14 +35,14 @@ interface StableIdStorage {
     }
 
     /**
-     * Returns {@link RecyclerView#NO_ID} for all positions. In other words, stable ids are not
+     * Returns {@link TimelineView#NO_ID} for all positions. In other words, stable ids are not
      * supported.
      */
     class NoStableIdStorage implements StableIdStorage {
         private final StableIdLookup mNoIdLookup = new StableIdLookup() {
             @Override
             public long localToGlobal(long localId) {
-                return RecyclerView.NO_ID;
+                return TimelineView.NO_ID;
             }
         };
 

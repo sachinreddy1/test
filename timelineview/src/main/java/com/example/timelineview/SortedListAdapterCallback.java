@@ -18,11 +18,11 @@ package com.example.timelineview;
 
 /**
  * A {@link SortedList.Callback} implementation that can bind a {@link SortedList} to a
- * {@link RecyclerView.Adapter}.
+ * {@link TimelineView.Adapter}.
  */
 public abstract class SortedListAdapterCallback<T2> extends SortedList.Callback<T2> {
 
-    final RecyclerView.Adapter mAdapter;
+    final TimelineView.Adapter mAdapter;
 
     /**
      * Creates a {@link SortedList.Callback} that will forward data change events to the provided
@@ -30,7 +30,7 @@ public abstract class SortedListAdapterCallback<T2> extends SortedList.Callback<
      *
      * @param adapter The Adapter instance which should receive events from the SortedList.
      */
-    public SortedListAdapterCallback(RecyclerView.Adapter adapter) {
+    public SortedListAdapterCallback(TimelineView.Adapter adapter) {
         mAdapter = adapter;
     }
 

@@ -21,8 +21,8 @@ import androidx.annotation.Nullable;
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter RecyclerView.Adapter} base class for presenting List data in a
- * {@link RecyclerView}, including computing diffs between Lists on a background thread.
+ * {@link TimelineView.Adapter RecyclerView.Adapter} base class for presenting List data in a
+ * {@link TimelineView}, including computing diffs between Lists on a background thread.
  * <p>
  * This class is a convenience wrapper around {@link AsyncListDiffer} that implements Adapter common
  * default behavior for item access and counting.
@@ -90,8 +90,8 @@ import java.util.List;
  * @param <T> Type of the Lists this Adapter will receive.
  * @param <VH> A class that extends ViewHolder that will be used by the adapter.
  */
-public abstract class ListAdapter<T, VH extends RecyclerView.ViewHolder>
-        extends RecyclerView.Adapter<VH> {
+public abstract class ListAdapter<T, VH extends TimelineView.ViewHolder>
+        extends TimelineView.Adapter<VH> {
     final AsyncListDiffer<T> mDiffer;
     private final AsyncListDiffer.ListListener<T> mListener =
             new AsyncListDiffer.ListListener<T>() {

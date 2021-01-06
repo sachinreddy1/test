@@ -19,9 +19,9 @@ package com.example.timelineview;
 import static com.example.timelineview.ConcatAdapter.Config.StableIdMode.ISOLATED_STABLE_IDS;
 import static com.example.timelineview.ConcatAdapter.Config.StableIdMode.NO_STABLE_IDS;
 import static com.example.timelineview.ConcatAdapter.Config.StableIdMode.SHARED_STABLE_IDS;
-import static com.example.timelineview.RecyclerView.Adapter.StateRestorationPolicy.ALLOW;
-import static com.example.timelineview.RecyclerView.Adapter.StateRestorationPolicy.PREVENT;
-import static com.example.timelineview.RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY;
+import static com.example.timelineview.TimelineView.Adapter.StateRestorationPolicy.ALLOW;
+import static com.example.timelineview.TimelineView.Adapter.StateRestorationPolicy.PREVENT;
+import static com.example.timelineview.TimelineView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY;
 
 import android.annotation.SuppressLint;
 import android.util.Log;
@@ -30,9 +30,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Preconditions;
-import com.example.timelineview.RecyclerView.Adapter;
-import com.example.timelineview.RecyclerView.Adapter.StateRestorationPolicy;
-import com.example.timelineview.RecyclerView.ViewHolder;
+import com.example.timelineview.TimelineView.Adapter;
+import com.example.timelineview.TimelineView.Adapter.StateRestorationPolicy;
+import com.example.timelineview.TimelineView.ViewHolder;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ class ConcatAdapterController implements NestedAdapterWrapper.Callback {
      * any adapter that was added later on.
      * Probably does not need to be a weak reference but playing safe here.
      */
-    private List<WeakReference<RecyclerView>> mAttachedRecyclerViews = new ArrayList<>();
+    private List<WeakReference<TimelineView>> mAttachedRecyclerViews = new ArrayList<>();
 
     /**
      * Keeps the information about which ViewHolder is bound by which adapter.
@@ -162,8 +162,8 @@ class ConcatAdapterController implements NestedAdapterWrapper.Callback {
                 mViewTypeStorage, mStableIdStorage.createStableIdLookup());
         mWrappers.add(index, wrapper);
         // notify attach for all recyclerview
-        for (WeakReference<RecyclerView> reference : mAttachedRecyclerViews) {
-            RecyclerView recyclerView = reference.get();
+        for (WeakReference<TimelineView> reference : mAttachedRecyclerViews) {
+            TimelineView recyclerView = reference.get();
             if (recyclerView != null) {
                 adapter.onAttachedToRecyclerView(recyclerView);
             }
@@ -190,8 +190,8 @@ class ConcatAdapterController implements NestedAdapterWrapper.Callback {
         mWrappers.remove(index);
         mConcatAdapter.notifyItemRangeRemoved(offset, wrapper.getCachedItemCount());
         // notify detach for all recyclerviews
-        for (WeakReference<RecyclerView> reference : mAttachedRecyclerViews) {
-            RecyclerView recyclerView = reference.get();
+        for (WeakReference<TimelineView> reference : mAttachedRecyclerViews) {
+            TimelineView recyclerView = reference.get();
             if (recyclerView != null) {
                 adapter.onDetachedFromRecyclerView(recyclerView);
             }
@@ -417,8 +417,8 @@ class ConcatAdapterController implements NestedAdapterWrapper.Callback {
         return wrapper;
     }
 
-    private boolean isAttachedTo(RecyclerView recyclerView) {
-        for (WeakReference<RecyclerView> reference : mAttachedRecyclerViews) {
+    private boolean isAttachedTo(TimelineView recyclerView) {
+        for (WeakReference<TimelineView> reference : mAttachedRecyclerViews) {
             if (reference.get() == recyclerView) {
                 return true;
             }
@@ -426,7 +426,7 @@ class ConcatAdapterController implements NestedAdapterWrapper.Callback {
         return false;
     }
 
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(TimelineView recyclerView) {
         if (isAttachedTo(recyclerView)) {
             return;
         }
@@ -436,9 +436,9 @@ class ConcatAdapterController implements NestedAdapterWrapper.Callback {
         }
     }
 
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+    public void onDetachedFromRecyclerView(TimelineView recyclerView) {
         for (int i = mAttachedRecyclerViews.size() - 1; i >= 0; i--) {
-            WeakReference<RecyclerView> reference = mAttachedRecyclerViews.get(i);
+            WeakReference<TimelineView> reference = mAttachedRecyclerViews.get(i);
             if (reference.get() == null) {
                 mAttachedRecyclerViews.remove(i);
             } else if (reference.get() == recyclerView) {
@@ -458,7 +458,7 @@ class ConcatAdapterController implements NestedAdapterWrapper.Callback {
     ) {
         NestedAdapterWrapper wrapper = mBinderLookup.get(viewHolder);
         if (wrapper == null) {
-            return RecyclerView.NO_POSITION;
+            return TimelineView.NO_POSITION;
         }
         int itemsBefore = countItemsBefore(wrapper);
         // local position is globalPosition - itemsBefore

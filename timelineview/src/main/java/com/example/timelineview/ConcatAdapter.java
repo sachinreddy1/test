@@ -21,8 +21,8 @@ import static com.example.timelineview.ConcatAdapter.Config.StableIdMode.NO_STAB
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import com.example.timelineview.RecyclerView.Adapter;
-import com.example.timelineview.RecyclerView.ViewHolder;
+import com.example.timelineview.TimelineView.Adapter;
+import com.example.timelineview.TimelineView.ViewHolder;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,7 +40,7 @@ import java.util.List;
  * <p>
  * By default, {@link ConcatAdapter} isolates view types of nested adapters from each other such
  * that
- * it will change the view type before reporting it back to the {@link RecyclerView} to avoid any
+ * it will change the view type before reporting it back to the {@link TimelineView} to avoid any
  * conflicts between the view types of added adapters. This also means each added adapter will have
  * its own isolated pool of {@link ViewHolder}s, with no re-use in between added adapters.
  * <p>
@@ -50,10 +50,10 @@ import java.util.List;
  * the {@code R.layout.<layout_name>} from the {@link Adapter#getItemViewType(int)} method.
  * <p>
  * When an added adapter calls one of the {@code notify} methods, {@link ConcatAdapter} properly
- * offsets values before reporting it back to the {@link RecyclerView}.
+ * offsets values before reporting it back to the {@link TimelineView}.
  * If an adapter calls {@link Adapter#notifyDataSetChanged()}, {@link ConcatAdapter} also calls
  * {@link Adapter#notifyDataSetChanged()} as calling
- * {@link Adapter#notifyItemRangeChanged(int, int)} will confuse the {@link RecyclerView}.
+ * {@link Adapter#notifyItemRangeChanged(int, int)} will confuse the {@link TimelineView}.
  * You are highly encouraged to to use {@link SortedList} or {@link ListAdapter} to avoid
  * calling {@link Adapter#notifyDataSetChanged()}.
  * <p>
@@ -259,12 +259,12 @@ public final class ConcatAdapter extends Adapter<ViewHolder> {
     }
 
     @Override
-    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull TimelineView recyclerView) {
         mController.onAttachedToRecyclerView(recyclerView);
     }
 
     @Override
-    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+    public void onDetachedFromRecyclerView(@NonNull TimelineView recyclerView) {
         mController.onDetachedFromRecyclerView(recyclerView);
     }
 
@@ -284,12 +284,12 @@ public final class ConcatAdapter extends Adapter<ViewHolder> {
      * Returns the position of the given {@link ViewHolder} in the given {@link Adapter}.
      *
      * If the given {@link Adapter} is not part of this {@link ConcatAdapter},
-     * {@link RecyclerView#NO_POSITION} is returned.
+     * {@link TimelineView#NO_POSITION} is returned.
      *
      * @param adapter    The adapter which is a sub adapter of this ConcatAdapter or itself.
      * @param viewHolder The view holder whose local position in the given adapter will be returned.
      * @return The local position of the given {@link ViewHolder} in the given {@link Adapter} or
-     * {@link RecyclerView#NO_POSITION} if the {@link ViewHolder} is not bound to an item or the
+     * {@link TimelineView#NO_POSITION} if the {@link ViewHolder} is not bound to an item or the
      * given {@link Adapter} is not part of this ConcatAdapter.
      */
     @Override
@@ -334,7 +334,7 @@ public final class ConcatAdapter extends Adapter<ViewHolder> {
          * {@link Adapter}s to have stable ids. As two different adapters may return same stable ids
          * because they are unaware of each-other, {@link ConcatAdapter} will isolate each
          * {@link Adapter}'s id pool from each other such that it will overwrite the reported stable
-         * id before reporting back to the {@link RecyclerView}. In this mode, the value returned
+         * id before reporting back to the {@link TimelineView}. In this mode, the value returned
          * from {@link ViewHolder#getItemId()} might differ from the value returned from
          * {@link Adapter#getItemId(int)}.
          *
@@ -376,7 +376,7 @@ public final class ConcatAdapter extends Adapter<ViewHolder> {
              * {@link Adapter}s to have stable ids. As two different adapters may return
              * same stable ids because they are unaware of each-other, {@link ConcatAdapter} will
              * isolate each {@link Adapter}'s id pool from each other such that it will overwrite
-             * the reported stable id before reporting back to the {@link RecyclerView}. In this
+             * the reported stable id before reporting back to the {@link TimelineView}. In this
              * mode, the value returned from {@link ViewHolder#getItemId()} might differ from the
              * value returned from {@link Adapter#getItemId(int)}.
              *

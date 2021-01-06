@@ -24,14 +24,14 @@
 
             android:items="@{vm.topList}"
             tools:itemCount="3"
-            tools:listitem="@layout/item_timeline_test"
+            tools:listitem="@layout/item_timeline"
 
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             />
 
-        <com.example.timelineview.RecyclerView
+        <com.example.timelineview.TimelineView
             android:id="@+id/bottombar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

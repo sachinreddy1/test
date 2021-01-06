@@ -14,7 +14,6 @@ import com.example.recyclerviewtest.di.appComponent
 import com.example.recyclerviewtest.presentation.adapter.BottomRecyclerViewAdapter
 import com.example.recyclerviewtest.presentation.adapter.RecyclerViewAdapter
 import com.example.recyclerviewtest.presentation.viewmodel.TimelineViewModel
-import com.example.timelineview.RecyclerView
 import javax.inject.Inject
 
 /**

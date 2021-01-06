@@ -36,11 +36,11 @@ import java.util.WeakHashMap;
  * This class handles basic accessibility actions and delegates them to LayoutManager.
  */
 public class RecyclerViewAccessibilityDelegate extends AccessibilityDelegateCompat {
-    final RecyclerView mRecyclerView;
+    final TimelineView mRecyclerView;
     private final ItemDelegate mItemDelegate;
 
 
-    public RecyclerViewAccessibilityDelegate(@NonNull RecyclerView recyclerView) {
+    public RecyclerViewAccessibilityDelegate(@NonNull TimelineView recyclerView) {
         mRecyclerView = recyclerView;
         AccessibilityDelegateCompat itemDelegate = getItemDelegate();
         if (itemDelegate != null && itemDelegate instanceof ItemDelegate) {
@@ -77,8 +77,8 @@ public class RecyclerViewAccessibilityDelegate extends AccessibilityDelegateComp
     @Override
     public void onInitializeAccessibilityEvent(View host, AccessibilityEvent event) {
         super.onInitializeAccessibilityEvent(host, event);
-        if (host instanceof RecyclerView && !shouldIgnore()) {
-            RecyclerView rv = (RecyclerView) host;
+        if (host instanceof TimelineView && !shouldIgnore()) {
+            TimelineView rv = (TimelineView) host;
             if (rv.getLayoutManager() != null) {
                 rv.getLayoutManager().onInitializeAccessibilityEvent(event);
             }

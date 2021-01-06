@@ -23,16 +23,16 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
 /**
- * {@link RecyclerView.SmoothScroller} implementation which uses a {@link LinearInterpolator} until
+ * {@link TimelineView.SmoothScroller} implementation which uses a {@link LinearInterpolator} until
  * the target position becomes a child of the RecyclerView and then uses a
  * {@link DecelerateInterpolator} to slowly approach to target position.
  * <p>
- * If the {@link RecyclerView.LayoutManager} you are using does not implement the
- * {@link RecyclerView.SmoothScroller.ScrollVectorProvider} interface, then you must override the
+ * If the {@link TimelineView.LayoutManager} you are using does not implement the
+ * {@link TimelineView.SmoothScroller.ScrollVectorProvider} interface, then you must override the
  * {@link #computeScrollVectorForPosition(int)} method. All the LayoutManagers bundled with
  * the support library implement this interface.
  */
-public class LinearSmoothScroller extends RecyclerView.SmoothScroller {
+public class LinearSmoothScroller extends TimelineView.SmoothScroller {
 
     private static final boolean DEBUG = false;
 
@@ -105,7 +105,7 @@ public class LinearSmoothScroller extends RecyclerView.SmoothScroller {
      * {@inheritDoc}
      */
     @Override
-    protected void onTargetFound(View targetView, RecyclerView.State state, Action action) {
+    protected void onTargetFound(View targetView, TimelineView.State state, Action action) {
         final int dx = calculateDxToMakeVisible(targetView, getHorizontalSnapPreference());
         final int dy = calculateDyToMakeVisible(targetView, getVerticalSnapPreference());
         final int distance = (int) Math.sqrt(dx * dx + dy * dy);
@@ -119,7 +119,7 @@ public class LinearSmoothScroller extends RecyclerView.SmoothScroller {
      * {@inheritDoc}
      */
     @Override
-    protected void onSeekTargetStep(int dx, int dy, RecyclerView.State state, Action action) {
+    protected void onSeekTargetStep(int dx, int dy, TimelineView.State state, Action action) {
         // TODO(b/72745539): Is there ever a time when onSeekTargetStep should be called when
         // getChildCount returns 0?  Should this logic be extracted out of this method such that
         // this method is not called if getChildCount() returns 0?
@@ -310,11 +310,11 @@ public class LinearSmoothScroller extends RecyclerView.SmoothScroller {
      * snap preference.
      */
     public int calculateDyToMakeVisible(View view, int snapPreference) {
-        final RecyclerView.LayoutManager layoutManager = getLayoutManager();
+        final TimelineView.LayoutManager layoutManager = getLayoutManager();
         if (layoutManager == null || !layoutManager.canScrollVertically()) {
             return 0;
         }
-        final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams)
+        final TimelineView.LayoutParams params = (TimelineView.LayoutParams)
                 view.getLayoutParams();
         final int top = layoutManager.getDecoratedTop(view) - params.topMargin;
         final int bottom = layoutManager.getDecoratedBottom(view) + params.bottomMargin;
@@ -335,11 +335,11 @@ public class LinearSmoothScroller extends RecyclerView.SmoothScroller {
      * snap preference.
      */
     public int calculateDxToMakeVisible(View view, int snapPreference) {
-        final RecyclerView.LayoutManager layoutManager = getLayoutManager();
+        final TimelineView.LayoutManager layoutManager = getLayoutManager();
         if (layoutManager == null || !layoutManager.canScrollHorizontally()) {
             return 0;
         }
-        final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams)
+        final TimelineView.LayoutParams params = (TimelineView.LayoutParams)
                 view.getLayoutParams();
         final int left = layoutManager.getDecoratedLeft(view) - params.leftMargin;
         final int right = layoutManager.getDecoratedRight(view) + params.rightMargin;

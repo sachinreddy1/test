@@ -29,36 +29,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This implementation of {@link RecyclerView.ItemAnimator} provides basic
+ * This implementation of {@link TimelineView.ItemAnimator} provides basic
  * animations on remove, add, and move events that happen to the items in
  * a RecyclerView. RecyclerView uses a DefaultItemAnimator by default.
  *
- * @see RecyclerView#setItemAnimator(RecyclerView.ItemAnimator)
+ * @see TimelineView#setItemAnimator(TimelineView.ItemAnimator)
  */
 public class DefaultItemAnimator extends SimpleItemAnimator {
     private static final boolean DEBUG = false;
 
     private static TimeInterpolator sDefaultInterpolator;
 
-    private ArrayList<RecyclerView.ViewHolder> mPendingRemovals = new ArrayList<>();
-    private ArrayList<RecyclerView.ViewHolder> mPendingAdditions = new ArrayList<>();
+    private ArrayList<TimelineView.ViewHolder> mPendingRemovals = new ArrayList<>();
+    private ArrayList<TimelineView.ViewHolder> mPendingAdditions = new ArrayList<>();
     private ArrayList<MoveInfo> mPendingMoves = new ArrayList<>();
     private ArrayList<ChangeInfo> mPendingChanges = new ArrayList<>();
 
-    ArrayList<ArrayList<RecyclerView.ViewHolder>> mAdditionsList = new ArrayList<>();
+    ArrayList<ArrayList<TimelineView.ViewHolder>> mAdditionsList = new ArrayList<>();
     ArrayList<ArrayList<MoveInfo>> mMovesList = new ArrayList<>();
     ArrayList<ArrayList<ChangeInfo>> mChangesList = new ArrayList<>();
 
-    ArrayList<RecyclerView.ViewHolder> mAddAnimations = new ArrayList<>();
-    ArrayList<RecyclerView.ViewHolder> mMoveAnimations = new ArrayList<>();
-    ArrayList<RecyclerView.ViewHolder> mRemoveAnimations = new ArrayList<>();
-    ArrayList<RecyclerView.ViewHolder> mChangeAnimations = new ArrayList<>();
+    ArrayList<TimelineView.ViewHolder> mAddAnimations = new ArrayList<>();
+    ArrayList<TimelineView.ViewHolder> mMoveAnimations = new ArrayList<>();
+    ArrayList<TimelineView.ViewHolder> mRemoveAnimations = new ArrayList<>();
+    ArrayList<TimelineView.ViewHolder> mChangeAnimations = new ArrayList<>();
 
     private static class MoveInfo {
-        public RecyclerView.ViewHolder holder;
+        public TimelineView.ViewHolder holder;
         public int fromX, fromY, toX, toY;
 
-        MoveInfo(RecyclerView.ViewHolder holder, int fromX, int fromY, int toX, int toY) {
+        MoveInfo(TimelineView.ViewHolder holder, int fromX, int fromY, int toX, int toY) {
             this.holder = holder;
             this.fromX = fromX;
             this.fromY = fromY;
@@ -68,15 +68,15 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
     }
 
     private static class ChangeInfo {
-        public RecyclerView.ViewHolder oldHolder, newHolder;
+        public TimelineView.ViewHolder oldHolder, newHolder;
         public int fromX, fromY, toX, toY;
-        private ChangeInfo(RecyclerView.ViewHolder oldHolder, RecyclerView.ViewHolder newHolder) {
+        private ChangeInfo(TimelineView.ViewHolder oldHolder, TimelineView.ViewHolder newHolder) {
             this.oldHolder = oldHolder;
             this.newHolder = newHolder;
         }
 
-        ChangeInfo(RecyclerView.ViewHolder oldHolder, RecyclerView.ViewHolder newHolder,
-                int fromX, int fromY, int toX, int toY) {
+        ChangeInfo(TimelineView.ViewHolder oldHolder, TimelineView.ViewHolder newHolder,
+                   int fromX, int fromY, int toX, int toY) {
             this(oldHolder, newHolder);
             this.fromX = fromX;
             this.fromY = fromY;
@@ -108,7 +108,7 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
             return;
         }
         // First, remove stuff
-        for (RecyclerView.ViewHolder holder : mPendingRemovals) {
+        for (TimelineView.ViewHolder holder : mPendingRemovals) {
             animateRemoveImpl(holder);
         }
         mPendingRemovals.clear();
@@ -153,7 +153,7 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
                 }
             };
             if (removalsPending) {
-                RecyclerView.ViewHolder holder = changes.get(0).oldHolder;
+                TimelineView.ViewHolder holder = changes.get(0).oldHolder;
                 ViewCompat.postOnAnimationDelayed(holder.itemView, changer, getRemoveDuration());
             } else {
                 changer.run();
@@ -161,14 +161,14 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
         }
         // Next, add stuff
         if (additionsPending) {
-            final ArrayList<RecyclerView.ViewHolder> additions = new ArrayList<>();
+            final ArrayList<TimelineView.ViewHolder> additions = new ArrayList<>();
             additions.addAll(mPendingAdditions);
             mAdditionsList.add(additions);
             mPendingAdditions.clear();
             Runnable adder = new Runnable() {
                 @Override
                 public void run() {
-                    for (RecyclerView.ViewHolder holder : additions) {
+                    for (TimelineView.ViewHolder holder : additions) {
                         animateAddImpl(holder);
                     }
                     additions.clear();
@@ -189,13 +189,13 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
     }
 
     @Override
-    public boolean animateRemove(final RecyclerView.ViewHolder holder) {
+    public boolean animateRemove(final TimelineView.ViewHolder holder) {
         resetAnimation(holder);
         mPendingRemovals.add(holder);
         return true;
     }
 
-    private void animateRemoveImpl(final RecyclerView.ViewHolder holder) {
+    private void animateRemoveImpl(final TimelineView.ViewHolder holder) {
         final View view = holder.itemView;
         final ViewPropertyAnimator animation = view.animate();
         mRemoveAnimations.add(holder);
@@ -218,14 +218,14 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
     }
 
     @Override
-    public boolean animateAdd(final RecyclerView.ViewHolder holder) {
+    public boolean animateAdd(final TimelineView.ViewHolder holder) {
         resetAnimation(holder);
         holder.itemView.setAlpha(0);
         mPendingAdditions.add(holder);
         return true;
     }
 
-    void animateAddImpl(final RecyclerView.ViewHolder holder) {
+    void animateAddImpl(final TimelineView.ViewHolder holder) {
         final View view = holder.itemView;
         final ViewPropertyAnimator animation = view.animate();
         mAddAnimations.add(holder);
@@ -252,8 +252,8 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
     }
 
     @Override
-    public boolean animateMove(final RecyclerView.ViewHolder holder, int fromX, int fromY,
-            int toX, int toY) {
+    public boolean animateMove(final TimelineView.ViewHolder holder, int fromX, int fromY,
+                               int toX, int toY) {
         final View view = holder.itemView;
         fromX += (int) holder.itemView.getTranslationX();
         fromY += (int) holder.itemView.getTranslationY();
@@ -274,7 +274,7 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
         return true;
     }
 
-    void animateMoveImpl(final RecyclerView.ViewHolder holder, int fromX, int fromY, int toX, int toY) {
+    void animateMoveImpl(final TimelineView.ViewHolder holder, int fromX, int fromY, int toX, int toY) {
         final View view = holder.itemView;
         final int deltaX = toX - fromX;
         final int deltaY = toY - fromY;
@@ -316,8 +316,8 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
     }
 
     @Override
-    public boolean animateChange(RecyclerView.ViewHolder oldHolder, RecyclerView.ViewHolder newHolder,
-            int fromX, int fromY, int toX, int toY) {
+    public boolean animateChange(TimelineView.ViewHolder oldHolder, TimelineView.ViewHolder newHolder,
+                                 int fromX, int fromY, int toX, int toY) {
         if (oldHolder == newHolder) {
             // Don't know how to run change animations when the same view holder is re-used.
             // run a move animation to handle position changes.
@@ -345,9 +345,9 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
     }
 
     void animateChangeImpl(final ChangeInfo changeInfo) {
-        final RecyclerView.ViewHolder holder = changeInfo.oldHolder;
+        final TimelineView.ViewHolder holder = changeInfo.oldHolder;
         final View view = holder == null ? null : holder.itemView;
-        final RecyclerView.ViewHolder newHolder = changeInfo.newHolder;
+        final TimelineView.ViewHolder newHolder = changeInfo.newHolder;
         final View newView = newHolder != null ? newHolder.itemView : null;
         if (view != null) {
             final ViewPropertyAnimator oldViewAnim = view.animate().setDuration(
@@ -396,7 +396,7 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
         }
     }
 
-    private void endChangeAnimation(List<ChangeInfo> infoList, RecyclerView.ViewHolder item) {
+    private void endChangeAnimation(List<ChangeInfo> infoList, TimelineView.ViewHolder item) {
         for (int i = infoList.size() - 1; i >= 0; i--) {
             ChangeInfo changeInfo = infoList.get(i);
             if (endChangeAnimationIfNecessary(changeInfo, item)) {
@@ -415,7 +415,7 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
             endChangeAnimationIfNecessary(changeInfo, changeInfo.newHolder);
         }
     }
-    private boolean endChangeAnimationIfNecessary(ChangeInfo changeInfo, RecyclerView.ViewHolder item) {
+    private boolean endChangeAnimationIfNecessary(ChangeInfo changeInfo, TimelineView.ViewHolder item) {
         boolean oldItem = false;
         if (changeInfo.newHolder == item) {
             changeInfo.newHolder = null;
@@ -433,7 +433,7 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
     }
 
     @Override
-    public void endAnimation(RecyclerView.ViewHolder item) {
+    public void endAnimation(TimelineView.ViewHolder item) {
         final View view = item.itemView;
         // this will trigger end callback which should set properties to their target values.
         view.animate().cancel();
@@ -481,7 +481,7 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
             }
         }
         for (int i = mAdditionsList.size() - 1; i >= 0; i--) {
-            ArrayList<RecyclerView.ViewHolder> additions = mAdditionsList.get(i);
+            ArrayList<TimelineView.ViewHolder> additions = mAdditionsList.get(i);
             if (additions.remove(item)) {
                 view.setAlpha(1);
                 dispatchAddFinished(item);
@@ -518,7 +518,7 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
         dispatchFinishedWhenDone();
     }
 
-    private void resetAnimation(RecyclerView.ViewHolder holder) {
+    private void resetAnimation(TimelineView.ViewHolder holder) {
         if (sDefaultInterpolator == null) {
             sDefaultInterpolator = new ValueAnimator().getInterpolator();
         }
@@ -565,13 +565,13 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
         }
         count = mPendingRemovals.size();
         for (int i = count - 1; i >= 0; i--) {
-            RecyclerView.ViewHolder item = mPendingRemovals.get(i);
+            TimelineView.ViewHolder item = mPendingRemovals.get(i);
             dispatchRemoveFinished(item);
             mPendingRemovals.remove(i);
         }
         count = mPendingAdditions.size();
         for (int i = count - 1; i >= 0; i--) {
-            RecyclerView.ViewHolder item = mPendingAdditions.get(i);
+            TimelineView.ViewHolder item = mPendingAdditions.get(i);
             item.itemView.setAlpha(1);
             dispatchAddFinished(item);
             mPendingAdditions.remove(i);
@@ -591,7 +591,7 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
             count = moves.size();
             for (int j = count - 1; j >= 0; j--) {
                 MoveInfo moveInfo = moves.get(j);
-                RecyclerView.ViewHolder item = moveInfo.holder;
+                TimelineView.ViewHolder item = moveInfo.holder;
                 View view = item.itemView;
                 view.setTranslationY(0);
                 view.setTranslationX(0);
@@ -604,10 +604,10 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
         }
         listCount = mAdditionsList.size();
         for (int i = listCount - 1; i >= 0; i--) {
-            ArrayList<RecyclerView.ViewHolder> additions = mAdditionsList.get(i);
+            ArrayList<TimelineView.ViewHolder> additions = mAdditionsList.get(i);
             count = additions.size();
             for (int j = count - 1; j >= 0; j--) {
-                RecyclerView.ViewHolder item = additions.get(j);
+                TimelineView.ViewHolder item = additions.get(j);
                 View view = item.itemView;
                 view.setAlpha(1);
                 dispatchAddFinished(item);
@@ -637,7 +637,7 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
         dispatchAnimationsFinished();
     }
 
-    void cancelAll(List<RecyclerView.ViewHolder> viewHolders) {
+    void cancelAll(List<TimelineView.ViewHolder> viewHolders) {
         for (int i = viewHolders.size() - 1; i >= 0; i--) {
             viewHolders.get(i).itemView.animate().cancel();
         }
@@ -649,18 +649,18 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
      * If the payload list is not empty, DefaultItemAnimator returns <code>true</code>.
      * When this is the case:
      * <ul>
-     * <li>If you override {@link #animateChange(RecyclerView.ViewHolder, RecyclerView.ViewHolder, int, int, int, int)}, both
+     * <li>If you override {@link #animateChange(TimelineView.ViewHolder, TimelineView.ViewHolder, int, int, int, int)}, both
      * ViewHolder arguments will be the same instance.
      * </li>
      * <li>
-     * If you are not overriding {@link #animateChange(RecyclerView.ViewHolder, RecyclerView.ViewHolder, int, int, int, int)},
-     * then DefaultItemAnimator will call {@link #animateMove(RecyclerView.ViewHolder, int, int, int, int)} and
+     * If you are not overriding {@link #animateChange(TimelineView.ViewHolder, TimelineView.ViewHolder, int, int, int, int)},
+     * then DefaultItemAnimator will call {@link #animateMove(TimelineView.ViewHolder, int, int, int, int)} and
      * run a move animation instead.
      * </li>
      * </ul>
      */
     @Override
-    public boolean canReuseUpdatedViewHolder(@NonNull RecyclerView.ViewHolder viewHolder,
+    public boolean canReuseUpdatedViewHolder(@NonNull TimelineView.ViewHolder viewHolder,
             @NonNull List<Object> payloads) {
         return !payloads.isEmpty() || super.canReuseUpdatedViewHolder(viewHolder, payloads);
     }

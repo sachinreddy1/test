@@ -6,13 +6,12 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import com.example.timelineview.DiffUtil
-import com.example.timelineview.RecyclerView
+import com.example.timelineview.TimelineView
 import com.example.recyclerviewtest.IRecyclerViewAdapter
 import com.example.recyclerviewtest.Identifiable
-import com.example.recyclerviewtest.R
 
 class BottomRecyclerViewAdapter<T>(private val viewTypeProvider: ViewTypeProvider<T>,
-                             private val itemResId: Int) : RecyclerView.Adapter<BottomRecyclerViewAdapter.BottomCustomViewHolder<T>>(),
+                             private val itemResId: Int) : TimelineView.Adapter<BottomRecyclerViewAdapter.BottomCustomViewHolder<T>>(),
     IRecyclerViewAdapter<T>
 where T : Identifiable {
 
@@ -50,7 +49,7 @@ where T : Identifiable {
 
     override fun getItemViewType(position: Int): Int = viewTypeProvider(itemList[position])
 
-    class BottomCustomViewHolder<T>(itemView: View, private val itemResId: Int) : RecyclerView.ViewHolder(itemView) {
+    class BottomCustomViewHolder<T>(itemView: View, private val itemResId: Int) : TimelineView.ViewHolder(itemView) {
         private var _item: T? = null
         var item: T?
             set(value) {

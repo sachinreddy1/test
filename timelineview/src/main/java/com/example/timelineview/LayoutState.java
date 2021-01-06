@@ -84,7 +84,7 @@ class LayoutState {
     /**
      * @return true if there are more items in the data adapter
      */
-    boolean hasMore(RecyclerView.State state) {
+    boolean hasMore(TimelineView.State state) {
         return mCurrentPosition >= 0 && mCurrentPosition < state.getItemCount();
     }
 
@@ -94,7 +94,7 @@ class LayoutState {
      *
      * @return The next element that we should render.
      */
-    View next(RecyclerView.Recycler recycler) {
+    View next(TimelineView.Recycler recycler) {
         final View view = recycler.getViewForPosition(mCurrentPosition);
         mCurrentPosition += mItemDirection;
         return view;

@@ -30,7 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 /**
- * DividerItemDecoration is a {@link RecyclerView.ItemDecoration} that can be used as a divider
+ * DividerItemDecoration is a {@link TimelineView.ItemDecoration} that can be used as a divider
  * between items of a {@link LinearLayoutManager}. It supports both {@link #HORIZONTAL} and
  * {@link #VERTICAL} orientations.
  *
@@ -40,7 +40,7 @@ import androidx.annotation.Nullable;
  *     recyclerView.addItemDecoration(mDividerItemDecoration);
  * </pre>
  */
-public class DividerItemDecoration extends RecyclerView.ItemDecoration {
+public class DividerItemDecoration extends TimelineView.ItemDecoration {
     public static final int HORIZONTAL = LinearLayout.HORIZONTAL;
     public static final int VERTICAL = LinearLayout.VERTICAL;
 
@@ -57,7 +57,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     private final Rect mBounds = new Rect();
 
     /**
-     * Creates a divider {@link RecyclerView.ItemDecoration} that can be used with a
+     * Creates a divider {@link TimelineView.ItemDecoration} that can be used with a
      * {@link LinearLayoutManager}.
      *
      * @param context Current context, it will be used to access resources.
@@ -76,7 +76,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
     /**
      * Sets the orientation for this divider. This should be called if
-     * {@link RecyclerView.LayoutManager} changes orientation.
+     * {@link TimelineView.LayoutManager} changes orientation.
      *
      * @param orientation {@link #HORIZONTAL} or {@link #VERTICAL}
      */
@@ -109,7 +109,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+    public void onDraw(Canvas c, TimelineView parent, TimelineView.State state) {
         if (parent.getLayoutManager() == null || mDivider == null) {
             return;
         }
@@ -120,7 +120,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         }
     }
 
-    private void drawVertical(Canvas canvas, RecyclerView parent) {
+    private void drawVertical(Canvas canvas, TimelineView parent) {
         canvas.save();
         final int left;
         final int right;
@@ -147,7 +147,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         canvas.restore();
     }
 
-    private void drawHorizontal(Canvas canvas, RecyclerView parent) {
+    private void drawHorizontal(Canvas canvas, TimelineView parent) {
         canvas.save();
         final int top;
         final int bottom;
@@ -175,8 +175,8 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
-            RecyclerView.State state) {
+    public void getItemOffsets(Rect outRect, View view, TimelineView parent,
+                               TimelineView.State state) {
         if (mDivider == null) {
             outRect.set(0, 0, 0, 0);
             return;

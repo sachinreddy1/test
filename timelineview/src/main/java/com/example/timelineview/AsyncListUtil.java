@@ -42,7 +42,7 @@ import androidx.annotation.WorkerThread;
  * Note that this class uses a single thread to load the data, so it suitable to load data from
  * secondary storage such as disk, but not from network.
  * <p>
- * This class is designed to work with {@link RecyclerView}, but it does
+ * This class is designed to work with {@link TimelineView}, but it does
  * not depend on it and can be used with other list views.
  *
  */
@@ -113,7 +113,7 @@ public class AsyncListUtil<T> {
      * <p>
      * Identifies the data items that have not been loaded yet and initiates loading them in the
      * background. Should be called from the view's scroll listener (such as
-     * {@link RecyclerView.OnScrollListener#onScrolled}).
+     * {@link TimelineView.OnScrollListener#onScrolled}).
      */
     public void onRangeChanged() {
         if (isRefreshPending()) {

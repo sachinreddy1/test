@@ -25,32 +25,32 @@ import android.view.View;
  * can also be used to abstract calls around view bounds and child measurements with margins and
  * decorations.
  *
- * @see #createHorizontalHelper(RecyclerView.LayoutManager)
- * @see #createVerticalHelper(RecyclerView.LayoutManager)
+ * @see #createHorizontalHelper(TimelineView.LayoutManager)
+ * @see #createVerticalHelper(TimelineView.LayoutManager)
  */
 public abstract class OrientationHelper {
 
     private static final int INVALID_SIZE = Integer.MIN_VALUE;
 
-    protected final RecyclerView.LayoutManager mLayoutManager;
+    protected final TimelineView.LayoutManager mLayoutManager;
 
-    public static final int HORIZONTAL = RecyclerView.HORIZONTAL;
+    public static final int HORIZONTAL = TimelineView.HORIZONTAL;
 
-    public static final int VERTICAL = RecyclerView.VERTICAL;
+    public static final int VERTICAL = TimelineView.VERTICAL;
 
     private int mLastTotalSpace = INVALID_SIZE;
 
     final Rect mTmpRect = new Rect();
 
-    private OrientationHelper(RecyclerView.LayoutManager layoutManager) {
+    private OrientationHelper(TimelineView.LayoutManager layoutManager) {
         mLayoutManager = layoutManager;
     }
 
     /**
-     * Returns the {@link RecyclerView.LayoutManager LayoutManager} that
+     * Returns the {@link TimelineView.LayoutManager LayoutManager} that
      * is associated with this OrientationHelper.
      */
-    public RecyclerView.LayoutManager getLayoutManager() {
+    public TimelineView.LayoutManager getLayoutManager() {
         return mLayoutManager;
     }
 
@@ -67,8 +67,8 @@ public abstract class OrientationHelper {
      * Returns the layout space change between the previous layout pass and current layout pass.
      * <p>
      * Make sure you call {@link #onLayoutComplete()} at the end of your LayoutManager's
-     * {@link RecyclerView.LayoutManager#onLayoutChildren(RecyclerView.Recycler,
-     * RecyclerView.State)} method.
+     * {@link TimelineView.LayoutManager#onLayoutChildren(TimelineView.Recycler,
+     * TimelineView.State)} method.
      *
      * @return The difference between the current total space and previous layout's total space.
      * @see #onLayoutComplete()
@@ -113,7 +113,7 @@ public abstract class OrientationHelper {
      * @return The end of the View after its decor insets and transformation matrix is applied to
      * its position
      *
-     * @see RecyclerView.LayoutManager#getTransformedBoundingBox(View, boolean, Rect)
+     * @see TimelineView.LayoutManager#getTransformedBoundingBox(View, boolean, Rect)
      */
     public abstract int getTransformedEndWithDecoration(View view);
 
@@ -129,7 +129,7 @@ public abstract class OrientationHelper {
      * @return The start of the View after its decor insets and transformation matrix is applied to
      * its position
      *
-     * @see RecyclerView.LayoutManager#getTransformedBoundingBox(View, boolean, Rect)
+     * @see TimelineView.LayoutManager#getTransformedBoundingBox(View, boolean, Rect)
      */
     public abstract int getTransformedStartWithDecoration(View view);
 
@@ -212,8 +212,8 @@ public abstract class OrientationHelper {
      * @return The current measure spec mode.
      *
      * @see View.MeasureSpec
-     * @see RecyclerView.LayoutManager#getWidthMode()
-     * @see RecyclerView.LayoutManager#getHeightMode()
+     * @see TimelineView.LayoutManager#getWidthMode()
+     * @see TimelineView.LayoutManager#getHeightMode()
      */
     public abstract int getMode();
 
@@ -223,8 +223,8 @@ public abstract class OrientationHelper {
      * @return The current measure spec mode.
      *
      * @see View.MeasureSpec
-     * @see RecyclerView.LayoutManager#getWidthMode()
-     * @see RecyclerView.LayoutManager#getHeightMode()
+     * @see TimelineView.LayoutManager#getWidthMode()
+     * @see TimelineView.LayoutManager#getHeightMode()
      */
     public abstract int getModeInOther();
 
@@ -236,7 +236,7 @@ public abstract class OrientationHelper {
      * @return A new OrientationHelper
      */
     public static OrientationHelper createOrientationHelper(
-            RecyclerView.LayoutManager layoutManager, @RecyclerView.Orientation int orientation) {
+            TimelineView.LayoutManager layoutManager, @TimelineView.Orientation int orientation) {
         switch (orientation) {
             case HORIZONTAL:
                 return createHorizontalHelper(layoutManager);
@@ -253,7 +253,7 @@ public abstract class OrientationHelper {
      * @return A new OrientationHelper
      */
     public static OrientationHelper createHorizontalHelper(
-            RecyclerView.LayoutManager layoutManager) {
+            TimelineView.LayoutManager layoutManager) {
         return new OrientationHelper(layoutManager) {
             @Override
             public int getEndAfterPadding() {
@@ -277,7 +277,7 @@ public abstract class OrientationHelper {
 
             @Override
             public int getDecoratedMeasurement(View view) {
-                final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams)
+                final TimelineView.LayoutParams params = (TimelineView.LayoutParams)
                         view.getLayoutParams();
                 return mLayoutManager.getDecoratedMeasuredWidth(view) + params.leftMargin
                         + params.rightMargin;
@@ -285,7 +285,7 @@ public abstract class OrientationHelper {
 
             @Override
             public int getDecoratedMeasurementInOther(View view) {
-                final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams)
+                final TimelineView.LayoutParams params = (TimelineView.LayoutParams)
                         view.getLayoutParams();
                 return mLayoutManager.getDecoratedMeasuredHeight(view) + params.topMargin
                         + params.bottomMargin;
@@ -293,14 +293,14 @@ public abstract class OrientationHelper {
 
             @Override
             public int getDecoratedEnd(View view) {
-                final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams)
+                final TimelineView.LayoutParams params = (TimelineView.LayoutParams)
                         view.getLayoutParams();
                 return mLayoutManager.getDecoratedRight(view) + params.rightMargin;
             }
 
             @Override
             public int getDecoratedStart(View view) {
-                final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams)
+                final TimelineView.LayoutParams params = (TimelineView.LayoutParams)
                         view.getLayoutParams();
                 return mLayoutManager.getDecoratedLeft(view) - params.leftMargin;
             }
@@ -351,7 +351,7 @@ public abstract class OrientationHelper {
      * @param layoutManager The LayoutManager to attach to.
      * @return A new OrientationHelper
      */
-    public static OrientationHelper createVerticalHelper(RecyclerView.LayoutManager layoutManager) {
+    public static OrientationHelper createVerticalHelper(TimelineView.LayoutManager layoutManager) {
         return new OrientationHelper(layoutManager) {
             @Override
             public int getEndAfterPadding() {
@@ -375,7 +375,7 @@ public abstract class OrientationHelper {
 
             @Override
             public int getDecoratedMeasurement(View view) {
-                final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams)
+                final TimelineView.LayoutParams params = (TimelineView.LayoutParams)
                         view.getLayoutParams();
                 return mLayoutManager.getDecoratedMeasuredHeight(view) + params.topMargin
                         + params.bottomMargin;
@@ -383,7 +383,7 @@ public abstract class OrientationHelper {
 
             @Override
             public int getDecoratedMeasurementInOther(View view) {
-                final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams)
+                final TimelineView.LayoutParams params = (TimelineView.LayoutParams)
                         view.getLayoutParams();
                 return mLayoutManager.getDecoratedMeasuredWidth(view) + params.leftMargin
                         + params.rightMargin;
@@ -391,14 +391,14 @@ public abstract class OrientationHelper {
 
             @Override
             public int getDecoratedEnd(View view) {
-                final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams)
+                final TimelineView.LayoutParams params = (TimelineView.LayoutParams)
                         view.getLayoutParams();
                 return mLayoutManager.getDecoratedBottom(view) + params.bottomMargin;
             }
 
             @Override
             public int getDecoratedStart(View view) {
-                final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams)
+                final TimelineView.LayoutParams params = (TimelineView.LayoutParams)
                         view.getLayoutParams();
                 return mLayoutManager.getDecoratedTop(view) - params.topMargin;
             }

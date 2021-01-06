@@ -32,7 +32,7 @@ import java.util.concurrent.Executor;
  * thread.
  * <p>
  * It can be connected to a
- * {@link RecyclerView.Adapter RecyclerView.Adapter}, and will signal the
+ * {@link TimelineView.Adapter RecyclerView.Adapter}, and will signal the
  * adapter of changes between sumbitted lists.
  * <p>
  * For simplicity, the {@link ListAdapter} wrapper class can often be used instead of the
@@ -155,9 +155,9 @@ public class AsyncListDiffer<T> {
      * @param adapter Adapter to dispatch position updates to.
      * @param diffCallback ItemCallback that compares items to dispatch appropriate animations when
      *
-     * @see DiffUtil.DiffResult#dispatchUpdatesTo(RecyclerView.Adapter)
+     * @see DiffUtil.DiffResult#dispatchUpdatesTo(TimelineView.Adapter)
      */
-    public AsyncListDiffer(@NonNull RecyclerView.Adapter adapter,
+    public AsyncListDiffer(@NonNull TimelineView.Adapter adapter,
             @NonNull DiffUtil.ItemCallback<T> diffCallback) {
         this(new AdapterListUpdateCallback(adapter),
             new AsyncDifferConfig.Builder<>(diffCallback).build());
@@ -171,7 +171,7 @@ public class AsyncListDiffer<T> {
      * @param config Config to define background work Executor, and DiffUtil.ItemCallback for
      *               computing List diffs.
      *
-     * @see DiffUtil.DiffResult#dispatchUpdatesTo(RecyclerView.Adapter)
+     * @see DiffUtil.DiffResult#dispatchUpdatesTo(TimelineView.Adapter)
      */
     @SuppressWarnings("WeakerAccess")
     public AsyncListDiffer(@NonNull ListUpdateCallback listUpdateCallback,
