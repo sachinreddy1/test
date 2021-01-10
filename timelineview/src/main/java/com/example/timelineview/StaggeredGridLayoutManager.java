@@ -34,6 +34,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.core.view.ViewCompat;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,16 +49,16 @@ import java.util.List;
  * StaggeredGridLayoutManager can offset spans independently or move items between spans. You can
  * control this behavior via {@link #setGapStrategy(int)}.
  */
-public class StaggeredGridLayoutManager extends TimelineView.LayoutManager implements
-        TimelineView.SmoothScroller.ScrollVectorProvider {
+public class StaggeredGridLayoutManager extends RecyclerView.LayoutManager implements
+        RecyclerView.SmoothScroller.ScrollVectorProvider {
 
     private static final String TAG = "StaggeredGridLManager";
 
     static final boolean DEBUG = false;
 
-    public static final int HORIZONTAL = TimelineView.HORIZONTAL;
+    public static final int HORIZONTAL = RecyclerView.HORIZONTAL;
 
-    public static final int VERTICAL = TimelineView.VERTICAL;
+    public static final int VERTICAL = RecyclerView.VERTICAL;
 
     /**
      * Does not do anything to hide gaps.
@@ -72,7 +73,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
     public static final int GAP_HANDLING_LAZY = 1;
 
     /**
-     * When scroll state is changed to {@link TimelineView#SCROLL_STATE_IDLE}, StaggeredGrid will
+     * When scroll state is changed to {@link RecyclerView#SCROLL_STATE_IDLE}, StaggeredGrid will
      * check if there are gaps in the because of full span items. If it finds, it will re-layout
      * and move items to correct positions with animations.
      * <p>
@@ -142,7 +143,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
      * When LayoutManager needs to scroll to a position, it sets this variable and requests a
      * layout which will check this variable and re-layout accordingly.
      */
-    int mPendingScrollPosition = TimelineView.NO_POSITION;
+    int mPendingScrollPosition = RecyclerView.NO_POSITION;
 
     /**
      * Used to keep the offset value when {@link #scrollToPositionWithOffset(int, int)} is
@@ -225,7 +226,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
      */
     @SuppressWarnings("unused")
     public StaggeredGridLayoutManager(Context context, AttributeSet attrs, int defStyleAttr,
-            int defStyleRes) {
+                                      int defStyleRes) {
         Properties properties = getProperties(context, attrs, defStyleAttr, defStyleRes);
         setOrientation(properties.orientation);
         setSpanCount(properties.spanCount);
@@ -312,13 +313,13 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
 
     @Override
     public void onScrollStateChanged(int state) {
-        if (state == TimelineView.SCROLL_STATE_IDLE) {
+        if (state == RecyclerView.SCROLL_STATE_IDLE) {
             checkForGaps();
         }
     }
 
     @Override
-    public void onDetachedFromWindow(TimelineView view, TimelineView.Recycler recycler) {
+    public void onDetachedFromWindow(RecyclerView view, RecyclerView.Recycler recycler) {
         super.onDetachedFromWindow(view, recycler);
 
         removeCallbacks(mCheckForGapsRunnable);
@@ -467,8 +468,8 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
      * the list.
      * <p>
      * For horizontal layouts, it depends on the layout direction.
-     * When set to true, If {@link TimelineView} is LTR, than it will layout from RTL, if
-     * {@link TimelineView}} is RTL, it will layout from LTR.
+     * When set to true, If {@link RecyclerView} is LTR, than it will layout from RTL, if
+     * {@link RecyclerView}} is RTL, it will layout from LTR.
      *
      * @param reverseLayout Whether layout should be in reverse or not
      */
@@ -600,24 +601,15 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
     }
 
     @Override
-    public void onLayoutChildren(TimelineView.Recycler recycler, TimelineView.State state) {
+    public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
         onLayoutChildren(recycler, state, true);
     }
 
-    @Override
-    public void onAdapterChanged(@Nullable TimelineView.Adapter oldAdapter,
-            @Nullable TimelineView.Adapter newAdapter) {
-        // RV will remove all views so we should clear all spans and assignments of views into spans
-        mLazySpanLookup.clear();
-        for (int i = 0; i < mSpanCount; i++) {
-            mSpans[i].clear();
-        }
-    }
 
-    private void onLayoutChildren(TimelineView.Recycler recycler, TimelineView.State state,
+    private void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state,
                                   boolean shouldCheckForGaps) {
         final AnchorInfo anchorInfo = mAnchorInfo;
-        if (mPendingSavedState != null || mPendingScrollPosition != TimelineView.NO_POSITION) {
+        if (mPendingSavedState != null || mPendingScrollPosition != RecyclerView.NO_POSITION) {
             if (state.getItemCount() == 0) {
                 removeAndRecycleAllViews(recycler);
                 anchorInfo.reset();
@@ -625,7 +617,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
             }
         }
 
-        boolean recalculateAnchor = !anchorInfo.mValid || mPendingScrollPosition != TimelineView.NO_POSITION
+        boolean recalculateAnchor = !anchorInfo.mValid || mPendingScrollPosition != RecyclerView.NO_POSITION
                 || mPendingSavedState != null;
         if (recalculateAnchor) {
             anchorInfo.reset();
@@ -638,7 +630,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
             updateAnchorInfoForLayout(state, anchorInfo);
             anchorInfo.mValid = true;
         }
-        if (mPendingSavedState == null && mPendingScrollPosition == TimelineView.NO_POSITION) {
+        if (mPendingSavedState == null && mPendingScrollPosition == RecyclerView.NO_POSITION) {
             if (anchorInfo.mLayoutFromEnd != mLastLayoutFromEnd
                     || isLayoutRTL() != mLastLayoutRTL) {
                 mLazySpanLookup.clear();
@@ -730,9 +722,9 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
     }
 
     @Override
-    public void onLayoutCompleted(TimelineView.State state) {
+    public void onLayoutCompleted(RecyclerView.State state) {
         super.onLayoutCompleted(state);
-        mPendingScrollPosition = TimelineView.NO_POSITION;
+        mPendingScrollPosition = RecyclerView.NO_POSITION;
         mPendingScrollPositionOffset = INVALID_OFFSET;
         mPendingSavedState = null; // we don't need this anymore
         mAnchorInfo.reset();
@@ -814,7 +806,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
         setReverseLayout(mPendingSavedState.mReverseLayout);
         resolveShouldLayoutReverse();
 
-        if (mPendingSavedState.mAnchorPosition != TimelineView.NO_POSITION) {
+        if (mPendingSavedState.mAnchorPosition != RecyclerView.NO_POSITION) {
             mPendingScrollPosition = mPendingSavedState.mAnchorPosition;
             anchorInfo.mLayoutFromEnd = mPendingSavedState.mAnchorLayoutFromEnd;
         } else {
@@ -826,7 +818,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
         }
     }
 
-    void updateAnchorInfoForLayout(TimelineView.State state, AnchorInfo anchorInfo) {
+    void updateAnchorInfoForLayout(RecyclerView.State state, AnchorInfo anchorInfo) {
         if (updateAnchorFromPendingData(state, anchorInfo)) {
             return;
         }
@@ -840,7 +832,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
         anchorInfo.mPosition = 0;
     }
 
-    private boolean updateAnchorFromChildren(TimelineView.State state, AnchorInfo anchorInfo) {
+    private boolean updateAnchorFromChildren(RecyclerView.State state, AnchorInfo anchorInfo) {
         // We don't recycle views out of adapter order. This way, we can rely on the first or
         // last child as the anchor position.
         // Layout direction may change but we should select the child depending on the latest
@@ -852,19 +844,19 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
         return true;
     }
 
-    boolean updateAnchorFromPendingData(TimelineView.State state, AnchorInfo anchorInfo) {
+    boolean updateAnchorFromPendingData(RecyclerView.State state, AnchorInfo anchorInfo) {
         // Validate scroll position if exists.
-        if (state.isPreLayout() || mPendingScrollPosition == TimelineView.NO_POSITION) {
+        if (state.isPreLayout() || mPendingScrollPosition == RecyclerView.NO_POSITION) {
             return false;
         }
         // Validate it.
         if (mPendingScrollPosition < 0 || mPendingScrollPosition >= state.getItemCount()) {
-            mPendingScrollPosition = TimelineView.NO_POSITION;
+            mPendingScrollPosition = RecyclerView.NO_POSITION;
             mPendingScrollPositionOffset = INVALID_OFFSET;
             return false;
         }
 
-        if (mPendingSavedState == null || mPendingSavedState.mAnchorPosition == TimelineView.NO_POSITION
+        if (mPendingSavedState == null || mPendingSavedState.mAnchorPosition == RecyclerView.NO_POSITION
                 || mPendingSavedState.mSpanOffsetsSize < 1) {
             // If item is visible, make it fully visible.
             final View child = findViewByPosition(mPendingScrollPosition);
@@ -958,7 +950,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
      * @param into An array to put the results into. If you don't provide any, LayoutManager will
      *             create a new one.
      * @return The adapter position of the first visible item in each span. If a span does not have
-     * any items, {@link TimelineView#NO_POSITION} is returned for that span.
+     * any items, {@link RecyclerView#NO_POSITION} is returned for that span.
      * @see #findFirstCompletelyVisibleItemPositions(int[])
      * @see #findLastVisibleItemPositions(int[])
      */
@@ -990,7 +982,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
      * @param into An array to put the results into. If you don't provide any, LayoutManager will
      *             create a new one.
      * @return The adapter position of the first fully visible item in each span. If a span does
-     * not have any items, {@link TimelineView#NO_POSITION} is returned for that span.
+     * not have any items, {@link RecyclerView#NO_POSITION} is returned for that span.
      * @see #findFirstVisibleItemPositions(int[])
      * @see #findLastCompletelyVisibleItemPositions(int[])
      */
@@ -1022,7 +1014,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
      * @param into An array to put the results into. If you don't provide any, LayoutManager will
      *             create a new one.
      * @return The adapter position of the last visible item in each span. If a span does not have
-     * any items, {@link TimelineView#NO_POSITION} is returned for that span.
+     * any items, {@link RecyclerView#NO_POSITION} is returned for that span.
      * @see #findLastCompletelyVisibleItemPositions(int[])
      * @see #findFirstVisibleItemPositions(int[])
      */
@@ -1054,7 +1046,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
      * @param into An array to put the results into. If you don't provide any, LayoutManager will
      *             create a new one.
      * @return The adapter position of the last fully visible item in each span. If a span does not
-     * have any items, {@link TimelineView#NO_POSITION} is returned for that span.
+     * have any items, {@link RecyclerView#NO_POSITION} is returned for that span.
      * @see #findFirstCompletelyVisibleItemPositions(int[])
      * @see #findLastVisibleItemPositions(int[])
      */
@@ -1072,11 +1064,11 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
     }
 
     @Override
-    public int computeHorizontalScrollOffset(TimelineView.State state) {
+    public int computeHorizontalScrollOffset(RecyclerView.State state) {
         return computeScrollOffset(state);
     }
 
-    private int computeScrollOffset(TimelineView.State state) {
+    private int computeScrollOffset(RecyclerView.State state) {
         if (getChildCount() == 0) {
             return 0;
         }
@@ -1087,16 +1079,16 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
     }
 
     @Override
-    public int computeVerticalScrollOffset(TimelineView.State state) {
+    public int computeVerticalScrollOffset(RecyclerView.State state) {
         return computeScrollOffset(state);
     }
 
     @Override
-    public int computeHorizontalScrollExtent(TimelineView.State state) {
+    public int computeHorizontalScrollExtent(RecyclerView.State state) {
         return computeScrollExtent(state);
     }
 
-    private int computeScrollExtent(TimelineView.State state) {
+    private int computeScrollExtent(RecyclerView.State state) {
         if (getChildCount() == 0) {
             return 0;
         }
@@ -1107,16 +1099,16 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
     }
 
     @Override
-    public int computeVerticalScrollExtent(TimelineView.State state) {
+    public int computeVerticalScrollExtent(RecyclerView.State state) {
         return computeScrollExtent(state);
     }
 
     @Override
-    public int computeHorizontalScrollRange(TimelineView.State state) {
+    public int computeHorizontalScrollRange(RecyclerView.State state) {
         return computeScrollRange(state);
     }
 
-    private int computeScrollRange(TimelineView.State state) {
+    private int computeScrollRange(RecyclerView.State state) {
         if (getChildCount() == 0) {
             return 0;
         }
@@ -1127,12 +1119,12 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
     }
 
     @Override
-    public int computeVerticalScrollRange(TimelineView.State state) {
+    public int computeVerticalScrollRange(RecyclerView.State state) {
         return computeScrollRange(state);
     }
 
     private void measureChildWithDecorationsAndMargin(View child, LayoutParams lp,
-            boolean alreadyMeasured) {
+                                                      boolean alreadyMeasured) {
         if (lp.mFullSpan) {
             if (mOrientation == VERTICAL) {
                 measureChildWithDecorationsAndMargin(child, mFullSizeSpec,
@@ -1197,7 +1189,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
     }
 
     private void measureChildWithDecorationsAndMargin(View child, int widthSpec,
-            int heightSpec, boolean alreadyMeasured) {
+                                                      int heightSpec, boolean alreadyMeasured) {
         calculateItemDecorationsForChild(child, mTmpRect);
         LayoutParams lp = (LayoutParams) child.getLayoutParams();
         widthSpec = updateSpecWithExtra(widthSpec, lp.leftMargin + mTmpRect.left,
@@ -1229,10 +1221,6 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
     public void onRestoreInstanceState(Parcelable state) {
         if (state instanceof SavedState) {
             mPendingSavedState = (SavedState) state;
-            if (mPendingScrollPosition != TimelineView.NO_POSITION) {
-                mPendingSavedState.invalidateAnchorPositionInfo();
-                mPendingSavedState.invalidateSpanInfo();
-            }
             requestLayout();
         } else if (DEBUG) {
             Log.d(TAG, "invalid saved state class");
@@ -1279,14 +1267,34 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
                 state.mSpanOffsets[i] = line;
             }
         } else {
-            state.mAnchorPosition = TimelineView.NO_POSITION;
-            state.mVisibleAnchorPosition = TimelineView.NO_POSITION;
+            state.mAnchorPosition = RecyclerView.NO_POSITION;
+            state.mVisibleAnchorPosition = RecyclerView.NO_POSITION;
             state.mSpanOffsetsSize = 0;
         }
         if (DEBUG) {
             Log.d(TAG, "saved state:\n" + state);
         }
         return state;
+    }
+
+    @Override
+    public void onInitializeAccessibilityNodeInfoForItem(RecyclerView.Recycler recycler,
+                                                         RecyclerView.State state, View host, AccessibilityNodeInfoCompat info) {
+        ViewGroup.LayoutParams lp = host.getLayoutParams();
+        if (!(lp instanceof LayoutParams)) {
+            super.onInitializeAccessibilityNodeInfoForItem(host, info);
+            return;
+        }
+        LayoutParams sglp = (LayoutParams) lp;
+        if (mOrientation == HORIZONTAL) {
+            info.setCollectionItemInfo(AccessibilityNodeInfoCompat.CollectionItemInfoCompat.obtain(
+                    sglp.getSpanIndex(), sglp.mFullSpan ? mSpanCount : 1,
+                    -1, -1, false, false));
+        } else { // VERTICAL
+            info.setCollectionItemInfo(AccessibilityNodeInfoCompat.CollectionItemInfoCompat.obtain(
+                    -1, -1,
+                    sglp.getSpanIndex(), sglp.mFullSpan ? mSpanCount : 1, false, false));
+        }
     }
 
     @Override
@@ -1318,7 +1326,25 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
     int findFirstVisibleItemPositionInt() {
         final View first = mShouldReverseLayout ? findFirstVisibleItemClosestToEnd(true) :
                 findFirstVisibleItemClosestToStart(true);
-        return first == null ? TimelineView.NO_POSITION : getPosition(first);
+        return first == null ? RecyclerView.NO_POSITION : getPosition(first);
+    }
+
+    @Override
+    public int getRowCountForAccessibility(RecyclerView.Recycler recycler,
+                                           RecyclerView.State state) {
+        if (mOrientation == HORIZONTAL) {
+            return mSpanCount;
+        }
+        return super.getRowCountForAccessibility(recycler, state);
+    }
+
+    @Override
+    public int getColumnCountForAccessibility(RecyclerView.Recycler recycler,
+                                              RecyclerView.State state) {
+        if (mOrientation == VERTICAL) {
+            return mSpanCount;
+        }
+        return super.getColumnCountForAccessibility(recycler, state);
     }
 
     /**
@@ -1380,7 +1406,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
         return partiallyVisible;
     }
 
-    private void fixEndGap(TimelineView.Recycler recycler, TimelineView.State state,
+    private void fixEndGap(RecyclerView.Recycler recycler, RecyclerView.State state,
                            boolean canOffsetChildren) {
         final int maxEndLine = getMaxEnd(Integer.MIN_VALUE);
         if (maxEndLine == Integer.MIN_VALUE) {
@@ -1399,7 +1425,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
         }
     }
 
-    private void fixStartGap(TimelineView.Recycler recycler, TimelineView.State state,
+    private void fixStartGap(RecyclerView.Recycler recycler, RecyclerView.State state,
                              boolean canOffsetChildren) {
         final int minStartLine = getMinStart(Integer.MAX_VALUE);
         if (minStartLine == Integer.MAX_VALUE) {
@@ -1418,14 +1444,14 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
         }
     }
 
-    private void updateLayoutState(int anchorPosition, TimelineView.State state) {
+    private void updateLayoutState(int anchorPosition, RecyclerView.State state) {
         mLayoutState.mAvailable = 0;
         mLayoutState.mCurrentPosition = anchorPosition;
         int startExtra = 0;
         int endExtra = 0;
         if (isSmoothScrolling()) {
             final int targetPos = state.getTargetScrollPosition();
-            if (targetPos != TimelineView.NO_POSITION) {
+            if (targetPos != RecyclerView.NO_POSITION) {
                 if (mShouldReverseLayout == targetPos < anchorPosition) {
                     endExtra = mPrimaryOrientation.getTotalSpace();
                 } else {
@@ -1472,28 +1498,28 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
     }
 
     @Override
-    public void onItemsRemoved(TimelineView recyclerView, int positionStart, int itemCount) {
+    public void onItemsRemoved(RecyclerView recyclerView, int positionStart, int itemCount) {
         handleUpdate(positionStart, itemCount, AdapterHelper.UpdateOp.REMOVE);
     }
 
     @Override
-    public void onItemsAdded(TimelineView recyclerView, int positionStart, int itemCount) {
+    public void onItemsAdded(RecyclerView recyclerView, int positionStart, int itemCount) {
         handleUpdate(positionStart, itemCount, AdapterHelper.UpdateOp.ADD);
     }
 
     @Override
-    public void onItemsChanged(TimelineView recyclerView) {
+    public void onItemsChanged(RecyclerView recyclerView) {
         mLazySpanLookup.clear();
         requestLayout();
     }
 
     @Override
-    public void onItemsMoved(TimelineView recyclerView, int from, int to, int itemCount) {
+    public void onItemsMoved(RecyclerView recyclerView, int from, int to, int itemCount) {
         handleUpdate(from, to, AdapterHelper.UpdateOp.MOVE);
     }
 
     @Override
-    public void onItemsUpdated(TimelineView recyclerView, int positionStart, int itemCount,
+    public void onItemsUpdated(RecyclerView recyclerView, int positionStart, int itemCount,
                                Object payload) {
         handleUpdate(positionStart, itemCount, AdapterHelper.UpdateOp.UPDATE);
     }
@@ -1544,8 +1570,8 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
         }
     }
 
-    private int fill(TimelineView.Recycler recycler, LayoutState layoutState,
-                     TimelineView.State state) {
+    private int fill(RecyclerView.Recycler recycler, LayoutState layoutState,
+                     RecyclerView.State state) {
         mRemainingSpans.set(0, mSpanCount, true);
         // The target position we are trying to reach.
         final int targetLine;
@@ -1663,7 +1689,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
             } else {
                 otherStart = lp.mFullSpan ? mSecondaryOrientation.getStartAfterPadding()
                         : currentSpan.mIndex * mSizePerSpan
-                                + mSecondaryOrientation.getStartAfterPadding();
+                        + mSecondaryOrientation.getStartAfterPadding();
                 otherEnd = otherStart + mSecondaryOrientation.getDecoratedMeasurement(view);
             }
 
@@ -1736,7 +1762,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
         }
     }
 
-    private void recycle(TimelineView.Recycler recycler, LayoutState layoutState) {
+    private void recycle(RecyclerView.Recycler recycler, LayoutState layoutState) {
         if (!layoutState.mRecycle || layoutState.mInfinite) {
             return;
         }
@@ -1877,7 +1903,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
         return minEnd;
     }
 
-    private void recycleFromStart(TimelineView.Recycler recycler, int line) {
+    private void recycleFromStart(RecyclerView.Recycler recycler, int line) {
         while (getChildCount() > 0) {
             View child = getChildAt(0);
             if (mPrimaryOrientation.getDecoratedEnd(child) <= line
@@ -1906,7 +1932,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
         }
     }
 
-    private void recycleFromEnd(TimelineView.Recycler recycler, int line) {
+    private void recycleFromEnd(RecyclerView.Recycler recycler, int line) {
         final int childCount = getChildCount();
         int i;
         for (i = childCount - 1; i >= 0; i--) {
@@ -2002,14 +2028,14 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
     }
 
     @Override
-    public int scrollHorizontallyBy(int dx, TimelineView.Recycler recycler,
-                                    TimelineView.State state) {
+    public int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler,
+                                    RecyclerView.State state) {
         return scrollBy(dx, recycler, state);
     }
 
     @Override
-    public int scrollVerticallyBy(int dy, TimelineView.Recycler recycler,
-                                  TimelineView.State state) {
+    public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler,
+                                  RecyclerView.State state) {
         return scrollBy(dy, recycler, state);
     }
 
@@ -2039,7 +2065,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
     }
 
     @Override
-    public void smoothScrollToPosition(TimelineView recyclerView, TimelineView.State state,
+    public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state,
                                        int position) {
         LinearSmoothScroller scroller = new LinearSmoothScroller(recyclerView.getContext());
         scroller.setTargetPosition(position);
@@ -2081,7 +2107,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
     /** @hide */
     @Override
     @RestrictTo(LIBRARY)
-    public void collectAdjacentPrefetchPositions(int dx, int dy, TimelineView.State state,
+    public void collectAdjacentPrefetchPositions(int dx, int dy, RecyclerView.State state,
                                                  LayoutPrefetchRegistry layoutPrefetchRegistry) {
         /* This method uses the simplifying assumption that the next N items (where N = span count)
          * will be assigned, one-to-one, to spans, where ordering is based on which span  extends
@@ -2128,7 +2154,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
         }
     }
 
-    void prepareLayoutStateForDelta(int delta, TimelineView.State state) {
+    void prepareLayoutStateForDelta(int delta, RecyclerView.State state) {
         final int referenceChildPosition;
         final int layoutDir;
         if (delta > 0) { // layout towards end
@@ -2145,7 +2171,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
         mLayoutState.mAvailable = Math.abs(delta);
     }
 
-    int scrollBy(int dt, TimelineView.Recycler recycler, TimelineView.State state) {
+    int scrollBy(int dt, RecyclerView.Recycler recycler, RecyclerView.State state) {
         if (getChildCount() == 0 || dt == 0) {
             return 0;
         }
@@ -2218,7 +2244,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
 
     @SuppressWarnings("deprecation")
     @Override
-    public TimelineView.LayoutParams generateDefaultLayoutParams() {
+    public RecyclerView.LayoutParams generateDefaultLayoutParams() {
         if (mOrientation == HORIZONTAL) {
             return new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);
@@ -2229,12 +2255,12 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
     }
 
     @Override
-    public TimelineView.LayoutParams generateLayoutParams(Context c, AttributeSet attrs) {
+    public RecyclerView.LayoutParams generateLayoutParams(Context c, AttributeSet attrs) {
         return new LayoutParams(c, attrs);
     }
 
     @Override
-    public TimelineView.LayoutParams generateLayoutParams(ViewGroup.LayoutParams lp) {
+    public RecyclerView.LayoutParams generateLayoutParams(ViewGroup.LayoutParams lp) {
         if (lp instanceof ViewGroup.MarginLayoutParams) {
             return new LayoutParams((ViewGroup.MarginLayoutParams) lp);
         } else {
@@ -2243,7 +2269,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
     }
 
     @Override
-    public boolean checkLayoutParams(TimelineView.LayoutParams lp) {
+    public boolean checkLayoutParams(RecyclerView.LayoutParams lp) {
         return lp instanceof LayoutParams;
     }
 
@@ -2253,8 +2279,8 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
 
     @Nullable
     @Override
-    public View onFocusSearchFailed(View focused, int direction, TimelineView.Recycler recycler,
-                                    TimelineView.State state) {
+    public View onFocusSearchFailed(View focused, int direction, RecyclerView.Recycler recycler,
+                                    RecyclerView.State state) {
         if (getChildCount() == 0) {
             return null;
         }
@@ -2408,7 +2434,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
      * orientation is {@link #HORIZONTAL} the height parameter is ignored because child view is
      * expected to fill all of the space given to it.
      */
-    public static class LayoutParams extends TimelineView.LayoutParams {
+    public static class LayoutParams extends RecyclerView.LayoutParams {
 
         /**
          * Span Id for Views that are not laid out yet.
@@ -2436,7 +2462,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
             super(source);
         }
 
-        public LayoutParams(TimelineView.LayoutParams source) {
+        public LayoutParams(RecyclerView.LayoutParams source) {
             super(source);
         }
 
@@ -2708,7 +2734,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
          * inclusion is enough to consider it partially visible. The latter case can then refer to
          * an out-of-bounds view positioned right at the top (or bottom) boundaries of RV's padded
          * area. This is used e.g. inside
-         * {@link #onFocusSearchFailed(View, int, TimelineView.Recycler, TimelineView.State)} for
+         * {@link #onFocusSearchFailed(View, int, RecyclerView.Recycler, RecyclerView.State)} for
          * calculating the next unfocusable child to become visible on the screen.
          * @param fromIndex The child position index to start the search from.
          * @param toIndex The child position index to end the search at.
@@ -2721,12 +2747,12 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
          *                                bounded area is enough to consider it partially visible,
          *                                false otherwise
          * @return The adapter position of the first view that's either partially or fully visible.
-         * {@link TimelineView#NO_POSITION} if no such view is found.
+         * {@link RecyclerView#NO_POSITION} if no such view is found.
          */
         int findOnePartiallyOrCompletelyVisibleChild(int fromIndex, int toIndex,
-                boolean completelyVisible,
-                boolean acceptCompletelyVisible,
-                boolean acceptEndPointInclusion) {
+                                                     boolean completelyVisible,
+                                                     boolean acceptCompletelyVisible,
+                                                     boolean acceptEndPointInclusion) {
             final int start = mPrimaryOrientation.getStartAfterPadding();
             final int end = mPrimaryOrientation.getEndAfterPadding();
             final int next = toIndex > fromIndex ? 1 : -1;
@@ -2754,7 +2780,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
                     }
                 }
             }
-            return TimelineView.NO_POSITION;
+            return RecyclerView.NO_POSITION;
         }
 
         int findOneVisibleChild(int fromIndex, int toIndex, boolean completelyVisible) {
@@ -2763,7 +2789,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
         }
 
         int findOnePartiallyVisibleChild(int fromIndex, int toIndex,
-                boolean acceptEndPointInclusion) {
+                                         boolean acceptEndPointInclusion) {
             return findOnePartiallyOrCompletelyVisibleChild(fromIndex, toIndex, false, false,
                     acceptEndPointInclusion);
         }
@@ -2836,21 +2862,19 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
          */
         int invalidateAfter(int position) {
             if (mData == null) {
-                return TimelineView.NO_POSITION;
+                return RecyclerView.NO_POSITION;
             }
             if (position >= mData.length) {
-                return TimelineView.NO_POSITION;
+                return RecyclerView.NO_POSITION;
             }
             int endPosition = invalidateFullSpansAfter(position);
-            if (endPosition == TimelineView.NO_POSITION) {
+            if (endPosition == RecyclerView.NO_POSITION) {
                 Arrays.fill(mData, position, mData.length, LayoutParams.INVALID_SPAN_ID);
                 return mData.length;
             } else {
-                // Just invalidate items in between `position` and the next full span item, or the
-                // end of the tracked spans in mData if it's not been lengthened yet.
-                final int invalidateToIndex = Math.min(endPosition + 1, mData.length);
-                Arrays.fill(mData, position, invalidateToIndex, LayoutParams.INVALID_SPAN_ID);
-                return invalidateToIndex;
+                // just invalidate items in between
+                Arrays.fill(mData, position, endPosition + 1, LayoutParams.INVALID_SPAN_ID);
+                return endPosition + 1;
             }
         }
 
@@ -2955,7 +2979,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
          */
         private int invalidateFullSpansAfter(int position) {
             if (mFullSpanItems == null) {
-                return TimelineView.NO_POSITION;
+                return RecyclerView.NO_POSITION;
             }
             final FullSpanItem item = getFullSpanItem(position);
             // if there is an fsi at this position, get rid of it.
@@ -2976,7 +3000,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
                 mFullSpanItems.remove(nextFsiIndex);
                 return fsi.mPosition;
             }
-            return TimelineView.NO_POSITION;
+            return RecyclerView.NO_POSITION;
         }
 
         public void addFullSpanItem(FullSpanItem fullSpanItem) {
@@ -3023,7 +3047,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
          *                        returned even if its gap direction does not match.
          */
         public FullSpanItem getFirstFullSpanItemInRange(int minPos, int maxPos, int gapDir,
-                boolean hasUnwantedGapAfter) {
+                                                        boolean hasUnwantedGapAfter) {
             if (mFullSpanItems == null) {
                 return null;
             }
@@ -3185,8 +3209,8 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
         void invalidateAnchorPositionInfo() {
             mSpanOffsets = null;
             mSpanOffsetsSize = 0;
-            mAnchorPosition = TimelineView.NO_POSITION;
-            mVisibleAnchorPosition = TimelineView.NO_POSITION;
+            mAnchorPosition = RecyclerView.NO_POSITION;
+            mVisibleAnchorPosition = RecyclerView.NO_POSITION;
         }
 
         @Override
@@ -3245,7 +3269,7 @@ public class StaggeredGridLayoutManager extends TimelineView.LayoutManager imple
         }
 
         void reset() {
-            mPosition = TimelineView.NO_POSITION;
+            mPosition = RecyclerView.NO_POSITION;
             mOffset = INVALID_OFFSET;
             mLayoutFromEnd = false;
             mInvalidateOffsets = false;

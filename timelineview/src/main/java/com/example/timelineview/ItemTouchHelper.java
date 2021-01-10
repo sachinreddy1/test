@@ -34,12 +34,11 @@ import android.view.animation.Interpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
 import androidx.core.view.GestureDetectorCompat;
 import androidx.core.view.ViewCompat;
 
-import com.example.timelineview.TimelineView.OnItemTouchListener;
-import com.example.timelineview.TimelineView.ViewHolder;
+import com.example.timelineview.RecyclerView.OnItemTouchListener;
+import com.example.timelineview.RecyclerView.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +50,7 @@ import java.util.List;
  * are enabled and also receives events when user performs these actions.
  * <p>
  * Depending on which functionality you support, you should override
- * {@link Callback#onMove(TimelineView, ViewHolder, ViewHolder)} and / or
+ * {@link Callback#onMove(RecyclerView, ViewHolder, ViewHolder)} and / or
  * {@link Callback#onSwiped(ViewHolder, int)}.
  * <p>
  * This class is designed to work with any LayoutManager but for certain situations, it can be
@@ -60,15 +59,15 @@ import java.util.List;
  * interface in your LayoutManager.
  * <p>
  * By default, ItemTouchHelper moves the items' translateX/Y properties to reposition them. You can
- * customize these behaviors by overriding {@link Callback#onChildDraw(Canvas, TimelineView,
+ * customize these behaviors by overriding {@link Callback#onChildDraw(Canvas, RecyclerView,
  * ViewHolder, float, float, int, boolean)}
- * or {@link Callback#onChildDrawOver(Canvas, TimelineView, ViewHolder, float, float, int,
+ * or {@link Callback#onChildDrawOver(Canvas, RecyclerView, ViewHolder, float, float, int,
  * boolean)}.
  * <p/>
  * Most of the time you only need to override <code>onChildDraw</code>.
  */
-public class ItemTouchHelper extends TimelineView.ItemDecoration
-        implements TimelineView.OnChildAttachStateChangeListener {
+public class ItemTouchHelper extends RecyclerView.ItemDecoration
+        implements RecyclerView.OnChildAttachStateChangeListener {
 
     /**
      * Up direction, used for swipe & drag control.
@@ -176,7 +175,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
      * Currently selected view holder
      */
     @SuppressWarnings("WeakerAccess") /* synthetic access */
-    ViewHolder mSelected = null;
+            ViewHolder mSelected = null;
 
     /**
      * The reference coordinates for the action start. For drag & drop, this is the time long
@@ -216,7 +215,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
      * The pointer we are tracking.
      */
     @SuppressWarnings("WeakerAccess") /* synthetic access */
-    int mActivePointerId = ACTIVE_POINTER_ID_NONE;
+            int mActivePointerId = ACTIVE_POINTER_ID_NONE;
 
     /**
      * Developer callback which controls the behavior of ItemTouchHelper.
@@ -231,11 +230,11 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
 
     /**
      * The direction flags obtained from unmasking
-     * {@link Callback#getAbsoluteMovementFlags(TimelineView, ViewHolder)} for the current
+     * {@link Callback#getAbsoluteMovementFlags(RecyclerView, ViewHolder)} for the current
      * action state.
      */
     @SuppressWarnings("WeakerAccess") /* synthetic access */
-    int mSelectedFlags;
+            int mSelectedFlags;
 
     /**
      * When a View is dragged or swiped and needs to go back to where it was, we create a Recover
@@ -244,12 +243,11 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
      * Using framework animators has the side effect of clashing with ItemAnimator, creating
      * jumpy UIs.
      */
-    @VisibleForTesting
     List<RecoverAnimation> mRecoverAnimations = new ArrayList<>();
 
     private int mSlop;
 
-    TimelineView mRecyclerView;
+    RecyclerView mRecyclerView;
 
     /**
      * When user drags a view to the edge, we start scrolling the LayoutManager as long as View
@@ -283,7 +281,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
     /**
      * If drag & drop is supported, we use child drawing order to bring them to front.
      */
-    private TimelineView.ChildDrawingOrderCallback mChildDrawingOrderCallback = null;
+    private RecyclerView.ChildDrawingOrderCallback mChildDrawingOrderCallback = null;
 
     /**
      * This keeps a reference to the child dragged by the user. Even after user stops dragging,
@@ -291,7 +289,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
      * that it can be drawn above other children.
      */
     @SuppressWarnings("WeakerAccess") /* synthetic access */
-    View mOverdrawChild = null;
+            View mOverdrawChild = null;
 
     /**
      * We cache the position of the overdraw child to avoid recalculating it each time child
@@ -299,13 +297,13 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
      * detached.
      */
     @SuppressWarnings("WeakerAccess") /* synthetic access */
-    int mOverdrawChildPosition = -1;
+            int mOverdrawChildPosition = -1;
 
     /**
      * Used to detect long press.
      */
     @SuppressWarnings("WeakerAccess") /* synthetic access */
-    GestureDetectorCompat mGestureDetector;
+            GestureDetectorCompat mGestureDetector;
 
     /**
      * Callback for when long press occurs.
@@ -314,8 +312,8 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
 
     private final OnItemTouchListener mOnItemTouchListener = new OnItemTouchListener() {
         @Override
-        public boolean onInterceptTouchEvent(@NonNull TimelineView recyclerView,
-                @NonNull MotionEvent event) {
+        public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView,
+                                             @NonNull MotionEvent event) {
             mGestureDetector.onTouchEvent(event);
             if (DEBUG) {
                 Log.d(TAG, "intercept: x:" + event.getX() + ",y:" + event.getY() + ", " + event);
@@ -360,7 +358,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
         }
 
         @Override
-        public void onTouchEvent(@NonNull TimelineView recyclerView, @NonNull MotionEvent event) {
+        public void onTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent event) {
             mGestureDetector.onTouchEvent(event);
             if (DEBUG) {
                 Log.d(TAG,
@@ -440,7 +438,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
      * Creates an ItemTouchHelper that will work with the given Callback.
      * <p>
      * You can attach ItemTouchHelper to a RecyclerView via
-     * {@link #attachToRecyclerView(TimelineView)}. Upon attaching, it will add an item decoration,
+     * {@link #attachToRecyclerView(RecyclerView)}. Upon attaching, it will add an item decoration,
      * an onItemTouchListener and a Child attach / detach listener to the RecyclerView.
      *
      * @param callback The Callback which controls the behavior of this touch helper.
@@ -465,7 +463,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
      *                     {@code null} if you want to remove ItemTouchHelper from the current
      *                     RecyclerView.
      */
-    public void attachToRecyclerView(@Nullable TimelineView recyclerView) {
+    public void attachToRecyclerView(@Nullable RecyclerView recyclerView) {
         if (mRecyclerView == recyclerView) {
             return; // nothing to do
         }
@@ -500,7 +498,6 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
         final int recoverAnimSize = mRecoverAnimations.size();
         for (int i = recoverAnimSize - 1; i >= 0; i--) {
             final RecoverAnimation recoverAnimation = mRecoverAnimations.get(0);
-            recoverAnimation.cancel();
             mCallback.clearView(mRecyclerView, recoverAnimation.mViewHolder);
         }
         mRecoverAnimations.clear();
@@ -540,7 +537,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
     }
 
     @Override
-    public void onDrawOver(Canvas c, TimelineView parent, TimelineView.State state) {
+    public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
         float dx = 0, dy = 0;
         if (mSelected != null) {
             getSelectedDxDy(mTmpPosition);
@@ -552,7 +549,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
     }
 
     @Override
-    public void onDraw(Canvas c, TimelineView parent, TimelineView.State state) {
+    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         // we don't know if RV changed something so we should invalidate this index.
         mOverdrawChildPosition = -1;
         float dx = 0, dy = 0;
@@ -705,9 +702,8 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
             public void run() {
                 if (mRecyclerView != null && mRecyclerView.isAttachedToWindow()
                         && !anim.mOverridden
-                        && anim.mViewHolder.getAbsoluteAdapterPosition()
-                        != TimelineView.NO_POSITION) {
-                    final TimelineView.ItemAnimator animator = mRecyclerView.getItemAnimator();
+                        && anim.mViewHolder.getAdapterPosition() != RecyclerView.NO_POSITION) {
+                    final RecyclerView.ItemAnimator animator = mRecyclerView.getItemAnimator();
                     // if animator is running or we have other active recover animations, we try
                     // not to call onSwiped because DefaultItemAnimator is not good at merging
                     // animations. Instead, we wait and batch.
@@ -745,7 +741,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
         final long now = System.currentTimeMillis();
         final long scrollDuration = mDragScrollStartTimeInMs
                 == Long.MIN_VALUE ? 0 : now - mDragScrollStartTimeInMs;
-        TimelineView.LayoutManager lm = mRecyclerView.getLayoutManager();
+        RecyclerView.LayoutManager lm = mRecyclerView.getLayoutManager();
         if (mTmpRect == null) {
             mTmpRect = new Rect();
         }
@@ -815,7 +811,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
         final int bottom = top + viewHolder.itemView.getHeight() + 2 * margin;
         final int centerX = (left + right) / 2;
         final int centerY = (top + bottom) / 2;
-        final TimelineView.LayoutManager lm = mRecyclerView.getLayoutManager();
+        final RecyclerView.LayoutManager lm = mRecyclerView.getLayoutManager();
         final int childCount = lm.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View other = lm.getChildAt(i);
@@ -880,8 +876,8 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
             mDistances.clear();
             return;
         }
-        final int toPosition = target.getAbsoluteAdapterPosition();
-        final int fromPosition = viewHolder.getAbsoluteAdapterPosition();
+        final int toPosition = target.getAdapterPosition();
+        final int fromPosition = viewHolder.getAdapterPosition();
         if (mCallback.onMove(mRecyclerView, viewHolder, target)) {
             // keep target visible
             mCallback.onMoved(mRecyclerView, viewHolder, fromPosition,
@@ -930,8 +926,8 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
     }
 
     @Override
-    public void getItemOffsets(Rect outRect, View view, TimelineView parent,
-                               TimelineView.State state) {
+    public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
+                               RecyclerView.State state) {
         outRect.setEmpty();
     }
 
@@ -951,7 +947,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
     }
 
     private ViewHolder findSwipedView(MotionEvent motionEvent) {
-        final TimelineView.LayoutManager lm = mRecyclerView.getLayoutManager();
+        final RecyclerView.LayoutManager lm = mRecyclerView.getLayoutManager();
         if (mActivePointerId == ACTIVE_POINTER_ID_NONE) {
             return null;
         }
@@ -985,7 +981,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
                 || mActionState == ACTION_STATE_DRAG || !mCallback.isItemViewSwipeEnabled()) {
             return;
         }
-        if (mRecyclerView.getScrollState() == TimelineView.SCROLL_STATE_DRAGGING) {
+        if (mRecyclerView.getScrollState() == RecyclerView.SCROLL_STATE_DRAGGING) {
             return;
         }
         final ViewHolder vh = findSwipedView(motionEvent);
@@ -1295,7 +1291,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
             return; // we use elevation on Lollipop
         }
         if (mChildDrawingOrderCallback == null) {
-            mChildDrawingOrderCallback = new TimelineView.ChildDrawingOrderCallback() {
+            mChildDrawingOrderCallback = new RecyclerView.ChildDrawingOrderCallback() {
                 @Override
                 public int onGetChildDrawingOrder(int childCount, int i) {
                     if (mOverdrawChild == null) {
@@ -1361,20 +1357,20 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
      * performs these actions.
      * <p>
      * To control which actions user can take on each view, you should override
-     * {@link #getMovementFlags(TimelineView, ViewHolder)} and return appropriate set
+     * {@link #getMovementFlags(RecyclerView, ViewHolder)} and return appropriate set
      * of direction flags. ({@link #LEFT}, {@link #RIGHT}, {@link #START}, {@link #END},
      * {@link #UP}, {@link #DOWN}). You can use
      * {@link #makeMovementFlags(int, int)} to easily construct it. Alternatively, you can use
      * {@link SimpleCallback}.
      * <p>
      * If user drags an item, ItemTouchHelper will call
-     * {@link Callback#onMove(TimelineView, ViewHolder, ViewHolder)
+     * {@link Callback#onMove(RecyclerView, ViewHolder, ViewHolder)
      * onMove(recyclerView, dragged, target)}.
      * Upon receiving this callback, you should move the item from the old position
      * ({@code dragged.getAdapterPosition()}) to new position ({@code target.getAdapterPosition()})
-     * in your adapter and also call {@link TimelineView.Adapter#notifyItemMoved(int, int)}.
+     * in your adapter and also call {@link RecyclerView.Adapter#notifyItemMoved(int, int)}.
      * To control where a View can be dropped, you can override
-     * {@link #canDropOver(TimelineView, ViewHolder, ViewHolder)}. When a
+     * {@link #canDropOver(RecyclerView, ViewHolder, ViewHolder)}. When a
      * dragging View overlaps multiple other views, Callback chooses the closest View with which
      * dragged View might have changed positions. Although this approach works for many use cases,
      * if you have a custom LayoutManager, you can override
@@ -1431,7 +1427,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
          * implementations for different platform versions.
          * <p>
          * By default, {@link Callback} applies these changes on
-         * {@link TimelineView.ViewHolder#itemView}.
+         * {@link RecyclerView.ViewHolder#itemView}.
          * <p>
          * For example, if you have a use case where you only want the text to move when user
          * swipes over the view, you can do the following:
@@ -1560,8 +1556,8 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
          * @see #makeMovementFlags(int, int)
          * @see #makeFlag(int, int)
          */
-        public abstract int getMovementFlags(@NonNull TimelineView recyclerView,
-                @NonNull ViewHolder viewHolder);
+        public abstract int getMovementFlags(@NonNull RecyclerView recyclerView,
+                                             @NonNull ViewHolder viewHolder);
 
         /**
          * Converts a given set of flags to absolution direction which means {@link #START} and
@@ -1592,18 +1588,18 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
             return flags;
         }
 
-        final int getAbsoluteMovementFlags(TimelineView recyclerView,
+        final int getAbsoluteMovementFlags(RecyclerView recyclerView,
                                            ViewHolder viewHolder) {
             final int flags = getMovementFlags(recyclerView, viewHolder);
             return convertToAbsoluteDirection(flags, ViewCompat.getLayoutDirection(recyclerView));
         }
 
-        boolean hasDragFlag(TimelineView recyclerView, ViewHolder viewHolder) {
+        boolean hasDragFlag(RecyclerView recyclerView, ViewHolder viewHolder) {
             final int flags = getAbsoluteMovementFlags(recyclerView, viewHolder);
             return (flags & ACTION_MODE_DRAG_MASK) != 0;
         }
 
-        boolean hasSwipeFlag(TimelineView recyclerView,
+        boolean hasSwipeFlag(RecyclerView recyclerView,
                              ViewHolder viewHolder) {
             final int flags = getAbsoluteMovementFlags(recyclerView, viewHolder);
             return (flags & ACTION_MODE_SWIPE_MASK) != 0;
@@ -1625,7 +1621,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
          * otherwise.
          */
         @SuppressWarnings("WeakerAccess")
-        public boolean canDropOver(@NonNull TimelineView recyclerView, @NonNull ViewHolder current,
+        public boolean canDropOver(@NonNull RecyclerView recyclerView, @NonNull ViewHolder current,
                                    @NonNull ViewHolder target) {
             return true;
         }
@@ -1636,8 +1632,8 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
          * <p>
          * If this method returns true, ItemTouchHelper assumes {@code viewHolder} has been moved
          * to the adapter position of {@code target} ViewHolder
-         * ({@link ViewHolder#getAbsoluteAdapterPosition()
-         * ViewHolder#getAdapterPositionInRecyclerView()}).
+         * ({@link ViewHolder#getAdapterPosition()
+         * ViewHolder#getAdapterPosition()}).
          * <p>
          * If you don't support drag & drop, this method will never be called.
          *
@@ -1647,10 +1643,10 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
          *                     dragged.
          * @return True if the {@code viewHolder} has been moved to the adapter position of
          * {@code target}.
-         * @see #onMoved(TimelineView, ViewHolder, int, ViewHolder, int, int, int)
+         * @see #onMoved(RecyclerView, ViewHolder, int, ViewHolder, int, int, int)
          */
-        public abstract boolean onMove(@NonNull TimelineView recyclerView,
-                @NonNull ViewHolder viewHolder, @NonNull ViewHolder target);
+        public abstract boolean onMove(@NonNull RecyclerView recyclerView,
+                                       @NonNull ViewHolder viewHolder, @NonNull ViewHolder target);
 
         /**
          * Returns whether ItemTouchHelper should start a drag and drop operation if an item is
@@ -1793,16 +1789,16 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
          *                    candidate as a drop.
          * @param curX        The updated left value of the dragged View after drag translations
          *                    are applied. This value does not include margins added by
-         *                    {@link TimelineView.ItemDecoration}s.
+         *                    {@link RecyclerView.ItemDecoration}s.
          * @param curY        The updated top value of the dragged View after drag translations
          *                    are applied. This value does not include margins added by
-         *                    {@link TimelineView.ItemDecoration}s.
+         *                    {@link RecyclerView.ItemDecoration}s.
          * @return A ViewHolder to whose position the dragged ViewHolder should be
          * moved to.
          */
         @SuppressWarnings("WeakerAccess")
         public ViewHolder chooseDropTarget(@NonNull ViewHolder selected,
-                @NonNull List<ViewHolder> dropTargets, int curX, int curY) {
+                                           @NonNull List<ViewHolder> dropTargets, int curX, int curY) {
             int right = curX + selected.itemView.getWidth();
             int bottom = curY + selected.itemView.getHeight();
             ViewHolder winner = null;
@@ -1861,7 +1857,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
          * Called when a ViewHolder is swiped by the user.
          * <p>
          * If you are returning relative directions ({@link #START} , {@link #END}) from the
-         * {@link #getMovementFlags(TimelineView, ViewHolder)} method, this method
+         * {@link #getMovementFlags(RecyclerView, ViewHolder)} method, this method
          * will also use relative directions. Otherwise, it will use absolute directions.
          * <p>
          * If you don't support swiping, this method will never be called.
@@ -1869,13 +1865,13 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
          * ItemTouchHelper will keep a reference to the View until it is detached from
          * RecyclerView.
          * As soon as it is detached, ItemTouchHelper will call
-         * {@link #clearView(TimelineView, ViewHolder)}.
+         * {@link #clearView(RecyclerView, ViewHolder)}.
          *
          * @param viewHolder The ViewHolder which has been swiped by the user.
          * @param direction  The direction to which the ViewHolder is swiped. It is one of
          *                   {@link #UP}, {@link #DOWN},
          *                   {@link #LEFT} or {@link #RIGHT}. If your
-         *                   {@link #getMovementFlags(TimelineView, ViewHolder)}
+         *                   {@link #getMovementFlags(RecyclerView, ViewHolder)}
          *                   method
          *                   returned relative flags instead of {@link #LEFT} / {@link #RIGHT};
          *                   `direction` will be relative as well. ({@link #START} or {@link
@@ -1893,7 +1889,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
          * @param actionState One of {@link ItemTouchHelper#ACTION_STATE_IDLE},
          *                    {@link ItemTouchHelper#ACTION_STATE_SWIPE} or
          *                    {@link ItemTouchHelper#ACTION_STATE_DRAG}.
-         * @see #clearView(TimelineView, TimelineView.ViewHolder)
+         * @see #clearView(RecyclerView, RecyclerView.ViewHolder)
          */
         public void onSelectedChanged(@Nullable ViewHolder viewHolder, int actionState) {
             if (viewHolder != null) {
@@ -1901,7 +1897,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
             }
         }
 
-        private int getMaxDragScroll(TimelineView recyclerView) {
+        private int getMaxDragScroll(RecyclerView recyclerView) {
             if (mCachedMaxScrollSpeed == -1) {
                 mCachedMaxScrollSpeed = recyclerView.getResources().getDimensionPixelSize(
                         R.dimen.item_touch_helper_max_drag_scroll_per_frame);
@@ -1910,7 +1906,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
         }
 
         /**
-         * Called when {@link #onMove(TimelineView, ViewHolder, ViewHolder)} returns true.
+         * Called when {@link #onMove(RecyclerView, ViewHolder, ViewHolder)} returns true.
          * <p>
          * ItemTouchHelper does not create an extra Bitmap or View while dragging, instead, it
          * modifies the existing View. Because of this reason, it is important that the View is
@@ -1922,7 +1918,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
          * keep the View in visible area. For example, for LinearLayoutManager, this is as simple
          * as calling {@link LinearLayoutManager#scrollToPositionWithOffset(int, int)}.
          *
-         * Default implementation calls {@link TimelineView#scrollToPosition(int)} if the View's
+         * Default implementation calls {@link RecyclerView#scrollToPosition(int)} if the View's
          * new position is likely to be out of bounds.
          * <p>
          * It is important to ensure the ViewHolder will stay visible as otherwise, it might be
@@ -1937,15 +1933,15 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
          * @param toPos        The new adapter position of the dragged item.
          * @param x            The updated left value of the dragged View after drag translations
          *                     are applied. This value does not include margins added by
-         *                     {@link TimelineView.ItemDecoration}s.
+         *                     {@link RecyclerView.ItemDecoration}s.
          * @param y            The updated top value of the dragged View after drag translations
          *                     are applied. This value does not include margins added by
-         *                     {@link TimelineView.ItemDecoration}s.
+         *                     {@link RecyclerView.ItemDecoration}s.
          */
-        public void onMoved(@NonNull final TimelineView recyclerView,
-                @NonNull final ViewHolder viewHolder, int fromPos, @NonNull final ViewHolder target,
-                int toPos, int x, int y) {
-            final TimelineView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        public void onMoved(@NonNull final RecyclerView recyclerView,
+                            @NonNull final ViewHolder viewHolder, int fromPos, @NonNull final ViewHolder target,
+                            int toPos, int x, int y) {
+            final RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
             if (layoutManager instanceof ViewDropHandler) {
                 ((ViewDropHandler) layoutManager).prepareForDrop(viewHolder.itemView,
                         target.itemView, x, y);
@@ -1976,7 +1972,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
             }
         }
 
-        void onDraw(Canvas c, TimelineView parent, ViewHolder selected,
+        void onDraw(Canvas c, RecyclerView parent, ViewHolder selected,
                     List<ItemTouchHelper.RecoverAnimation> recoverAnimationList,
                     int actionState, float dX, float dY) {
             final int recoverAnimSize = recoverAnimationList.size();
@@ -1995,7 +1991,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
             }
         }
 
-        void onDrawOver(Canvas c, TimelineView parent, ViewHolder selected,
+        void onDrawOver(Canvas c, RecyclerView parent, ViewHolder selected,
                         List<ItemTouchHelper.RecoverAnimation> recoverAnimationList,
                         int actionState, float dX, float dY) {
             final int recoverAnimSize = recoverAnimationList.size();
@@ -2030,15 +2026,15 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
          * also completed its animation.
          * <p>
          * This is a good place to clear all changes on the View that was done in
-         * {@link #onSelectedChanged(TimelineView.ViewHolder, int)},
-         * {@link #onChildDraw(Canvas, TimelineView, ViewHolder, float, float, int,
+         * {@link #onSelectedChanged(RecyclerView.ViewHolder, int)},
+         * {@link #onChildDraw(Canvas, RecyclerView, ViewHolder, float, float, int,
          * boolean)} or
-         * {@link #onChildDrawOver(Canvas, TimelineView, ViewHolder, float, float, int, boolean)}.
+         * {@link #onChildDrawOver(Canvas, RecyclerView, ViewHolder, float, float, int, boolean)}.
          *
          * @param recyclerView The RecyclerView which is controlled by the ItemTouchHelper.
          * @param viewHolder   The View that was interacted by the user.
          */
-        public void clearView(@NonNull TimelineView recyclerView, @NonNull ViewHolder viewHolder) {
+        public void clearView(@NonNull RecyclerView recyclerView, @NonNull ViewHolder viewHolder) {
             ItemTouchUIUtilImpl.INSTANCE.clearView(viewHolder.itemView);
         }
 
@@ -2066,12 +2062,12 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
          *                          #ACTION_STATE_DRAG} or {@link #ACTION_STATE_SWIPE}.
          * @param isCurrentlyActive True if this view is currently being controlled by the user or
          *                          false it is simply animating back to its original state.
-         * @see #onChildDrawOver(Canvas, TimelineView, ViewHolder, float, float, int,
+         * @see #onChildDrawOver(Canvas, RecyclerView, ViewHolder, float, float, int,
          * boolean)
          */
-        public void onChildDraw(@NonNull Canvas c, @NonNull TimelineView recyclerView,
-                @NonNull ViewHolder viewHolder,
-                float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
+                                @NonNull ViewHolder viewHolder,
+                                float dX, float dY, int actionState, boolean isCurrentlyActive) {
             ItemTouchUIUtilImpl.INSTANCE.onDraw(c, recyclerView, viewHolder.itemView, dX, dY,
                     actionState, isCurrentlyActive);
         }
@@ -2100,12 +2096,12 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
          *                          #ACTION_STATE_DRAG} or {@link #ACTION_STATE_SWIPE}.
          * @param isCurrentlyActive True if this view is currently being controlled by the user or
          *                          false it is simply animating back to its original state.
-         * @see #onChildDrawOver(Canvas, TimelineView, ViewHolder, float, float, int,
+         * @see #onChildDrawOver(Canvas, RecyclerView, ViewHolder, float, float, int,
          * boolean)
          */
-        public void onChildDrawOver(@NonNull Canvas c, @NonNull TimelineView recyclerView,
-                ViewHolder viewHolder,
-                float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        public void onChildDrawOver(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
+                                    ViewHolder viewHolder,
+                                    float dX, float dY, int actionState, boolean isCurrentlyActive) {
             ItemTouchUIUtilImpl.INSTANCE.onDrawOver(c, recyclerView, viewHolder.itemView, dX, dY,
                     actionState, isCurrentlyActive);
         }
@@ -2116,9 +2112,9 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
          * <p>
          * Default implementation uses ItemAnimator's duration values. If
          * <code>animationType</code> is {@link #ANIMATION_TYPE_DRAG}, it returns
-         * {@link TimelineView.ItemAnimator#getMoveDuration()}, otherwise, it returns
-         * {@link TimelineView.ItemAnimator#getRemoveDuration()}. If RecyclerView does not have
-         * any {@link TimelineView.ItemAnimator} attached, this method returns
+         * {@link RecyclerView.ItemAnimator#getMoveDuration()}, otherwise, it returns
+         * {@link RecyclerView.ItemAnimator#getRemoveDuration()}. If RecyclerView does not have
+         * any {@link RecyclerView.ItemAnimator} attached, this method returns
          * {@code DEFAULT_DRAG_ANIMATION_DURATION} or {@code DEFAULT_SWIPE_ANIMATION_DURATION}
          * depending on the animation type.
          *
@@ -2131,9 +2127,9 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
          * @return The duration for the animation
          */
         @SuppressWarnings("WeakerAccess")
-        public long getAnimationDuration(@NonNull TimelineView recyclerView, int animationType,
+        public long getAnimationDuration(@NonNull RecyclerView recyclerView, int animationType,
                                          float animateDx, float animateDy) {
-            final TimelineView.ItemAnimator itemAnimator = recyclerView.getItemAnimator();
+            final RecyclerView.ItemAnimator itemAnimator = recyclerView.getItemAnimator();
             if (itemAnimator == null) {
                 return animationType == ANIMATION_TYPE_DRAG ? DEFAULT_DRAG_ANIMATION_DURATION
                         : DEFAULT_SWIPE_ANIMATION_DURATION;
@@ -2161,12 +2157,12 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
          * @param totalSize           The total size of RecyclerView in the scroll direction.
          * @param msSinceStartScroll  The time passed since View is kept out of bounds.
          * @return The amount that RecyclerView should scroll. Keep in mind that this value will
-         * be passed to {@link TimelineView#scrollBy(int, int)} method.
+         * be passed to {@link RecyclerView#scrollBy(int, int)} method.
          */
         @SuppressWarnings("WeakerAccess")
-        public int interpolateOutOfBoundsScroll(@NonNull TimelineView recyclerView,
-                int viewSize, int viewSizeOutOfBounds,
-                int totalSize, long msSinceStartScroll) {
+        public int interpolateOutOfBoundsScroll(@NonNull RecyclerView recyclerView,
+                                                int viewSize, int viewSizeOutOfBounds,
+                                                int totalSize, long msSinceStartScroll) {
             final int maxScroll = getMaxDragScroll(recyclerView);
             final int absOutOfBounds = Math.abs(viewSizeOutOfBounds);
             final int direction = (int) Math.signum(viewSizeOutOfBounds);
@@ -2222,8 +2218,8 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
          * Creates a Callback for the given drag and swipe allowance. These values serve as
          * defaults
          * and if you want to customize behavior per ViewHolder, you can override
-         * {@link #getSwipeDirs(TimelineView, ViewHolder)}
-         * and / or {@link #getDragDirs(TimelineView, ViewHolder)}.
+         * {@link #getSwipeDirs(RecyclerView, ViewHolder)}
+         * and / or {@link #getDragDirs(RecyclerView, ViewHolder)}.
          *
          * @param dragDirs  Binary OR of direction flags in which the Views can be dragged. Must be
          *                  composed of {@link #LEFT}, {@link #RIGHT}, {@link #START}, {@link
@@ -2271,8 +2267,8 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
          * @return A binary OR of direction flags.
          */
         @SuppressWarnings("WeakerAccess")
-        public int getSwipeDirs(@SuppressWarnings("unused") @NonNull TimelineView recyclerView,
-                @NonNull @SuppressWarnings("unused") ViewHolder viewHolder) {
+        public int getSwipeDirs(@SuppressWarnings("unused") @NonNull RecyclerView recyclerView,
+                                @NonNull @SuppressWarnings("unused") ViewHolder viewHolder) {
             return mDefaultSwipeDirs;
         }
 
@@ -2286,14 +2282,14 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
          * @return A binary OR of direction flags.
          */
         @SuppressWarnings("WeakerAccess")
-        public int getDragDirs(@SuppressWarnings("unused") @NonNull TimelineView recyclerView,
-                @SuppressWarnings("unused") @NonNull ViewHolder viewHolder) {
+        public int getDragDirs(@SuppressWarnings("unused") @NonNull RecyclerView recyclerView,
+                               @SuppressWarnings("unused") @NonNull ViewHolder viewHolder) {
             return mDefaultDragDirs;
         }
 
         @Override
-        public int getMovementFlags(@NonNull TimelineView recyclerView,
-                @NonNull ViewHolder viewHolder) {
+        public int getMovementFlags(@NonNull RecyclerView recyclerView,
+                                    @NonNull ViewHolder viewHolder) {
             return makeMovementFlags(getDragDirs(recyclerView, viewHolder),
                     getSwipeDirs(recyclerView, viewHolder));
         }
@@ -2369,8 +2365,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
         }
     }
 
-    @VisibleForTesting
-    static class RecoverAnimation implements Animator.AnimatorListener {
+    private static class RecoverAnimation implements Animator.AnimatorListener {
 
         final float mStartDx;
 
@@ -2384,8 +2379,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
 
         final int mActionState;
 
-        @VisibleForTesting
-        final ValueAnimator mValueAnimator;
+        private final ValueAnimator mValueAnimator;
 
         final int mAnimationType;
 
@@ -2404,7 +2398,7 @@ public class ItemTouchHelper extends TimelineView.ItemDecoration
         private float mFraction;
 
         RecoverAnimation(ViewHolder viewHolder, int animationType,
-                int actionState, float startDx, float startDy, float targetX, float targetY) {
+                         int actionState, float startDx, float startDy, float targetX, float targetY) {
             mActionState = actionState;
             mAnimationType = animationType;
             mViewHolder = viewHolder;

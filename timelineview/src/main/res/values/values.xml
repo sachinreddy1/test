@@ -8,7 +8,7 @@
     <dimen name="item_touch_helper_swipe_escape_max_velocity">800dp</dimen>
     <dimen name="item_touch_helper_swipe_escape_velocity">120dp</dimen>
     <item name="item_touch_helper_previous_elevation" type="id"/>
-    <declare-styleable name="TimelineView">
+    <declare-styleable name="RecyclerView">
         <!-- Class name of the Layout Manager to be used.
         <p/>
         The class must ext androidx.recyclerview.widget.RecyclerViewView$LayoutManager

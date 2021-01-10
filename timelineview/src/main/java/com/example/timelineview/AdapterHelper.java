@@ -19,6 +19,7 @@ package com.example.timelineview;
 import android.util.Log;
 
 import androidx.core.util.Pools;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +42,7 @@ import java.util.List;
  * Although operations may be forwarded to LayoutManager in different orders, resulting data set
  * is guaranteed to be the consistent.
  */
-final class AdapterHelper implements OpReorderer.Callback {
+class AdapterHelper implements OpReorderer.Callback {
 
     static final int POSITION_TYPE_INVISIBLE = 0;
 
@@ -136,7 +137,7 @@ final class AdapterHelper implements OpReorderer.Callback {
         int type = -1;
         for (int position = op.positionStart; position < tmpEnd; position++) {
             boolean typeChanged = false;
-            TimelineView.ViewHolder vh = mCallback.findViewHolder(position);
+            RecyclerView.ViewHolder vh = mCallback.findViewHolder(position);
             if (vh != null || canFindInPreLayout(position)) {
                 // If a ViewHolder exists or this is a newly added item, we can defer this update
                 // to post layout stage.
@@ -189,7 +190,7 @@ final class AdapterHelper implements OpReorderer.Callback {
         int tmpEnd = op.positionStart + op.itemCount;
         int type = -1;
         for (int position = op.positionStart; position < tmpEnd; position++) {
-            TimelineView.ViewHolder vh = mCallback.findViewHolder(position);
+            RecyclerView.ViewHolder vh = mCallback.findViewHolder(position);
             if (vh != null || canFindInPreLayout(position)) { // deferred
                 if (type == POSITION_TYPE_INVISIBLE) {
                     UpdateOp newOp = obtainUpdateOp(UpdateOp.UPDATE, tmpStart, tmpCount,
@@ -597,7 +598,7 @@ final class AdapterHelper implements OpReorderer.Callback {
                     if (op.positionStart <= position) {
                         final int end = op.positionStart + op.itemCount;
                         if (end > position) {
-                            return TimelineView.NO_POSITION;
+                            return RecyclerView.NO_POSITION;
                         }
                         position -= op.itemCount;
                     }
@@ -626,7 +627,7 @@ final class AdapterHelper implements OpReorderer.Callback {
     /**
      * Queued operation to happen when child views are updated.
      */
-    static final class UpdateOp {
+    static class UpdateOp {
 
         static final int ADD = 1;
 
@@ -680,7 +681,7 @@ final class AdapterHelper implements OpReorderer.Callback {
             if (this == o) {
                 return true;
             }
-            if (!(o instanceof UpdateOp)) {
+            if (o == null || getClass() != o.getClass()) {
                 return false;
             }
 
@@ -756,7 +757,7 @@ final class AdapterHelper implements OpReorderer.Callback {
      */
     interface Callback {
 
-        TimelineView.ViewHolder findViewHolder(int position);
+        RecyclerView.ViewHolder findViewHolder(int position);
 
         void offsetPositionsForRemovingInvisible(int positionStart, int itemCount);
 

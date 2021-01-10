@@ -41,11 +41,11 @@ class ViewInfoStore {
      * View data records for pre-layout
      */
     @VisibleForTesting
-    final SimpleArrayMap<TimelineView.ViewHolder, InfoRecord> mLayoutHolderMap =
+    final SimpleArrayMap<RecyclerView.ViewHolder, InfoRecord> mLayoutHolderMap =
             new SimpleArrayMap<>();
 
     @VisibleForTesting
-    final LongSparseArray<TimelineView.ViewHolder> mOldChangedHolders = new LongSparseArray<>();
+    final LongSparseArray<RecyclerView.ViewHolder> mOldChangedHolders = new LongSparseArray<>();
 
     /**
      * Clears the state and all existing tracking data
@@ -60,7 +60,7 @@ class ViewInfoStore {
      * @param holder The ViewHolder whose information is being saved
      * @param info The information to save
      */
-    void addToPreLayout(TimelineView.ViewHolder holder, TimelineView.ItemAnimator.ItemHolderInfo info) {
+    void addToPreLayout(RecyclerView.ViewHolder holder, RecyclerView.ItemAnimator.ItemHolderInfo info) {
         InfoRecord record = mLayoutHolderMap.get(holder);
         if (record == null) {
             record = InfoRecord.obtain();
@@ -70,7 +70,7 @@ class ViewInfoStore {
         record.flags |= FLAG_PRE;
     }
 
-    boolean isDisappearing(TimelineView.ViewHolder holder) {
+    boolean isDisappearing(RecyclerView.ViewHolder holder) {
         final InfoRecord record = mLayoutHolderMap.get(holder);
         return record != null && ((record.flags & InfoRecord.FLAG_DISAPPEARED) != 0);
     }
@@ -82,7 +82,7 @@ class ViewInfoStore {
      * @return The ItemHolderInfo for the given ViewHolder or null if it does not exist
      */
     @Nullable
-    TimelineView.ItemAnimator.ItemHolderInfo popFromPreLayout(TimelineView.ViewHolder vh) {
+    RecyclerView.ItemAnimator.ItemHolderInfo popFromPreLayout(RecyclerView.ViewHolder vh) {
         return popFromLayoutStep(vh, FLAG_PRE);
     }
 
@@ -93,11 +93,11 @@ class ViewInfoStore {
      * @return The ItemHolderInfo for the given ViewHolder or null if it does not exist
      */
     @Nullable
-    TimelineView.ItemAnimator.ItemHolderInfo popFromPostLayout(TimelineView.ViewHolder vh) {
+    RecyclerView.ItemAnimator.ItemHolderInfo popFromPostLayout(RecyclerView.ViewHolder vh) {
         return popFromLayoutStep(vh, FLAG_POST);
     }
 
-    private TimelineView.ItemAnimator.ItemHolderInfo popFromLayoutStep(TimelineView.ViewHolder vh, int flag) {
+    private RecyclerView.ItemAnimator.ItemHolderInfo popFromLayoutStep(RecyclerView.ViewHolder vh, int flag) {
         int index = mLayoutHolderMap.indexOfKey(vh);
         if (index < 0) {
             return null;
@@ -105,7 +105,7 @@ class ViewInfoStore {
         final InfoRecord record = mLayoutHolderMap.valueAt(index);
         if (record != null && (record.flags & flag) != 0) {
             record.flags &= ~flag;
-            final TimelineView.ItemAnimator.ItemHolderInfo info;
+            final RecyclerView.ItemAnimator.ItemHolderInfo info;
             if (flag == FLAG_PRE) {
                 info = record.preInfo;
             } else if (flag == FLAG_POST) {
@@ -128,7 +128,7 @@ class ViewInfoStore {
      * @param key The key to identify the ViewHolder.
      * @param holder The ViewHolder to store
      */
-    void addToOldChangeHolders(long key, TimelineView.ViewHolder holder) {
+    void addToOldChangeHolders(long key, RecyclerView.ViewHolder holder) {
         mOldChangedHolders.put(key, holder);
     }
 
@@ -141,7 +141,7 @@ class ViewInfoStore {
      * @param holder The ViewHolder to store
      * @param info The information to save
      */
-    void addToAppearedInPreLayoutHolders(TimelineView.ViewHolder holder, TimelineView.ItemAnimator.ItemHolderInfo info) {
+    void addToAppearedInPreLayoutHolders(RecyclerView.ViewHolder holder, RecyclerView.ItemAnimator.ItemHolderInfo info) {
         InfoRecord record = mLayoutHolderMap.get(holder);
         if (record == null) {
             record = InfoRecord.obtain();
@@ -157,7 +157,7 @@ class ViewInfoStore {
      *
      * @return True if the ViewHolder is present in preLayout, false otherwise
      */
-    boolean isInPreLayout(TimelineView.ViewHolder viewHolder) {
+    boolean isInPreLayout(RecyclerView.ViewHolder viewHolder) {
         final InfoRecord record = mLayoutHolderMap.get(viewHolder);
         return record != null && (record.flags & FLAG_PRE) != 0;
     }
@@ -169,7 +169,7 @@ class ViewInfoStore {
      *
      * @return A ViewHolder if exists or null if it does not exist.
      */
-    TimelineView.ViewHolder getFromOldChangeHolders(long key) {
+    RecyclerView.ViewHolder getFromOldChangeHolders(long key) {
         return mOldChangedHolders.get(key);
     }
 
@@ -178,7 +178,7 @@ class ViewInfoStore {
      * @param holder The ViewHolder whose information is being saved
      * @param info The information to save
      */
-    void addToPostLayout(TimelineView.ViewHolder holder, TimelineView.ItemAnimator.ItemHolderInfo info) {
+    void addToPostLayout(RecyclerView.ViewHolder holder, RecyclerView.ItemAnimator.ItemHolderInfo info) {
         InfoRecord record = mLayoutHolderMap.get(holder);
         if (record == null) {
             record = InfoRecord.obtain();
@@ -194,7 +194,7 @@ class ViewInfoStore {
      *
      * @param holder The ViewHolder which disappeared during a layout.
      */
-    void addToDisappearedInLayout(TimelineView.ViewHolder holder) {
+    void addToDisappearedInLayout(RecyclerView.ViewHolder holder) {
         InfoRecord record = mLayoutHolderMap.get(holder);
         if (record == null) {
             record = InfoRecord.obtain();
@@ -207,7 +207,7 @@ class ViewInfoStore {
      * Removes a ViewHolder from disappearing list.
      * @param holder The ViewHolder to be removed from the disappearing list.
      */
-    void removeFromDisappearedInLayout(TimelineView.ViewHolder holder) {
+    void removeFromDisappearedInLayout(RecyclerView.ViewHolder holder) {
         InfoRecord record = mLayoutHolderMap.get(holder);
         if (record == null) {
             return;
@@ -217,7 +217,7 @@ class ViewInfoStore {
 
     void process(ProcessCallback callback) {
         for (int index = mLayoutHolderMap.size() - 1; index >= 0; index--) {
-            final TimelineView.ViewHolder viewHolder = mLayoutHolderMap.keyAt(index);
+            final RecyclerView.ViewHolder viewHolder = mLayoutHolderMap.keyAt(index);
             final InfoRecord record = mLayoutHolderMap.removeAt(index);
             if ((record.flags & FLAG_APPEAR_AND_DISAPPEAR) == FLAG_APPEAR_AND_DISAPPEAR) {
                 // Appeared then disappeared. Not useful for animations.
@@ -256,7 +256,7 @@ class ViewInfoStore {
      * Removes the ViewHolder from all list
      * @param holder The ViewHolder which we should stop tracking
      */
-    void removeViewHolder(TimelineView.ViewHolder holder) {
+    void removeViewHolder(RecyclerView.ViewHolder holder) {
         for (int i = mOldChangedHolders.size() - 1; i >= 0; i--) {
             if (holder == mOldChangedHolders.valueAt(i)) {
                 mOldChangedHolders.removeAt(i);
@@ -273,18 +273,18 @@ class ViewInfoStore {
         InfoRecord.drainCache();
     }
 
-    public void onViewDetached(TimelineView.ViewHolder viewHolder) {
+    public void onViewDetached(RecyclerView.ViewHolder viewHolder) {
         removeFromDisappearedInLayout(viewHolder);
     }
 
     interface ProcessCallback {
-        void processDisappeared(TimelineView.ViewHolder viewHolder, @NonNull TimelineView.ItemAnimator.ItemHolderInfo preInfo,
-                                @Nullable TimelineView.ItemAnimator.ItemHolderInfo postInfo);
-        void processAppeared(TimelineView.ViewHolder viewHolder, @Nullable TimelineView.ItemAnimator.ItemHolderInfo preInfo,
-                             TimelineView.ItemAnimator.ItemHolderInfo postInfo);
-        void processPersistent(TimelineView.ViewHolder viewHolder, @NonNull TimelineView.ItemAnimator.ItemHolderInfo preInfo,
-                               @NonNull TimelineView.ItemAnimator.ItemHolderInfo postInfo);
-        void unused(TimelineView.ViewHolder holder);
+        void processDisappeared(RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ItemAnimator.ItemHolderInfo preInfo,
+                                @Nullable RecyclerView.ItemAnimator.ItemHolderInfo postInfo);
+        void processAppeared(RecyclerView.ViewHolder viewHolder, @Nullable RecyclerView.ItemAnimator.ItemHolderInfo preInfo,
+                             RecyclerView.ItemAnimator.ItemHolderInfo postInfo);
+        void processPersistent(RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ItemAnimator.ItemHolderInfo preInfo,
+                               @NonNull RecyclerView.ItemAnimator.ItemHolderInfo postInfo);
+        void unused(RecyclerView.ViewHolder holder);
     }
 
     static class InfoRecord {
@@ -301,9 +301,9 @@ class ViewInfoStore {
         static final int FLAG_APPEAR_PRE_AND_POST = FLAG_APPEAR | FLAG_PRE | FLAG_POST;
         int flags;
         @Nullable
-        TimelineView.ItemAnimator.ItemHolderInfo preInfo;
+        RecyclerView.ItemAnimator.ItemHolderInfo preInfo;
         @Nullable
-        TimelineView.ItemAnimator.ItemHolderInfo postInfo;
+        RecyclerView.ItemAnimator.ItemHolderInfo postInfo;
         static Pools.Pool<InfoRecord> sPool = new Pools.SimplePool<>(20);
 
         private InfoRecord() {

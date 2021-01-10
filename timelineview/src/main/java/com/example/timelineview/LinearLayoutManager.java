@@ -37,19 +37,19 @@ import androidx.core.view.ViewCompat;
 import java.util.List;
 
 /**
- * A {@link TimelineView.LayoutManager} implementation which provides
+ * A {@link RecyclerView.LayoutManager} implementation which provides
  * similar functionality to {@link android.widget.ListView}.
  */
-public class LinearLayoutManager extends TimelineView.LayoutManager implements
-        ItemTouchHelper.ViewDropHandler, TimelineView.SmoothScroller.ScrollVectorProvider {
+public class LinearLayoutManager extends RecyclerView.LayoutManager implements
+        ItemTouchHelper.ViewDropHandler, RecyclerView.SmoothScroller.ScrollVectorProvider {
 
     private static final String TAG = "LinearLayoutManager";
 
     static final boolean DEBUG = false;
 
-    public static final int HORIZONTAL = TimelineView.HORIZONTAL;
+    public static final int HORIZONTAL = RecyclerView.HORIZONTAL;
 
-    public static final int VERTICAL = TimelineView.VERTICAL;
+    public static final int VERTICAL = RecyclerView.VERTICAL;
 
     public static final int INVALID_OFFSET = Integer.MIN_VALUE;
 
@@ -64,8 +64,8 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
     /**
      * Current orientation. Either {@link #HORIZONTAL} or {@link #VERTICAL}
      */
-    @TimelineView.Orientation
-    int mOrientation = TimelineView.DEFAULT_ORIENTATION;
+    @RecyclerView.Orientation
+    int mOrientation = RecyclerView.DEFAULT_ORIENTATION;
 
     /**
      * Helper class that keeps temporary layout state.
@@ -96,7 +96,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
     /**
      * This keeps the final value for how LayoutManager should start laying out views.
      * It is calculated by checking {@link #getReverseLayout()} and View's layout direction.
-     * {@link #onLayoutChildren(TimelineView.Recycler, TimelineView.State)} is run.
+     * {@link #onLayoutChildren(RecyclerView.Recycler, RecyclerView.State)} is run.
      */
     boolean mShouldReverseLayout = false;
 
@@ -117,7 +117,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * When LayoutManager needs to scroll to a position, it sets this variable and requests a
      * layout which will check this variable and re-layout accordingly.
      */
-    int mPendingScrollPosition = TimelineView.NO_POSITION;
+    int mPendingScrollPosition = RecyclerView.NO_POSITION;
 
     /**
      * Used to keep the offset value when {@link #scrollToPositionWithOffset(int, int)} is
@@ -130,9 +130,9 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
     SavedState mPendingSavedState = null;
 
     /**
-     * Re-used variable to keep anchor information on re-layout.
-     * Anchor position and coordinate defines the reference point for LLM while doing a layout.
-     */
+     *  Re-used variable to keep anchor information on re-layout.
+     *  Anchor position and coordinate defines the reference point for LLM while doing a layout.
+     * */
     final AnchorInfo mAnchorInfo = new AnchorInfo();
 
     /**
@@ -156,7 +156,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * @param context Current context, will be used to access resources.
      */
     public LinearLayoutManager(Context context) {
-        this(context, TimelineView.DEFAULT_ORIENTATION, false);
+        this(context, RecyclerView.DEFAULT_ORIENTATION, false);
     }
 
     /**
@@ -165,8 +165,8 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      *                      #VERTICAL}.
      * @param reverseLayout When set to true, layouts from end to start.
      */
-    public LinearLayoutManager(Context context, @TimelineView.Orientation int orientation,
-            boolean reverseLayout) {
+    public LinearLayoutManager(Context context, @RecyclerView.Orientation int orientation,
+                               boolean reverseLayout) {
         setOrientation(orientation);
         setReverseLayout(reverseLayout);
     }
@@ -180,7 +180,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * {@link androidx.recyclerview.R.attr#stackFromEnd}
      */
     public LinearLayoutManager(Context context, AttributeSet attrs, int defStyleAttr,
-            int defStyleRes) {
+                               int defStyleRes) {
         Properties properties = getProperties(context, attrs, defStyleAttr, defStyleRes);
         setOrientation(properties.orientation);
         setReverseLayout(properties.reverseLayout);
@@ -196,8 +196,8 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * {@inheritDoc}
      */
     @Override
-    public TimelineView.LayoutParams generateDefaultLayoutParams() {
-        return new TimelineView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+    public RecyclerView.LayoutParams generateDefaultLayoutParams() {
+        return new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
@@ -216,7 +216,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * Set whether LayoutManager will recycle its children when it is detached from
      * RecyclerView.
      * <p>
-     * If you are using a {@link TimelineView.RecycledViewPool}, it might be a good idea to set
+     * If you are using a {@link RecyclerView.RecycledViewPool}, it might be a good idea to set
      * this flag to <code>true</code> so that views will be available to other RecyclerViews
      * immediately.
      * <p>
@@ -230,7 +230,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
     }
 
     @Override
-    public void onDetachedFromWindow(TimelineView view, TimelineView.Recycler recycler) {
+    public void onDetachedFromWindow(RecyclerView view, RecyclerView.Recycler recycler) {
         super.onDetachedFromWindow(view, recycler);
         if (mRecycleChildrenOnDetach) {
             removeAndRecycleAllViews(recycler);
@@ -278,9 +278,6 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
     public void onRestoreInstanceState(Parcelable state) {
         if (state instanceof SavedState) {
             mPendingSavedState = (SavedState) state;
-            if (mPendingScrollPosition != TimelineView.NO_POSITION) {
-                mPendingSavedState.invalidateAnchor();
-            }
             requestLayout();
             if (DEBUG) {
                 Log.d(TAG, "loaded saved state");
@@ -328,7 +325,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * @return Current orientation,  either {@link #HORIZONTAL} or {@link #VERTICAL}
      * @see #setOrientation(int)
      */
-    @TimelineView.Orientation
+    @RecyclerView.Orientation
     public int getOrientation() {
         return mOrientation;
     }
@@ -339,7 +336,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      *
      * @param orientation {@link #HORIZONTAL} or {@link #VERTICAL}
      */
-    public void setOrientation(@TimelineView.Orientation int orientation) {
+    public void setOrientation(@RecyclerView.Orientation int orientation) {
         if (orientation != HORIZONTAL && orientation != VERTICAL) {
             throw new IllegalArgumentException("invalid orientation:" + orientation);
         }
@@ -385,8 +382,8 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * laid out at the end of the UI, second item is laid out before it etc.
      *
      * For horizontal layouts, it depends on the layout direction.
-     * When set to true, If {@link TimelineView} is LTR, than it will
-     * layout from RTL, if {@link TimelineView}} is RTL, it will layout
+     * When set to true, If {@link RecyclerView} is LTR, than it will
+     * layout from RTL, if {@link RecyclerView}} is RTL, it will layout
      * from LTR.
      *
      * If you are looking for the exact same behavior of
@@ -442,11 +439,11 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * enough to handle it.</p>
      *
      * @return The extra space that should be laid out (in pixels).
-     * @deprecated Use {@link #calculateExtraLayoutSpace(TimelineView.State, int[])} instead.
+     * @deprecated  Use {@link #calculateExtraLayoutSpace(RecyclerView.State, int[])} instead.
      */
     @SuppressWarnings("DeprecatedIsStillUsed")
     @Deprecated
-    protected int getExtraLayoutSpace(TimelineView.State state) {
+    protected int getExtraLayoutSpace(RecyclerView.State state) {
         if (state.hasTargetScrollPosition()) {
             return mOrientationHelper.getTotalSpace();
         } else {
@@ -466,8 +463,8 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * <p>By default, {@code LinearLayoutManager} lays out 1 extra page of items while smooth
      * scrolling, in the direction of the scroll, and no extra space is laid out in all other
      * situations. You can override this method to implement your own custom pre-cache logic. Use
-     * {@link TimelineView.State#hasTargetScrollPosition()} to find out if a smooth scroll to a
-     * position is in progress, and {@link TimelineView.State#getTargetScrollPosition()} to find out
+     * {@link RecyclerView.State#hasTargetScrollPosition()} to find out if a smooth scroll to a
+     * position is in progress, and {@link RecyclerView.State#getTargetScrollPosition()} to find out
      * which item it is scrolling to.</p>
      *
      * <p><strong>Note:</strong>Laying out extra items generally comes with significant performance
@@ -480,8 +477,8 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * layout space to swap to the opposite side of the viewport, incurring many rebinds/recycles,
      * unless the cache is large enough to handle it.</p>
      */
-    protected void calculateExtraLayoutSpace(@NonNull TimelineView.State state,
-            @NonNull int[] extraLayoutSpace) {
+    protected void calculateExtraLayoutSpace(@NonNull RecyclerView.State state,
+                                             @NonNull int[] extraLayoutSpace) {
         int extraLayoutSpaceStart = 0;
         int extraLayoutSpaceEnd = 0;
 
@@ -500,7 +497,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
     }
 
     @Override
-    public void smoothScrollToPosition(TimelineView recyclerView, TimelineView.State state,
+    public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state,
                                        int position) {
         LinearSmoothScroller linearSmoothScroller =
                 new LinearSmoothScroller(recyclerView.getContext());
@@ -526,7 +523,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * {@inheritDoc}
      */
     @Override
-    public void onLayoutChildren(TimelineView.Recycler recycler, TimelineView.State state) {
+    public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
         // layout algorithm:
         // 1) by checking children and other variables, find an anchor coordinate and an anchor
         //  item position.
@@ -537,7 +534,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
         if (DEBUG) {
             Log.d(TAG, "is pre layout:" + state.isPreLayout());
         }
-        if (mPendingSavedState != null || mPendingScrollPosition != TimelineView.NO_POSITION) {
+        if (mPendingSavedState != null || mPendingScrollPosition != RecyclerView.NO_POSITION) {
             if (state.getItemCount() == 0) {
                 removeAndRecycleAllViews(recycler);
                 return;
@@ -553,7 +550,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
         resolveShouldLayoutReverse();
 
         final View focused = getFocusedChild();
-        if (!mAnchorInfo.mValid || mPendingScrollPosition != TimelineView.NO_POSITION
+        if (!mAnchorInfo.mValid || mPendingScrollPosition != RecyclerView.NO_POSITION
                 || mPendingSavedState != null) {
             mAnchorInfo.reset();
             mAnchorInfo.mLayoutFromEnd = mShouldReverseLayout ^ mStackFromEnd;
@@ -593,7 +590,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
                 + mOrientationHelper.getStartAfterPadding();
         int extraForEnd = Math.max(0, mReusableIntPair[1])
                 + mOrientationHelper.getEndPadding();
-        if (state.isPreLayout() && mPendingScrollPosition != TimelineView.NO_POSITION
+        if (state.isPreLayout() && mPendingScrollPosition != RecyclerView.NO_POSITION
                 && mPendingScrollPositionOffset != INVALID_OFFSET) {
             // if the child is visible and we are going to move it around, we should layout
             // extra items in the opposite direction to make sure new items animate nicely
@@ -724,10 +721,10 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
     }
 
     @Override
-    public void onLayoutCompleted(TimelineView.State state) {
+    public void onLayoutCompleted(RecyclerView.State state) {
         super.onLayoutCompleted(state);
         mPendingSavedState = null; // we don't need this anymore
-        mPendingScrollPosition = TimelineView.NO_POSITION;
+        mPendingScrollPosition = RecyclerView.NO_POSITION;
         mPendingScrollPositionOffset = INVALID_OFFSET;
         mAnchorInfo.reset();
     }
@@ -735,38 +732,37 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
     /**
      * Method called when Anchor position is decided. Extending class can setup accordingly or
      * even update anchor info if necessary.
-     *
-     * @param recycler                 The recycler for the layout
-     * @param state                    The layout state
-     * @param anchorInfo               The mutable POJO that keeps the position and offset.
+     * @param recycler The recycler for the layout
+     * @param state The layout state
+     * @param anchorInfo The mutable POJO that keeps the position and offset.
      * @param firstLayoutItemDirection The direction of the first layout filling in terms of adapter
      *                                 indices.
      */
-    void onAnchorReady(TimelineView.Recycler recycler, TimelineView.State state,
+    void onAnchorReady(RecyclerView.Recycler recycler, RecyclerView.State state,
                        AnchorInfo anchorInfo, int firstLayoutItemDirection) {
     }
 
     /**
      * If necessary, layouts new items for predictive animations
      */
-    private void layoutForPredictiveAnimations(TimelineView.Recycler recycler,
-                                               TimelineView.State state, int startOffset,
+    private void layoutForPredictiveAnimations(RecyclerView.Recycler recycler,
+                                               RecyclerView.State state, int startOffset,
                                                int endOffset) {
         // If there are scrap children that we did not layout, we need to find where they did go
         // and layout them accordingly so that animations can work as expected.
         // This case may happen if new views are added or an existing view expands and pushes
         // another view out of bounds.
-        if (!state.willRunPredictiveAnimations() || getChildCount() == 0 || state.isPreLayout()
+        if (!state.willRunPredictiveAnimations() ||  getChildCount() == 0 || state.isPreLayout()
                 || !supportsPredictiveItemAnimations()) {
             return;
         }
         // to make the logic simpler, we calculate the size of children and call fill.
         int scrapExtraStart = 0, scrapExtraEnd = 0;
-        final List<TimelineView.ViewHolder> scrapList = recycler.getScrapList();
+        final List<RecyclerView.ViewHolder> scrapList = recycler.getScrapList();
         final int scrapSize = scrapList.size();
         final int firstChildPos = getPosition(getChildAt(0));
         for (int i = 0; i < scrapSize; i++) {
-            TimelineView.ViewHolder scrap = scrapList.get(i);
+            RecyclerView.ViewHolder scrap = scrapList.get(i);
             if (scrap.isRemoved()) {
                 continue;
             }
@@ -805,7 +801,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
         mLayoutState.mScrapList = null;
     }
 
-    private void updateAnchorInfoForLayout(TimelineView.Recycler recycler, TimelineView.State state,
+    private void updateAnchorInfoForLayout(RecyclerView.Recycler recycler, RecyclerView.State state,
                                            AnchorInfo anchorInfo) {
         if (updateAnchorFromPendingData(state, anchorInfo)) {
             if (DEBUG) {
@@ -833,8 +829,8 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * <p>
      * If a child has focus, it is given priority.
      */
-    private boolean updateAnchorFromChildren(TimelineView.Recycler recycler,
-                                             TimelineView.State state, AnchorInfo anchorInfo) {
+    private boolean updateAnchorFromChildren(RecyclerView.Recycler recycler,
+                                             RecyclerView.State state, AnchorInfo anchorInfo) {
         if (getChildCount() == 0) {
             return false;
         }
@@ -846,28 +842,24 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
         if (mLastStackFromEnd != mStackFromEnd) {
             return false;
         }
-        View referenceChild =
-                findReferenceChild(
-                        recycler,
-                        state,
-                        anchorInfo.mLayoutFromEnd,
-                        mStackFromEnd);
+        View referenceChild = anchorInfo.mLayoutFromEnd
+                ? findReferenceChildClosestToEnd(recycler, state)
+                : findReferenceChildClosestToStart(recycler, state);
         if (referenceChild != null) {
             anchorInfo.assignFromView(referenceChild, getPosition(referenceChild));
             // If all visible views are removed in 1 pass, reference child might be out of bounds.
             // If that is the case, offset it back to 0 so that we use these pre-layout children.
             if (!state.isPreLayout() && supportsPredictiveItemAnimations()) {
                 // validate this child is at least partially visible. if not, offset it to start
-                final int childStart = mOrientationHelper.getDecoratedStart(referenceChild);
-                final int childEnd = mOrientationHelper.getDecoratedEnd(referenceChild);
-                final int boundsStart = mOrientationHelper.getStartAfterPadding();
-                final int boundsEnd = mOrientationHelper.getEndAfterPadding();
-                // b/148869110: usually if childStart >= boundsEnd the child is out of
-                // bounds, except if the child is 0 pixels!
-                boolean outOfBoundsBefore = childEnd <= boundsStart && childStart < boundsStart;
-                boolean outOfBoundsAfter = childStart >= boundsEnd && childEnd > boundsEnd;
-                if (outOfBoundsBefore || outOfBoundsAfter) {
-                    anchorInfo.mCoordinate = anchorInfo.mLayoutFromEnd ? boundsEnd : boundsStart;
+                final boolean notVisible =
+                        mOrientationHelper.getDecoratedStart(referenceChild) >= mOrientationHelper
+                                .getEndAfterPadding()
+                                || mOrientationHelper.getDecoratedEnd(referenceChild)
+                                < mOrientationHelper.getStartAfterPadding();
+                if (notVisible) {
+                    anchorInfo.mCoordinate = anchorInfo.mLayoutFromEnd
+                            ? mOrientationHelper.getEndAfterPadding()
+                            : mOrientationHelper.getStartAfterPadding();
                 }
             }
             return true;
@@ -879,13 +871,13 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * If there is a pending scroll position or saved states, updates the anchor info from that
      * data and returns true
      */
-    private boolean updateAnchorFromPendingData(TimelineView.State state, AnchorInfo anchorInfo) {
-        if (state.isPreLayout() || mPendingScrollPosition == TimelineView.NO_POSITION) {
+    private boolean updateAnchorFromPendingData(RecyclerView.State state, AnchorInfo anchorInfo) {
+        if (state.isPreLayout() || mPendingScrollPosition == RecyclerView.NO_POSITION) {
             return false;
         }
         // validate scroll position
         if (mPendingScrollPosition < 0 || mPendingScrollPosition >= state.getItemCount()) {
-            mPendingScrollPosition = TimelineView.NO_POSITION;
+            mPendingScrollPosition = RecyclerView.NO_POSITION;
             mPendingScrollPositionOffset = INVALID_OFFSET;
             if (DEBUG) {
                 Log.e(TAG, "ignoring invalid scroll position " + mPendingScrollPosition);
@@ -964,8 +956,8 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
     /**
      * @return The final offset amount for children
      */
-    private int fixLayoutEndGap(int endOffset, TimelineView.Recycler recycler,
-                                TimelineView.State state, boolean canOffsetChildren) {
+    private int fixLayoutEndGap(int endOffset, RecyclerView.Recycler recycler,
+                                RecyclerView.State state, boolean canOffsetChildren) {
         int gap = mOrientationHelper.getEndAfterPadding() - endOffset;
         int fixOffset = 0;
         if (gap > 0) {
@@ -989,8 +981,8 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
     /**
      * @return The final offset amount for children
      */
-    private int fixLayoutStartGap(int startOffset, TimelineView.Recycler recycler,
-                                  TimelineView.State state, boolean canOffsetChildren) {
+    private int fixLayoutStartGap(int startOffset, RecyclerView.Recycler recycler,
+                                  RecyclerView.State state, boolean canOffsetChildren) {
         int gap = startOffset - mOrientationHelper.getStartAfterPadding();
         int fixOffset = 0;
         if (gap > 0) {
@@ -1116,8 +1108,8 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * {@inheritDoc}
      */
     @Override
-    public int scrollHorizontallyBy(int dx, TimelineView.Recycler recycler,
-                                    TimelineView.State state) {
+    public int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler,
+                                    RecyclerView.State state) {
         if (mOrientation == VERTICAL) {
             return 0;
         }
@@ -1128,8 +1120,8 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * {@inheritDoc}
      */
     @Override
-    public int scrollVerticallyBy(int dy, TimelineView.Recycler recycler,
-                                  TimelineView.State state) {
+    public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler,
+                                  RecyclerView.State state) {
         if (mOrientation == HORIZONTAL) {
             return 0;
         }
@@ -1137,36 +1129,36 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
     }
 
     @Override
-    public int computeHorizontalScrollOffset(TimelineView.State state) {
+    public int computeHorizontalScrollOffset(RecyclerView.State state) {
         return computeScrollOffset(state);
     }
 
     @Override
-    public int computeVerticalScrollOffset(TimelineView.State state) {
+    public int computeVerticalScrollOffset(RecyclerView.State state) {
         return computeScrollOffset(state);
     }
 
     @Override
-    public int computeHorizontalScrollExtent(TimelineView.State state) {
+    public int computeHorizontalScrollExtent(RecyclerView.State state) {
         return computeScrollExtent(state);
     }
 
     @Override
-    public int computeVerticalScrollExtent(TimelineView.State state) {
+    public int computeVerticalScrollExtent(RecyclerView.State state) {
         return computeScrollExtent(state);
     }
 
     @Override
-    public int computeHorizontalScrollRange(TimelineView.State state) {
+    public int computeHorizontalScrollRange(RecyclerView.State state) {
         return computeScrollRange(state);
     }
 
     @Override
-    public int computeVerticalScrollRange(TimelineView.State state) {
+    public int computeVerticalScrollRange(RecyclerView.State state) {
         return computeScrollRange(state);
     }
 
-    private int computeScrollOffset(TimelineView.State state) {
+    private int computeScrollOffset(RecyclerView.State state) {
         if (getChildCount() == 0) {
             return 0;
         }
@@ -1177,7 +1169,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
                 this, mSmoothScrollbarEnabled, mShouldReverseLayout);
     }
 
-    private int computeScrollExtent(TimelineView.State state) {
+    private int computeScrollExtent(RecyclerView.State state) {
         if (getChildCount() == 0) {
             return 0;
         }
@@ -1185,10 +1177,10 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
         return ScrollbarHelper.computeScrollExtent(state, mOrientationHelper,
                 findFirstVisibleChildClosestToStart(!mSmoothScrollbarEnabled, true),
                 findFirstVisibleChildClosestToEnd(!mSmoothScrollbarEnabled, true),
-                this, mSmoothScrollbarEnabled);
+                this,  mSmoothScrollbarEnabled);
     }
 
-    private int computeScrollRange(TimelineView.State state) {
+    private int computeScrollRange(RecyclerView.State state) {
         if (getChildCount() == 0) {
             return 0;
         }
@@ -1213,6 +1205,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * with varying widths / heights.
      *
      * @param enabled Whether or not to enable smooth scrollbar.
+     *
      * @see #setSmoothScrollbarEnabled(boolean)
      */
     public void setSmoothScrollbarEnabled(boolean enabled) {
@@ -1223,6 +1216,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * Returns the current state of the smooth scrollbar feature. It is enabled by default.
      *
      * @return True if smooth scrollbar is enabled, false otherwise.
+     *
      * @see #setSmoothScrollbarEnabled(boolean)
      */
     public boolean isSmoothScrollbarEnabled() {
@@ -1230,7 +1224,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
     }
 
     private void updateLayoutState(int layoutDirection, int requiredSpace,
-                                   boolean canUseExistingSpace, TimelineView.State state) {
+                                   boolean canUseExistingSpace, RecyclerView.State state) {
         // If parent provides a hint, don't measure unlimited.
         mLayoutState.mInfinite = resolveIsInfinite();
         mLayoutState.mLayoutDirection = layoutDirection;
@@ -1278,7 +1272,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
                 && mOrientationHelper.getEnd() == 0;
     }
 
-    void collectPrefetchPositionsForLayoutState(TimelineView.State state, LayoutState layoutState,
+    void collectPrefetchPositionsForLayoutState(RecyclerView.State state, LayoutState layoutState,
                                                 LayoutPrefetchRegistry layoutPrefetchRegistry) {
         final int pos = layoutState.mCurrentPosition;
         if (pos >= 0 && pos < state.getItemCount()) {
@@ -1288,7 +1282,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
 
     @Override
     public void collectInitialPrefetchPositions(int adapterItemCount,
-            LayoutPrefetchRegistry layoutPrefetchRegistry) {
+                                                LayoutPrefetchRegistry layoutPrefetchRegistry) {
         final boolean fromEnd;
         final int anchorPos;
         if (mPendingSavedState != null && mPendingSavedState.hasValidAnchor()) {
@@ -1298,7 +1292,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
         } else {
             resolveShouldLayoutReverse();
             fromEnd = mShouldReverseLayout;
-            if (mPendingScrollPosition == TimelineView.NO_POSITION) {
+            if (mPendingScrollPosition == RecyclerView.NO_POSITION) {
                 anchorPos = fromEnd ? adapterItemCount - 1 : 0;
             } else {
                 anchorPos = mPendingScrollPosition;
@@ -1343,6 +1337,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * the number of Views created and in active use.</p>
      *
      * @param itemCount Number of items to prefetch
+     *
      * @see #isItemPrefetchEnabled()
      * @see #getInitialPrefetchItemCount()
      * @see #collectInitialPrefetchPositions(int, LayoutPrefetchRegistry)
@@ -1357,17 +1352,18 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * how many inner items should be prefetched when this LayoutManager's RecyclerView
      * is nested inside another RecyclerView.
      *
-     * @return number of items to prefetch.
      * @see #isItemPrefetchEnabled()
      * @see #setInitialPrefetchItemCount(int)
      * @see #collectInitialPrefetchPositions(int, LayoutPrefetchRegistry)
+     *
+     * @return number of items to prefetch.
      */
     public int getInitialPrefetchItemCount() {
         return mInitialPrefetchItemCount;
     }
 
     @Override
-    public void collectAdjacentPrefetchPositions(int dx, int dy, TimelineView.State state,
+    public void collectAdjacentPrefetchPositions(int dx, int dy, RecyclerView.State state,
                                                  LayoutPrefetchRegistry layoutPrefetchRegistry) {
         int delta = (mOrientation == HORIZONTAL) ? dx : dy;
         if (getChildCount() == 0 || delta == 0) {
@@ -1382,7 +1378,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
         collectPrefetchPositionsForLayoutState(state, mLayoutState, layoutPrefetchRegistry);
     }
 
-    int scrollBy(int delta, TimelineView.Recycler recycler, TimelineView.State state) {
+    int scrollBy(int delta, RecyclerView.Recycler recycler, RecyclerView.State state) {
         if (getChildCount() == 0 || delta == 0) {
             return 0;
         }
@@ -1421,7 +1417,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * @param startIndex inclusive
      * @param endIndex   exclusive
      */
-    private void recycleChildren(TimelineView.Recycler recycler, int startIndex, int endIndex) {
+    private void recycleChildren(RecyclerView.Recycler recycler, int startIndex, int endIndex) {
         if (startIndex == endIndex) {
             return;
         }
@@ -1444,15 +1440,15 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * <p>
      * Checks both layout position and visible position to guarantee that the view is not visible.
      *
-     * @param recycler        Recycler instance of {@link TimelineView}
+     * @param recycler Recycler instance of {@link RecyclerView}
      * @param scrollingOffset This can be used to add additional padding to the visible area. This
      *                        is used to detect children that will go out of bounds after scrolling,
      *                        without actually moving them.
-     * @param noRecycleSpace  Extra space that should be excluded from recycling. This is the space
-     *                        from {@code extraLayoutSpace[0]}, calculated in {@link
-     *                        #calculateExtraLayoutSpace}.
+     * @param noRecycleSpace Extra space that should be excluded from recycling. This is the space
+     *                       from {@code extraLayoutSpace[0]}, calculated in {@link
+     *                       #calculateExtraLayoutSpace}.
      */
-    private void recycleViewsFromStart(TimelineView.Recycler recycler, int scrollingOffset,
+    private void recycleViewsFromStart(RecyclerView.Recycler recycler, int scrollingOffset,
                                        int noRecycleSpace) {
         if (scrollingOffset < 0) {
             if (DEBUG) {
@@ -1493,15 +1489,15 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * <p>
      * Checks both layout position and visible position to guarantee that the view is not visible.
      *
-     * @param recycler        Recycler instance of {@link TimelineView}
+     * @param recycler Recycler instance of {@link RecyclerView}
      * @param scrollingOffset This can be used to add additional padding to the visible area. This
      *                        is used to detect children that will go out of bounds after scrolling,
      *                        without actually moving them.
-     * @param noRecycleSpace  Extra space that should be excluded from recycling. This is the space
-     *                        from {@code extraLayoutSpace[1]}, calculated in {@link
-     *                        #calculateExtraLayoutSpace}.
+     * @param noRecycleSpace Extra space that should be excluded from recycling. This is the space
+     *                       from {@code extraLayoutSpace[1]}, calculated in {@link
+     *                       #calculateExtraLayoutSpace}.
      */
-    private void recycleViewsFromEnd(TimelineView.Recycler recycler, int scrollingOffset,
+    private void recycleViewsFromEnd(RecyclerView.Recycler recycler, int scrollingOffset,
                                      int noRecycleSpace) {
         final int childCount = getChildCount();
         if (scrollingOffset < 0) {
@@ -1542,11 +1538,11 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * @param layoutState Current layout state. Right now, this object does not change but
      *                    we may consider moving it out of this view so passing around as a
      *                    parameter for now, rather than accessing {@link #mLayoutState}
-     * @see #recycleViewsFromStart(TimelineView.Recycler, int, int)
-     * @see #recycleViewsFromEnd(TimelineView.Recycler, int, int)
+     * @see #recycleViewsFromStart(RecyclerView.Recycler, int, int)
+     * @see #recycleViewsFromEnd(RecyclerView.Recycler, int, int)
      * @see LinearLayoutManager.LayoutState#mLayoutDirection
      */
-    private void recycleByLayoutState(TimelineView.Recycler recycler, LayoutState layoutState) {
+    private void recycleByLayoutState(RecyclerView.Recycler recycler, LayoutState layoutState) {
         if (!layoutState.mRecycle || layoutState.mInfinite) {
             return;
         }
@@ -1570,8 +1566,8 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * @param stopOnFocusable If true, filling stops in the first focusable new child
      * @return Number of pixels that it added. Useful for scroll functions.
      */
-    int fill(TimelineView.Recycler recycler, LayoutState layoutState,
-             TimelineView.State state, boolean stopOnFocusable) {
+    int fill(RecyclerView.Recycler recycler, LayoutState layoutState,
+             RecyclerView.State state, boolean stopOnFocusable) {
         // max offset we should set is mFastScroll + available
         final int start = layoutState.mAvailable;
         if (layoutState.mScrollingOffset != LayoutState.SCROLLING_OFFSET_NaN) {
@@ -1585,11 +1581,11 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
         LayoutChunkResult layoutChunkResult = mLayoutChunkResult;
         while ((layoutState.mInfinite || remainingSpace > 0) && layoutState.hasMore(state)) {
             layoutChunkResult.resetInternal();
-            if (TimelineView.VERBOSE_TRACING) {
+            if (RecyclerView.VERBOSE_TRACING) {
                 TraceCompat.beginSection("LLM LayoutChunk");
             }
             layoutChunk(recycler, state, layoutState, layoutChunkResult);
-            if (TimelineView.VERBOSE_TRACING) {
+            if (RecyclerView.VERBOSE_TRACING) {
                 TraceCompat.endSection();
             }
             if (layoutChunkResult.mFinished) {
@@ -1626,7 +1622,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
         return start - layoutState.mAvailable;
     }
 
-    void layoutChunk(TimelineView.Recycler recycler, TimelineView.State state,
+    void layoutChunk(RecyclerView.Recycler recycler, RecyclerView.State state,
                      LayoutState layoutState, LayoutChunkResult result) {
         View view = layoutState.next(recycler);
         if (view == null) {
@@ -1638,7 +1634,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
             result.mFinished = true;
             return;
         }
-        TimelineView.LayoutParams params = (TimelineView.LayoutParams) view.getLayoutParams();
+        RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) view.getLayoutParams();
         if (layoutState.mScrapList == null) {
             if (mShouldReverseLayout == (layoutState.mLayoutDirection
                     == LayoutState.LAYOUT_START)) {
@@ -1783,7 +1779,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * @return The first visible child closest to start of the layout from user's perspective.
      */
     View findFirstVisibleChildClosestToStart(boolean completelyVisible,
-            boolean acceptPartiallyVisible) {
+                                             boolean acceptPartiallyVisible) {
         if (mShouldReverseLayout) {
             return findOneVisibleChild(getChildCount() - 1, -1, completelyVisible,
                     acceptPartiallyVisible);
@@ -1801,7 +1797,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * @return The first visible child closest to end of the layout from user's perspective.
      */
     View findFirstVisibleChildClosestToEnd(boolean completelyVisible,
-            boolean acceptPartiallyVisible) {
+                                           boolean acceptPartiallyVisible) {
         if (mShouldReverseLayout) {
             return findOneVisibleChild(0, getChildCount(), completelyVisible,
                     acceptPartiallyVisible);
@@ -1811,99 +1807,76 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
         }
     }
 
-    // overridden by GridLayoutManager
 
     /**
-     * Finds a suitable anchor child.
+     * Among the children that are suitable to be considered as an anchor child, returns the one
+     * closest to the end of the layout.
      * <p>
      * Due to ambiguous adapter updates or children being removed, some children's positions may be
      * invalid. This method is a best effort to find a position within adapter bounds if possible.
      * <p>
-     * It also prioritizes children from best to worst in this order:
-     * <ol>
-     *   <li> An in bounds child.
-     *   <li> An out of bounds child.
-     *   <li> An invalid child.
-     * </ol>
-     *
-     * @param layoutFromEnd True if the RV scrolls in the reverse direction, which is the same as
-     *                      (reverseLayout ^ stackFromEnd).
-     * @param traverseChildrenInReverseOrder True if the children should be traversed in reverse
-     *                                       order (stackFromEnd).
+     * It also prioritizes children that are within the visible bounds.
      * @return A View that can be used an an anchor View.
      */
-    View findReferenceChild(TimelineView.Recycler recycler, TimelineView.State state,
-                            boolean layoutFromEnd, boolean traverseChildrenInReverseOrder) {
+    private View findReferenceChildClosestToEnd(RecyclerView.Recycler recycler,
+                                                RecyclerView.State state) {
+        return mShouldReverseLayout ? findFirstReferenceChild(recycler, state) :
+                findLastReferenceChild(recycler, state);
+    }
+
+    /**
+     * Among the children that are suitable to be considered as an anchor child, returns the one
+     * closest to the start of the layout.
+     * <p>
+     * Due to ambiguous adapter updates or children being removed, some children's positions may be
+     * invalid. This method is a best effort to find a position within adapter bounds if possible.
+     * <p>
+     * It also prioritizes children that are within the visible bounds.
+     *
+     * @return A View that can be used an an anchor View.
+     */
+    private View findReferenceChildClosestToStart(RecyclerView.Recycler recycler,
+                                                  RecyclerView.State state) {
+        return mShouldReverseLayout ? findLastReferenceChild(recycler, state) :
+                findFirstReferenceChild(recycler, state);
+    }
+
+    private View findFirstReferenceChild(RecyclerView.Recycler recycler, RecyclerView.State state) {
+        return findReferenceChild(recycler, state, 0, getChildCount(), state.getItemCount());
+    }
+
+    private View findLastReferenceChild(RecyclerView.Recycler recycler, RecyclerView.State state) {
+        return findReferenceChild(recycler, state, getChildCount() - 1, -1, state.getItemCount());
+    }
+
+    // overridden by GridLayoutManager
+    View findReferenceChild(RecyclerView.Recycler recycler, RecyclerView.State state,
+                            int start, int end, int itemCount) {
         ensureLayoutState();
-
-        // Determine which direction through the view children we are going iterate.
-        int start = 0;
-        int end = getChildCount();
-        int diff = 1;
-        if (traverseChildrenInReverseOrder) {
-            start = getChildCount() - 1;
-            end = -1;
-            diff = -1;
-        }
-
-        int itemCount = state.getItemCount();
-
+        View invalidMatch = null;
+        View outOfBoundsMatch = null;
         final int boundsStart = mOrientationHelper.getStartAfterPadding();
         final int boundsEnd = mOrientationHelper.getEndAfterPadding();
-
-        View invalidMatch = null;
-        View bestFirstFind = null;
-        View bestSecondFind = null;
-
+        final int diff = end > start ? 1 : -1;
         for (int i = start; i != end; i += diff) {
             final View view = getChildAt(i);
             final int position = getPosition(view);
-            final int childStart = mOrientationHelper.getDecoratedStart(view);
-            final int childEnd = mOrientationHelper.getDecoratedEnd(view);
             if (position >= 0 && position < itemCount) {
-                if (((TimelineView.LayoutParams) view.getLayoutParams()).isItemRemoved()) {
+                if (((RecyclerView.LayoutParams) view.getLayoutParams()).isItemRemoved()) {
                     if (invalidMatch == null) {
                         invalidMatch = view; // removed item, least preferred
                     }
-                } else {
-                    // b/148869110: usually if childStart >= boundsEnd the child is out of
-                    // bounds, except if the child is 0 pixels!
-                    boolean outOfBoundsBefore = childEnd <= boundsStart && childStart < boundsStart;
-                    boolean outOfBoundsAfter = childStart >= boundsEnd && childEnd > boundsEnd;
-                    if (outOfBoundsBefore || outOfBoundsAfter) {
-                        // The item is out of bounds.
-                        // We want to find the items closest to the in bounds items and because we
-                        // are always going through the items linearly, the 2 items we want are the
-                        // last out of bounds item on the side we start searching on, and the first
-                        // out of bounds item on the side we are ending on.  The side that we are
-                        // ending on ultimately takes priority because we want items later in the
-                        // layout to move forward if no in bounds anchors are found.
-                        if (layoutFromEnd) {
-                            if (outOfBoundsAfter) {
-                                bestFirstFind = view;
-                            } else if (bestSecondFind == null) {
-                                bestSecondFind = view;
-                            }
-                        } else {
-                            if (outOfBoundsBefore) {
-                                bestFirstFind = view;
-                            } else if (bestSecondFind == null) {
-                                bestSecondFind = view;
-                            }
-                        }
-                    } else {
-                        // We found an in bounds item, greedily return it.
-                        return view;
+                } else if (mOrientationHelper.getDecoratedStart(view) >= boundsEnd
+                        || mOrientationHelper.getDecoratedEnd(view) < boundsStart) {
+                    if (outOfBoundsMatch == null) {
+                        outOfBoundsMatch = view; // item is not visible, less preferred
                     }
+                } else {
+                    return view;
                 }
             }
         }
-        // We didn't find an in bounds item so we will settle for an item in this order:
-        // 1. bestSecondFind
-        // 2. bestFirstFind
-        // 3. invalidMatch
-        return bestSecondFind != null ? bestSecondFind :
-                (bestFirstFind != null ? bestFirstFind : invalidMatch);
+        return outOfBoundsMatch != null ? outOfBoundsMatch : invalidMatch;
     }
 
     // returns the out-of-bound child view closest to RV's end bounds. An out-of-bound child is
@@ -1941,14 +1914,14 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * LayoutManager may pre-cache some views that are not necessarily visible. Those views
      * are ignored in this method.
      *
-     * @return The adapter position of the first visible item or {@link TimelineView#NO_POSITION} if
+     * @return The adapter position of the first visible item or {@link RecyclerView#NO_POSITION} if
      * there aren't any visible items.
      * @see #findFirstCompletelyVisibleItemPosition()
      * @see #findLastVisibleItemPosition()
      */
     public int findFirstVisibleItemPosition() {
         final View child = findOneVisibleChild(0, getChildCount(), false, true);
-        return child == null ? TimelineView.NO_POSITION : getPosition(child);
+        return child == null ? RecyclerView.NO_POSITION : getPosition(child);
     }
 
     /**
@@ -1959,13 +1932,13 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * LayoutManager is horizontal, it will only check the view's left and right edges.
      *
      * @return The adapter position of the first fully visible item or
-     * {@link TimelineView#NO_POSITION} if there aren't any visible items.
+     * {@link RecyclerView#NO_POSITION} if there aren't any visible items.
      * @see #findFirstVisibleItemPosition()
      * @see #findLastCompletelyVisibleItemPosition()
      */
     public int findFirstCompletelyVisibleItemPosition() {
         final View child = findOneVisibleChild(0, getChildCount(), true, false);
-        return child == null ? TimelineView.NO_POSITION : getPosition(child);
+        return child == null ? RecyclerView.NO_POSITION : getPosition(child);
     }
 
     /**
@@ -1981,14 +1954,14 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * LayoutManager may pre-cache some views that are not necessarily visible. Those views
      * are ignored in this method.
      *
-     * @return The adapter position of the last visible view or {@link TimelineView#NO_POSITION} if
+     * @return The adapter position of the last visible view or {@link RecyclerView#NO_POSITION} if
      * there aren't any visible items.
      * @see #findLastCompletelyVisibleItemPosition()
      * @see #findFirstVisibleItemPosition()
      */
     public int findLastVisibleItemPosition() {
         final View child = findOneVisibleChild(getChildCount() - 1, -1, false, true);
-        return child == null ? TimelineView.NO_POSITION : getPosition(child);
+        return child == null ? RecyclerView.NO_POSITION : getPosition(child);
     }
 
     /**
@@ -1999,13 +1972,13 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
      * LayoutManager is horizontal, it will only check the view's left and right edges.
      *
      * @return The adapter position of the last fully visible view or
-     * {@link TimelineView#NO_POSITION} if there aren't any visible items.
+     * {@link RecyclerView#NO_POSITION} if there aren't any visible items.
      * @see #findLastVisibleItemPosition()
      * @see #findFirstCompletelyVisibleItemPosition()
      */
     public int findLastCompletelyVisibleItemPosition() {
         final View child = findOneVisibleChild(getChildCount() - 1, -1, true, false);
-        return child == null ? TimelineView.NO_POSITION : getPosition(child);
+        return child == null ? RecyclerView.NO_POSITION : getPosition(child);
     }
 
     // Returns the first child that is visible in the provided index range, i.e. either partially or
@@ -2013,7 +1986,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
     // acceptable by this method, but could be returned
     // using #findOnePartiallyOrCompletelyInvisibleChild
     View findOneVisibleChild(int fromIndex, int toIndex, boolean completelyVisible,
-            boolean acceptPartiallyVisible) {
+                             boolean acceptPartiallyVisible) {
         ensureLayoutState();
         @ViewBoundsCheck.ViewBounds int preferredBoundsFlag = 0;
         @ViewBoundsCheck.ViewBounds int acceptableBoundsFlag = 0;
@@ -2064,7 +2037,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
 
     @Override
     public View onFocusSearchFailed(View focused, int focusDirection,
-                                    TimelineView.Recycler recycler, TimelineView.State state) {
+                                    RecyclerView.Recycler recycler, RecyclerView.State state) {
         resolveShouldLayoutReverse();
         if (getChildCount() == 0) {
             return null;
@@ -2280,21 +2253,21 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
         int mExtraFillSpace = 0;
 
         /**
-         * Contains the {@link #calculateExtraLayoutSpace(TimelineView.State, int[])}  extra layout
+         * Contains the {@link #calculateExtraLayoutSpace(RecyclerView.State, int[])}  extra layout
          * space} that should be excluded for recycling when cleaning up the tail of the list during
          * a smooth scroll.
          */
         int mNoRecycleSpace = 0;
 
         /**
-         * Equal to {@link TimelineView.State#isPreLayout()}. When consuming scrap, if this value
+         * Equal to {@link RecyclerView.State#isPreLayout()}. When consuming scrap, if this value
          * is set to true, we skip removed views since they should not be laid out in post layout
          * step.
          */
         boolean mIsPreLayout = false;
 
         /**
-         * The most recent {@link #scrollBy(int, TimelineView.Recycler, TimelineView.State)}
+         * The most recent {@link #scrollBy(int, RecyclerView.Recycler, RecyclerView.State)}
          * amount.
          */
         int mLastScrollDelta;
@@ -2303,7 +2276,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
          * When LLM needs to layout particular views, it sets this list in which case, LayoutState
          * will only return views from this list and return null if it cannot find an item.
          */
-        List<TimelineView.ViewHolder> mScrapList = null;
+        List<RecyclerView.ViewHolder> mScrapList = null;
 
         /**
          * Used when there is no limit in how many views can be laid out.
@@ -2313,7 +2286,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
         /**
          * @return true if there are more items in the data adapter
          */
-        boolean hasMore(TimelineView.State state) {
+        boolean hasMore(RecyclerView.State state) {
             return mCurrentPosition >= 0 && mCurrentPosition < state.getItemCount();
         }
 
@@ -2323,7 +2296,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
          *
          * @return The next element that we should layout.
          */
-        View next(TimelineView.Recycler recycler) {
+        View next(RecyclerView.Recycler recycler) {
             if (mScrapList != null) {
                 return nextViewFromScrapList();
             }
@@ -2343,8 +2316,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
             final int size = mScrapList.size();
             for (int i = 0; i < size; i++) {
                 final View view = mScrapList.get(i).itemView;
-                final TimelineView.LayoutParams lp =
-                        (TimelineView.LayoutParams) view.getLayoutParams();
+                final RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) view.getLayoutParams();
                 if (lp.isItemRemoved()) {
                     continue;
                 }
@@ -2363,9 +2335,9 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
         public void assignPositionFromScrapList(View ignore) {
             final View closest = nextViewInLimitedList(ignore);
             if (closest == null) {
-                mCurrentPosition = TimelineView.NO_POSITION;
+                mCurrentPosition = RecyclerView.NO_POSITION;
             } else {
-                mCurrentPosition = ((TimelineView.LayoutParams) closest.getLayoutParams())
+                mCurrentPosition = ((RecyclerView.LayoutParams) closest.getLayoutParams())
                         .getViewLayoutPosition();
             }
         }
@@ -2379,8 +2351,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
             }
             for (int i = 0; i < size; i++) {
                 View view = mScrapList.get(i).itemView;
-                final TimelineView.LayoutParams lp =
-                        (TimelineView.LayoutParams) view.getLayoutParams();
+                final RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) view.getLayoutParams();
                 if (view == ignore || lp.isItemRemoved()) {
                     continue;
                 }
@@ -2440,7 +2411,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
         }
 
         void invalidateAnchor() {
-            mAnchorPosition = TimelineView.NO_POSITION;
+            mAnchorPosition = RecyclerView.NO_POSITION;
         }
 
         @Override
@@ -2484,7 +2455,7 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
         }
 
         void reset() {
-            mPosition = TimelineView.NO_POSITION;
+            mPosition = RecyclerView.NO_POSITION;
             mCoordinate = INVALID_OFFSET;
             mLayoutFromEnd = false;
             mValid = false;
@@ -2510,8 +2481,8 @@ public class LinearLayoutManager extends TimelineView.LayoutManager implements
                     + '}';
         }
 
-        boolean isViewValidAsAnchor(View child, TimelineView.State state) {
-            TimelineView.LayoutParams lp = (TimelineView.LayoutParams) child.getLayoutParams();
+        boolean isViewValidAsAnchor(View child, RecyclerView.State state) {
+            RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) child.getLayoutParams();
             return !lp.isItemRemoved() && lp.getViewLayoutPosition() >= 0
                     && lp.getViewLayoutPosition() < state.getItemCount();
         }

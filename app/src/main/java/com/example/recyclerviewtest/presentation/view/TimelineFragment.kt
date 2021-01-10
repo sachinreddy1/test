@@ -35,18 +35,10 @@ class TimelineFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.vm = ViewModelProvider(this@TimelineFragment, viewModelFactory).get(TimelineViewModel::class.java)
 
-        binding.topbar.adapter = RecyclerViewAdapter(
-            requireContext(),
-            (binding.vm?.bottomList?.size ?: 0) + 4
-        )
-
         binding.bottombar.adapter = BottomRecyclerViewAdapter<ListItem>(
             { R.layout.item_timeline_test },
             BR.item
         )
-
-        binding.vm?.recyclerView = binding.bottombar
-        binding.bottombar.topRecyclerView = binding.topbar
 
         binding.executePendingBindings()
         return binding.root

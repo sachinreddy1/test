@@ -2,7 +2,7 @@ package com.example.recyclerviewtest.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.example.recyclerviewtest.presentation.adapter.ListItem
-import com.example.timelineview.TimelineView
+import com.example.timelineview.RecyclerView
 import javax.inject.Inject
 
 class TimelineViewModel @Inject constructor() : ViewModel() {
@@ -17,6 +17,4 @@ class TimelineViewModel @Inject constructor() : ViewModel() {
         ListItem("7", "7"),
         ListItem("8", "8")
     )
-
-    lateinit var recyclerView: TimelineView
 }

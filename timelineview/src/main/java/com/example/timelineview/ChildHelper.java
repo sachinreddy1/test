@@ -206,7 +206,7 @@ class ChildHelper {
         final int count = mHiddenViews.size();
         for (int i = 0; i < count; i++) {
             final View view = mHiddenViews.get(i);
-            TimelineView.ViewHolder holder = mCallback.getChildViewHolder(view);
+            RecyclerView.ViewHolder holder = mCallback.getChildViewHolder(view);
             if (holder.getLayoutPosition() == position
                     && !holder.isInvalid()
                     && !holder.isRemoved()) {
@@ -225,7 +225,7 @@ class ChildHelper {
      * @param hidden       If set to true, this item will be invisible to the regular methods.
      */
     void attachViewToParent(View child, int index, ViewGroup.LayoutParams layoutParams,
-            boolean hidden) {
+                            boolean hidden) {
         final int offset;
         if (index < 0) {
             offset = mCallback.getChildCount();
@@ -452,7 +452,7 @@ class ChildHelper {
                 final boolean lastBit = (mData & LAST_BIT) != 0;
                 long mask = (1L << index) - 1;
                 final long before = mData & mask;
-                final long after = (mData & ~mask) << 1;
+                final long after = ((mData & ~mask)) << 1;
                 mData = before | after;
                 if (value) {
                     set(index);
@@ -524,7 +524,7 @@ class ChildHelper {
 
         void removeAllViews();
 
-        TimelineView.ViewHolder getChildViewHolder(View view);
+        RecyclerView.ViewHolder getChildViewHolder(View view);
 
         void attachViewToParent(View child, int index, ViewGroup.LayoutParams layoutParams);
 

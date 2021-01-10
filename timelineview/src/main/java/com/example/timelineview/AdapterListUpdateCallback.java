@@ -21,18 +21,18 @@ import androidx.annotation.NonNull;
 /**
  * ListUpdateCallback that dispatches update events to the given adapter.
  *
- * @see DiffUtil.DiffResult#dispatchUpdatesTo(TimelineView.Adapter)
+ * @see DiffUtil.DiffResult#dispatchUpdatesTo(RecyclerView.Adapter)
  */
 public final class AdapterListUpdateCallback implements ListUpdateCallback {
     @NonNull
-    private final TimelineView.Adapter mAdapter;
+    private final RecyclerView.Adapter mAdapter;
 
     /**
      * Creates an AdapterListUpdateCallback that will dispatch update events to the given adapter.
      *
      * @param adapter The Adapter to send updates to.
      */
-    public AdapterListUpdateCallback(@NonNull TimelineView.Adapter adapter) {
+    public AdapterListUpdateCallback(@NonNull RecyclerView.Adapter adapter) {
         mAdapter = adapter;
     }
 

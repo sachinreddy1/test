@@ -15,6 +15,7 @@
  */
 
 package com.example.timelineview;
+
 import android.graphics.PointF;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -29,10 +30,10 @@ import androidx.annotation.Nullable;
  * <p>
  *
  * PagerSnapHelper can help achieve a similar behavior to
- * {@link androidx.viewpager.widget.ViewPager}. Set both {@link TimelineView} and the items of the
- * {@link TimelineView.Adapter} to have
+ * {@link androidx.viewpager.widget.ViewPager}. Set both {@link RecyclerView} and the items of the
+ * {@link RecyclerView.Adapter} to have
  * {@link android.view.ViewGroup.LayoutParams#MATCH_PARENT} height and width and then attach
- * PagerSnapHelper to the {@link TimelineView} using {@link #attachToRecyclerView(TimelineView)}.
+ * PagerSnapHelper to the {@link RecyclerView} using {@link #attachToRecyclerView(RecyclerView)}.
  */
 public class PagerSnapHelper extends SnapHelper {
     private static final int MAX_SCROLL_ON_FLING_DURATION = 100; // ms
@@ -45,18 +46,18 @@ public class PagerSnapHelper extends SnapHelper {
 
     @Nullable
     @Override
-    public int[] calculateDistanceToFinalSnap(@NonNull TimelineView.LayoutManager layoutManager,
-            @NonNull View targetView) {
+    public int[] calculateDistanceToFinalSnap(@NonNull RecyclerView.LayoutManager layoutManager,
+                                              @NonNull View targetView) {
         int[] out = new int[2];
         if (layoutManager.canScrollHorizontally()) {
-            out[0] = distanceToCenter(targetView,
+            out[0] = distanceToCenter(layoutManager, targetView,
                     getHorizontalHelper(layoutManager));
         } else {
             out[0] = 0;
         }
 
         if (layoutManager.canScrollVertically()) {
-            out[1] = distanceToCenter(targetView,
+            out[1] = distanceToCenter(layoutManager, targetView,
                     getVerticalHelper(layoutManager));
         } else {
             out[1] = 0;
@@ -66,7 +67,7 @@ public class PagerSnapHelper extends SnapHelper {
 
     @Nullable
     @Override
-    public View findSnapView(TimelineView.LayoutManager layoutManager) {
+    public View findSnapView(RecyclerView.LayoutManager layoutManager) {
         if (layoutManager.canScrollVertically()) {
             return findCenterView(layoutManager, getVerticalHelper(layoutManager));
         } else if (layoutManager.canScrollHorizontally()) {
@@ -76,16 +77,16 @@ public class PagerSnapHelper extends SnapHelper {
     }
 
     @Override
-    public int findTargetSnapPosition(TimelineView.LayoutManager layoutManager, int velocityX,
+    public int findTargetSnapPosition(RecyclerView.LayoutManager layoutManager, int velocityX,
                                       int velocityY) {
         final int itemCount = layoutManager.getItemCount();
         if (itemCount == 0) {
-            return TimelineView.NO_POSITION;
+            return RecyclerView.NO_POSITION;
         }
 
         final OrientationHelper orientationHelper = getOrientationHelper(layoutManager);
         if (orientationHelper == null) {
-            return TimelineView.NO_POSITION;
+            return RecyclerView.NO_POSITION;
         }
 
         // A child that is exactly in the center is eligible for both before and after
@@ -101,7 +102,7 @@ public class PagerSnapHelper extends SnapHelper {
             if (child == null) {
                 continue;
             }
-            final int distance = distanceToCenter(child, orientationHelper);
+            final int distance = distanceToCenter(layoutManager, child, orientationHelper);
 
             if (distance <= 0 && distance > distanceBefore) {
                 // Child is before the center and closer then the previous best
@@ -129,19 +130,19 @@ public class PagerSnapHelper extends SnapHelper {
         // snap to.
         View visibleView = forwardDirection ? closestChildBeforeCenter : closestChildAfterCenter;
         if (visibleView == null) {
-            return TimelineView.NO_POSITION;
+            return RecyclerView.NO_POSITION;
         }
         int visiblePosition = layoutManager.getPosition(visibleView);
         int snapToPosition = visiblePosition
                 + (isReverseLayout(layoutManager) == forwardDirection ? -1 : +1);
 
         if (snapToPosition < 0 || snapToPosition >= itemCount) {
-            return TimelineView.NO_POSITION;
+            return RecyclerView.NO_POSITION;
         }
         return snapToPosition;
     }
 
-    private boolean isForwardFling(TimelineView.LayoutManager layoutManager, int velocityX,
+    private boolean isForwardFling(RecyclerView.LayoutManager layoutManager, int velocityX,
                                    int velocityY) {
         if (layoutManager.canScrollHorizontally()) {
             return velocityX > 0;
@@ -150,11 +151,11 @@ public class PagerSnapHelper extends SnapHelper {
         }
     }
 
-    private boolean isReverseLayout(TimelineView.LayoutManager layoutManager) {
+    private boolean isReverseLayout(RecyclerView.LayoutManager layoutManager) {
         final int itemCount = layoutManager.getItemCount();
-        if ((layoutManager instanceof TimelineView.SmoothScroller.ScrollVectorProvider)) {
-            TimelineView.SmoothScroller.ScrollVectorProvider vectorProvider =
-                    (TimelineView.SmoothScroller.ScrollVectorProvider) layoutManager;
+        if ((layoutManager instanceof RecyclerView.SmoothScroller.ScrollVectorProvider)) {
+            RecyclerView.SmoothScroller.ScrollVectorProvider vectorProvider =
+                    (RecyclerView.SmoothScroller.ScrollVectorProvider) layoutManager;
             PointF vectorForEnd = vectorProvider.computeScrollVectorForPosition(itemCount - 1);
             if (vectorForEnd != null) {
                 return vectorForEnd.x < 0 || vectorForEnd.y < 0;
@@ -163,16 +164,14 @@ public class PagerSnapHelper extends SnapHelper {
         return false;
     }
 
-    @Nullable
     @Override
-    protected TimelineView.SmoothScroller createScroller(
-            @NonNull TimelineView.LayoutManager layoutManager) {
-        if (!(layoutManager instanceof TimelineView.SmoothScroller.ScrollVectorProvider)) {
+    protected LinearSmoothScroller createSnapScroller(RecyclerView.LayoutManager layoutManager) {
+        if (!(layoutManager instanceof RecyclerView.SmoothScroller.ScrollVectorProvider)) {
             return null;
         }
         return new LinearSmoothScroller(mRecyclerView.getContext()) {
             @Override
-            protected void onTargetFound(View targetView, TimelineView.State state, Action action) {
+            protected void onTargetFound(View targetView, RecyclerView.State state, Action action) {
                 int[] snapDistances = calculateDistanceToFinalSnap(mRecyclerView.getLayoutManager(),
                         targetView);
                 final int dx = snapDistances[0];
@@ -195,7 +194,8 @@ public class PagerSnapHelper extends SnapHelper {
         };
     }
 
-    private int distanceToCenter(@NonNull View targetView, OrientationHelper helper) {
+    private int distanceToCenter(@NonNull RecyclerView.LayoutManager layoutManager,
+                                 @NonNull View targetView, OrientationHelper helper) {
         final int childCenter = helper.getDecoratedStart(targetView)
                 + (helper.getDecoratedMeasurement(targetView) / 2);
         final int containerCenter = helper.getStartAfterPadding() + helper.getTotalSpace() / 2;
@@ -205,14 +205,14 @@ public class PagerSnapHelper extends SnapHelper {
     /**
      * Return the child view that is currently closest to the center of this parent.
      *
-     * @param layoutManager The {@link TimelineView.LayoutManager} associated with the attached
-     *                      {@link TimelineView}.
-     * @param helper The relevant {@link OrientationHelper} for the attached {@link TimelineView}.
+     * @param layoutManager The {@link RecyclerView.LayoutManager} associated with the attached
+     *                      {@link RecyclerView}.
+     * @param helper The relevant {@link OrientationHelper} for the attached {@link RecyclerView}.
      *
      * @return the child view that is currently closest to the center of this parent.
      */
     @Nullable
-    private View findCenterView(TimelineView.LayoutManager layoutManager,
+    private View findCenterView(RecyclerView.LayoutManager layoutManager,
                                 OrientationHelper helper) {
         int childCount = layoutManager.getChildCount();
         if (childCount == 0) {
@@ -239,7 +239,7 @@ public class PagerSnapHelper extends SnapHelper {
     }
 
     @Nullable
-    private OrientationHelper getOrientationHelper(TimelineView.LayoutManager layoutManager) {
+    private OrientationHelper getOrientationHelper(RecyclerView.LayoutManager layoutManager) {
         if (layoutManager.canScrollVertically()) {
             return getVerticalHelper(layoutManager);
         } else if (layoutManager.canScrollHorizontally()) {
@@ -250,7 +250,7 @@ public class PagerSnapHelper extends SnapHelper {
     }
 
     @NonNull
-    private OrientationHelper getVerticalHelper(@NonNull TimelineView.LayoutManager layoutManager) {
+    private OrientationHelper getVerticalHelper(@NonNull RecyclerView.LayoutManager layoutManager) {
         if (mVerticalHelper == null || mVerticalHelper.mLayoutManager != layoutManager) {
             mVerticalHelper = OrientationHelper.createVerticalHelper(layoutManager);
         }
@@ -259,7 +259,7 @@ public class PagerSnapHelper extends SnapHelper {
 
     @NonNull
     private OrientationHelper getHorizontalHelper(
-            @NonNull TimelineView.LayoutManager layoutManager) {
+            @NonNull RecyclerView.LayoutManager layoutManager) {
         if (mHorizontalHelper == null || mHorizontalHelper.mLayoutManager != layoutManager) {
             mHorizontalHelper = OrientationHelper.createHorizontalHelper(layoutManager);
         }

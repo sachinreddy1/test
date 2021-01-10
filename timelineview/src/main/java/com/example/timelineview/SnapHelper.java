@@ -25,35 +25,35 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 /**
- * Class intended to support snapping for a {@link TimelineView}.
+ * Class intended to support snapping for a {@link RecyclerView}.
  * <p>
  * SnapHelper tries to handle fling as well but for this to work properly, the
- * {@link TimelineView.LayoutManager} must implement the {@link TimelineView.SmoothScroller.ScrollVectorProvider} interface or
+ * {@link RecyclerView.LayoutManager} must implement the {@link RecyclerView.SmoothScroller.ScrollVectorProvider} interface or
  * you should override {@link #onFling(int, int)} and handle fling manually.
  */
-public abstract class SnapHelper extends TimelineView.OnFlingListener {
+public abstract class SnapHelper extends RecyclerView.OnFlingListener {
 
     static final float MILLISECONDS_PER_INCH = 100f;
 
-    TimelineView mRecyclerView;
+    RecyclerView mRecyclerView;
     private Scroller mGravityScroller;
 
     // Handles the snap on scroll case.
-    private final TimelineView.OnScrollListener mScrollListener =
-            new TimelineView.OnScrollListener() {
+    private final RecyclerView.OnScrollListener mScrollListener =
+            new RecyclerView.OnScrollListener() {
                 boolean mScrolled = false;
 
                 @Override
-                public void onScrollStateChanged(TimelineView recyclerView, int newState) {
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
-                    if (newState == TimelineView.SCROLL_STATE_IDLE && mScrolled) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE && mScrolled) {
                         mScrolled = false;
                         snapToTargetExistingView();
                     }
                 }
 
                 @Override
-                public void onScrolled(TimelineView recyclerView, int dx, int dy) {
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     if (dx != 0 || dy != 0) {
                         mScrolled = true;
                     }
@@ -62,11 +62,11 @@ public abstract class SnapHelper extends TimelineView.OnFlingListener {
 
     @Override
     public boolean onFling(int velocityX, int velocityY) {
-        TimelineView.LayoutManager layoutManager = mRecyclerView.getLayoutManager();
+        RecyclerView.LayoutManager layoutManager = mRecyclerView.getLayoutManager();
         if (layoutManager == null) {
             return false;
         }
-        TimelineView.Adapter adapter = mRecyclerView.getAdapter();
+        RecyclerView.Adapter adapter = mRecyclerView.getAdapter();
         if (adapter == null) {
             return false;
         }
@@ -77,18 +77,18 @@ public abstract class SnapHelper extends TimelineView.OnFlingListener {
 
     /**
      * Attaches the {@link SnapHelper} to the provided RecyclerView, by calling
-     * {@link TimelineView#setOnFlingListener(TimelineView.OnFlingListener)}.
+     * {@link RecyclerView#setOnFlingListener(RecyclerView.OnFlingListener)}.
      * You can call this method with {@code null} to detach it from the current RecyclerView.
      *
      * @param recyclerView The RecyclerView instance to which you want to add this helper or
      *                     {@code null} if you want to remove SnapHelper from the current
      *                     RecyclerView.
      *
-     * @throws IllegalArgumentException if there is already a {@link TimelineView.OnFlingListener}
-     * attached to the provided {@link TimelineView}.
+     * @throws IllegalArgumentException if there is already a {@link RecyclerView.OnFlingListener}
+     * attached to the provided {@link RecyclerView}.
      *
      */
-    public void attachToRecyclerView(@Nullable TimelineView recyclerView)
+    public void attachToRecyclerView(@Nullable RecyclerView recyclerView)
             throws IllegalStateException {
         if (mRecyclerView == recyclerView) {
             return; // nothing to do
@@ -106,7 +106,7 @@ public abstract class SnapHelper extends TimelineView.OnFlingListener {
     }
 
     /**
-     * Called when an instance of a {@link TimelineView} is attached.
+     * Called when an instance of a {@link RecyclerView} is attached.
      */
     private void setupCallbacks() throws IllegalStateException {
         if (mRecyclerView.getOnFlingListener() != null) {
@@ -117,7 +117,7 @@ public abstract class SnapHelper extends TimelineView.OnFlingListener {
     }
 
     /**
-     * Called when the instance of a {@link TimelineView} is detached.
+     * Called when the instance of a {@link RecyclerView} is detached.
      */
     private void destroyCallbacks() {
         mRecyclerView.removeOnScrollListener(mScrollListener);
@@ -145,26 +145,26 @@ public abstract class SnapHelper extends TimelineView.OnFlingListener {
     /**
      * Helper method to facilitate for snapping triggered by a fling.
      *
-     * @param layoutManager The {@link TimelineView.LayoutManager} associated with the attached
-     *                      {@link TimelineView}.
+     * @param layoutManager The {@link RecyclerView.LayoutManager} associated with the attached
+     *                      {@link RecyclerView}.
      * @param velocityX     Fling velocity on the horizontal axis.
      * @param velocityY     Fling velocity on the vertical axis.
      *
      * @return true if it is handled, false otherwise.
      */
-    private boolean snapFromFling(@NonNull TimelineView.LayoutManager layoutManager, int velocityX,
+    private boolean snapFromFling(@NonNull RecyclerView.LayoutManager layoutManager, int velocityX,
                                   int velocityY) {
-        if (!(layoutManager instanceof TimelineView.SmoothScroller.ScrollVectorProvider)) {
+        if (!(layoutManager instanceof RecyclerView.SmoothScroller.ScrollVectorProvider)) {
             return false;
         }
 
-        TimelineView.SmoothScroller smoothScroller = createScroller(layoutManager);
+        RecyclerView.SmoothScroller smoothScroller = createScroller(layoutManager);
         if (smoothScroller == null) {
             return false;
         }
 
         int targetPosition = findTargetSnapPosition(layoutManager, velocityX, velocityY);
-        if (targetPosition == TimelineView.NO_POSITION) {
+        if (targetPosition == RecyclerView.NO_POSITION) {
             return false;
         }
 
@@ -174,15 +174,15 @@ public abstract class SnapHelper extends TimelineView.OnFlingListener {
     }
 
     /**
-     * Snaps to a target view which currently exists in the attached {@link TimelineView}. This
-     * method is used to snap the view when the {@link TimelineView} is first attached; when
+     * Snaps to a target view which currently exists in the attached {@link RecyclerView}. This
+     * method is used to snap the view when the {@link RecyclerView} is first attached; when
      * snapping was triggered by a scroll and when the fling is at its final stages.
      */
     void snapToTargetExistingView() {
         if (mRecyclerView == null) {
             return;
         }
-        TimelineView.LayoutManager layoutManager = mRecyclerView.getLayoutManager();
+        RecyclerView.LayoutManager layoutManager = mRecyclerView.getLayoutManager();
         if (layoutManager == null) {
             return;
         }
@@ -199,36 +199,34 @@ public abstract class SnapHelper extends TimelineView.OnFlingListener {
     /**
      * Creates a scroller to be used in the snapping implementation.
      *
-     * @param layoutManager     The {@link TimelineView.LayoutManager} associated with the attached
-     *                          {@link TimelineView}.
+     * @param layoutManager     The {@link RecyclerView.LayoutManager} associated with the attached
+     *                          {@link RecyclerView}.
      *
-     * @return a {@link TimelineView.SmoothScroller} which will handle the scrolling.
+     * @return a {@link RecyclerView.SmoothScroller} which will handle the scrolling.
      */
     @Nullable
-    protected TimelineView.SmoothScroller createScroller(
-            @NonNull TimelineView.LayoutManager layoutManager) {
+    protected RecyclerView.SmoothScroller createScroller(RecyclerView.LayoutManager layoutManager) {
         return createSnapScroller(layoutManager);
     }
 
     /**
      * Creates a scroller to be used in the snapping implementation.
      *
-     * @param layoutManager     The {@link TimelineView.LayoutManager} associated with the attached
-     *                          {@link TimelineView}.
+     * @param layoutManager     The {@link RecyclerView.LayoutManager} associated with the attached
+     *                          {@link RecyclerView}.
      *
      * @return a {@link LinearSmoothScroller} which will handle the scrolling.
-     * @deprecated use {@link #createScroller(TimelineView.LayoutManager)} instead.
+     * @deprecated use {@link #createScroller(RecyclerView.LayoutManager)} instead.
      */
     @Nullable
     @Deprecated
-    protected LinearSmoothScroller createSnapScroller(
-            @NonNull TimelineView.LayoutManager layoutManager) {
-        if (!(layoutManager instanceof TimelineView.SmoothScroller.ScrollVectorProvider)) {
+    protected LinearSmoothScroller createSnapScroller(RecyclerView.LayoutManager layoutManager) {
+        if (!(layoutManager instanceof RecyclerView.SmoothScroller.ScrollVectorProvider)) {
             return null;
         }
         return new LinearSmoothScroller(mRecyclerView.getContext()) {
             @Override
-            protected void onTargetFound(View targetView, TimelineView.State state, Action action) {
+            protected void onTargetFound(View targetView, RecyclerView.State state, Action action) {
                 if (mRecyclerView == null) {
                     // The associated RecyclerView has been removed so there is no action to take.
                     return;
@@ -257,8 +255,8 @@ public abstract class SnapHelper extends TimelineView.OnFlingListener {
      * This method is called when the {@link SnapHelper} has intercepted a fling and it needs
      * to know the exact distance required to scroll by in order to snap to the target view.
      *
-     * @param layoutManager the {@link TimelineView.LayoutManager} associated with the attached
-     *                      {@link TimelineView}
+     * @param layoutManager the {@link RecyclerView.LayoutManager} associated with the attached
+     *                      {@link RecyclerView}
      * @param targetView the target view that is chosen as the view to snap
      *
      * @return the output coordinates the put the result into. out[0] is the distance
@@ -266,8 +264,8 @@ public abstract class SnapHelper extends TimelineView.OnFlingListener {
      */
     @SuppressWarnings("WeakerAccess")
     @Nullable
-    public abstract int[] calculateDistanceToFinalSnap(@NonNull TimelineView.LayoutManager layoutManager,
-            @NonNull View targetView);
+    public abstract int[] calculateDistanceToFinalSnap(@NonNull RecyclerView.LayoutManager layoutManager,
+                                                       @NonNull View targetView);
 
     /**
      * Override this method to provide a particular target view for snapping.
@@ -279,26 +277,26 @@ public abstract class SnapHelper extends TimelineView.OnFlingListener {
      * <p>
      * If this method returns {@code null}, SnapHelper will not snap to any view.
      *
-     * @param layoutManager the {@link TimelineView.LayoutManager} associated with the attached
-     *                      {@link TimelineView}
+     * @param layoutManager the {@link RecyclerView.LayoutManager} associated with the attached
+     *                      {@link RecyclerView}
      *
      * @return the target view to which to snap on fling or end of scroll
      */
     @SuppressWarnings("WeakerAccess")
     @Nullable
-    public abstract View findSnapView(TimelineView.LayoutManager layoutManager);
+    public abstract View findSnapView(RecyclerView.LayoutManager layoutManager);
 
     /**
      * Override to provide a particular adapter target position for snapping.
      *
-     * @param layoutManager the {@link TimelineView.LayoutManager} associated with the attached
-     *                      {@link TimelineView}
+     * @param layoutManager the {@link RecyclerView.LayoutManager} associated with the attached
+     *                      {@link RecyclerView}
      * @param velocityX fling velocity on the horizontal axis
      * @param velocityY fling velocity on the vertical axis
      *
-     * @return the target adapter position to you want to snap or {@link TimelineView#NO_POSITION}
+     * @return the target adapter position to you want to snap or {@link RecyclerView#NO_POSITION}
      *         if no snapping should happen
      */
-    public abstract int findTargetSnapPosition(TimelineView.LayoutManager layoutManager, int velocityX,
+    public abstract int findTargetSnapPosition(RecyclerView.LayoutManager layoutManager, int velocityX,
                                                int velocityY);
 }

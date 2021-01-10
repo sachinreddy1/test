@@ -21,6 +21,7 @@ import android.os.Build;
 import android.view.View;
 
 import androidx.core.view.ViewCompat;
+import androidx.recyclerview.R;
 
 /**
  * Package private class to keep implementations. Putting them inside ItemTouchUIUtil makes them
@@ -30,7 +31,7 @@ class ItemTouchUIUtilImpl implements ItemTouchUIUtil {
     static final ItemTouchUIUtil INSTANCE =  new ItemTouchUIUtilImpl();
 
     @Override
-    public void onDraw(Canvas c, TimelineView recyclerView, View view, float dX, float dY,
+    public void onDraw(Canvas c, RecyclerView recyclerView, View view, float dX, float dY,
                        int actionState, boolean isCurrentlyActive) {
         if (Build.VERSION.SDK_INT >= 21) {
             if (isCurrentlyActive) {
@@ -48,7 +49,7 @@ class ItemTouchUIUtilImpl implements ItemTouchUIUtil {
         view.setTranslationY(dY);
     }
 
-    private static float findMaxElevation(TimelineView recyclerView, View itemView) {
+    private static float findMaxElevation(RecyclerView recyclerView, View itemView) {
         final int childCount = recyclerView.getChildCount();
         float max = 0;
         for (int i = 0; i < childCount; i++) {
@@ -65,7 +66,7 @@ class ItemTouchUIUtilImpl implements ItemTouchUIUtil {
     }
 
     @Override
-    public void onDrawOver(Canvas c, TimelineView recyclerView, View view, float dX, float dY,
+    public void onDrawOver(Canvas c, RecyclerView recyclerView, View view, float dX, float dY,
                            int actionState, boolean isCurrentlyActive) {
     }
 

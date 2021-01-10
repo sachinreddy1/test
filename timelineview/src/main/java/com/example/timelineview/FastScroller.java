@@ -38,7 +38,7 @@ import java.lang.annotation.RetentionPolicy;
  * Class responsible to animate and provide a fast scroller.
  */
 @VisibleForTesting
-class FastScroller extends TimelineView.ItemDecoration implements TimelineView.OnItemTouchListener {
+class FastScroller extends RecyclerView.ItemDecoration implements RecyclerView.OnItemTouchListener {
     @IntDef({STATE_HIDDEN, STATE_VISIBLE, STATE_DRAGGING})
     @Retention(RetentionPolicy.SOURCE)
     private @interface State { }
@@ -57,7 +57,7 @@ class FastScroller extends TimelineView.ItemDecoration implements TimelineView.O
     private static final int DRAG_Y = 2;
 
     @IntDef({ANIMATION_STATE_OUT, ANIMATION_STATE_FADING_IN, ANIMATION_STATE_IN,
-        ANIMATION_STATE_FADING_OUT})
+            ANIMATION_STATE_FADING_OUT})
     @Retention(RetentionPolicy.SOURCE)
     private @interface AnimationState { }
     private static final int ANIMATION_STATE_OUT = 0;
@@ -104,7 +104,7 @@ class FastScroller extends TimelineView.ItemDecoration implements TimelineView.O
     private int mRecyclerViewWidth = 0;
     private int mRecyclerViewHeight = 0;
 
-    private TimelineView mRecyclerView;
+    private RecyclerView mRecyclerView;
     /**
      * Whether the document is long/wide enough to require scrolling. If not, we don't show the
      * relevant scroller.
@@ -126,16 +126,16 @@ class FastScroller extends TimelineView.ItemDecoration implements TimelineView.O
             hide(HIDE_DURATION_MS);
         }
     };
-    private final TimelineView.OnScrollListener
-            mOnScrollListener = new TimelineView.OnScrollListener() {
+    private final RecyclerView.OnScrollListener
+            mOnScrollListener = new RecyclerView.OnScrollListener() {
         @Override
-        public void onScrolled(TimelineView recyclerView, int dx, int dy) {
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             updateScrollPosition(recyclerView.computeHorizontalScrollOffset(),
                     recyclerView.computeVerticalScrollOffset());
         }
     };
 
-    FastScroller(TimelineView recyclerView, StateListDrawable verticalThumbDrawable,
+    FastScroller(RecyclerView recyclerView, StateListDrawable verticalThumbDrawable,
                  Drawable verticalTrackDrawable, StateListDrawable horizontalThumbDrawable,
                  Drawable horizontalTrackDrawable, int defaultWidth, int scrollbarMinimumRange,
                  int margin) {
@@ -146,9 +146,9 @@ class FastScroller extends TimelineView.ItemDecoration implements TimelineView.O
         mVerticalThumbWidth = Math.max(defaultWidth, verticalThumbDrawable.getIntrinsicWidth());
         mVerticalTrackWidth = Math.max(defaultWidth, verticalTrackDrawable.getIntrinsicWidth());
         mHorizontalThumbHeight = Math
-            .max(defaultWidth, horizontalThumbDrawable.getIntrinsicWidth());
+                .max(defaultWidth, horizontalThumbDrawable.getIntrinsicWidth());
         mHorizontalTrackHeight = Math
-            .max(defaultWidth, horizontalTrackDrawable.getIntrinsicWidth());
+                .max(defaultWidth, horizontalTrackDrawable.getIntrinsicWidth());
         mScrollbarMinimumRange = scrollbarMinimumRange;
         mMargin = margin;
         mVerticalThumbDrawable.setAlpha(SCROLLBAR_FULL_OPAQUE);
@@ -160,7 +160,7 @@ class FastScroller extends TimelineView.ItemDecoration implements TimelineView.O
         attachToRecyclerView(recyclerView);
     }
 
-    public void attachToRecyclerView(@Nullable TimelineView recyclerView) {
+    public void attachToRecyclerView(@Nullable RecyclerView recyclerView) {
         if (mRecyclerView == recyclerView) {
             return; // nothing to do
         }
@@ -264,7 +264,7 @@ class FastScroller extends TimelineView.ItemDecoration implements TimelineView.O
     }
 
     @Override
-    public void onDrawOver(Canvas canvas, TimelineView parent, TimelineView.State state) {
+    public void onDrawOver(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
         if (mRecyclerViewWidth != mRecyclerView.getWidth()
                 || mRecyclerViewHeight != mRecyclerView.getHeight()) {
             mRecyclerViewWidth = mRecyclerView.getWidth();
@@ -294,14 +294,14 @@ class FastScroller extends TimelineView.ItemDecoration implements TimelineView.O
         int top = mVerticalThumbCenterY - mVerticalThumbHeight / 2;
         mVerticalThumbDrawable.setBounds(0, 0, mVerticalThumbWidth, mVerticalThumbHeight);
         mVerticalTrackDrawable
-            .setBounds(0, 0, mVerticalTrackWidth, mRecyclerViewHeight);
+                .setBounds(0, 0, mVerticalTrackWidth, mRecyclerViewHeight);
 
         if (isLayoutRTL()) {
             mVerticalTrackDrawable.draw(canvas);
             canvas.translate(mVerticalThumbWidth, top);
             canvas.scale(-1, 1);
             mVerticalThumbDrawable.draw(canvas);
-            canvas.scale(-1, 1);
+            canvas.scale(1, 1);
             canvas.translate(-mVerticalThumbWidth, -top);
         } else {
             canvas.translate(left, 0);
@@ -319,7 +319,7 @@ class FastScroller extends TimelineView.ItemDecoration implements TimelineView.O
         int left = mHorizontalThumbCenterX - mHorizontalThumbWidth / 2;
         mHorizontalThumbDrawable.setBounds(0, 0, mHorizontalThumbWidth, mHorizontalThumbHeight);
         mHorizontalTrackDrawable
-            .setBounds(0, 0, mRecyclerViewWidth, mHorizontalTrackHeight);
+                .setBounds(0, 0, mRecyclerViewWidth, mHorizontalTrackHeight);
 
         canvas.translate(0, top);
         mHorizontalTrackDrawable.draw(canvas);
@@ -339,12 +339,12 @@ class FastScroller extends TimelineView.ItemDecoration implements TimelineView.O
         int verticalContentLength = mRecyclerView.computeVerticalScrollRange();
         int verticalVisibleLength = mRecyclerViewHeight;
         mNeedVerticalScrollbar = verticalContentLength - verticalVisibleLength > 0
-            && mRecyclerViewHeight >= mScrollbarMinimumRange;
+                && mRecyclerViewHeight >= mScrollbarMinimumRange;
 
         int horizontalContentLength = mRecyclerView.computeHorizontalScrollRange();
         int horizontalVisibleLength = mRecyclerViewWidth;
         mNeedHorizontalScrollbar = horizontalContentLength - horizontalVisibleLength > 0
-            && mRecyclerViewWidth >= mScrollbarMinimumRange;
+                && mRecyclerViewWidth >= mScrollbarMinimumRange;
 
         if (!mNeedVerticalScrollbar && !mNeedHorizontalScrollbar) {
             if (mState != STATE_HIDDEN) {
@@ -356,17 +356,17 @@ class FastScroller extends TimelineView.ItemDecoration implements TimelineView.O
         if (mNeedVerticalScrollbar) {
             float middleScreenPos = offsetY + verticalVisibleLength / 2.0f;
             mVerticalThumbCenterY =
-                (int) ((verticalVisibleLength * middleScreenPos) / verticalContentLength);
+                    (int) ((verticalVisibleLength * middleScreenPos) / verticalContentLength);
             mVerticalThumbHeight = Math.min(verticalVisibleLength,
-                (verticalVisibleLength * verticalVisibleLength) / verticalContentLength);
+                    (verticalVisibleLength * verticalVisibleLength) / verticalContentLength);
         }
 
         if (mNeedHorizontalScrollbar) {
             float middleScreenPos = offsetX + horizontalVisibleLength / 2.0f;
             mHorizontalThumbCenterX =
-                (int) ((horizontalVisibleLength * middleScreenPos) / horizontalContentLength);
+                    (int) ((horizontalVisibleLength * middleScreenPos) / horizontalContentLength);
             mHorizontalThumbWidth = Math.min(horizontalVisibleLength,
-                (horizontalVisibleLength * horizontalVisibleLength) / horizontalContentLength);
+                    (horizontalVisibleLength * horizontalVisibleLength) / horizontalContentLength);
         }
 
         if (mState == STATE_HIDDEN || mState == STATE_VISIBLE) {
@@ -375,8 +375,8 @@ class FastScroller extends TimelineView.ItemDecoration implements TimelineView.O
     }
 
     @Override
-    public boolean onInterceptTouchEvent(@NonNull TimelineView recyclerView,
-            @NonNull MotionEvent ev) {
+    public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView,
+                                         @NonNull MotionEvent ev) {
         final boolean handled;
         if (mState == STATE_VISIBLE) {
             boolean insideVerticalThumb = isPointInsideVerticalThumb(ev.getX(), ev.getY());
@@ -405,7 +405,7 @@ class FastScroller extends TimelineView.ItemDecoration implements TimelineView.O
     }
 
     @Override
-    public void onTouchEvent(@NonNull TimelineView recyclerView, @NonNull MotionEvent me) {
+    public void onTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent me) {
         if (mState == STATE_HIDDEN) {
             return;
         }
@@ -475,7 +475,7 @@ class FastScroller extends TimelineView.ItemDecoration implements TimelineView.O
     }
 
     private int scrollTo(float oldDragPos, float newDragPos, int[] scrollbarRange, int scrollRange,
-            int scrollOffset, int viewLength) {
+                         int scrollOffset, int viewLength) {
         int scrollbarLength = scrollbarRange[1] - scrollbarRange[0];
         if (scrollbarLength == 0) {
             return 0;
@@ -493,17 +493,17 @@ class FastScroller extends TimelineView.ItemDecoration implements TimelineView.O
 
     @VisibleForTesting
     boolean isPointInsideVerticalThumb(float x, float y) {
-        return (isLayoutRTL() ? x <= mVerticalThumbWidth
-            : x >= mRecyclerViewWidth - mVerticalThumbWidth)
-            && y >= mVerticalThumbCenterY - mVerticalThumbHeight / 2
-            && y <= mVerticalThumbCenterY + mVerticalThumbHeight / 2;
+        return (isLayoutRTL() ? x <= mVerticalThumbWidth / 2
+                : x >= mRecyclerViewWidth - mVerticalThumbWidth)
+                && y >= mVerticalThumbCenterY - mVerticalThumbHeight / 2
+                && y <= mVerticalThumbCenterY + mVerticalThumbHeight / 2;
     }
 
     @VisibleForTesting
     boolean isPointInsideHorizontalThumb(float x, float y) {
         return (y >= mRecyclerViewHeight - mHorizontalThumbHeight)
-            && x >= mHorizontalThumbCenterX - mHorizontalThumbWidth / 2
-            && x <= mHorizontalThumbCenterX + mHorizontalThumbWidth / 2;
+                && x >= mHorizontalThumbCenterX - mHorizontalThumbWidth / 2
+                && x <= mHorizontalThumbCenterX + mHorizontalThumbWidth / 2;
     }
 
     @VisibleForTesting

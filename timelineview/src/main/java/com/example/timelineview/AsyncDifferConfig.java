@@ -15,6 +15,7 @@
  */
 
 package com.example.timelineview;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
@@ -23,10 +24,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 /**
- * Configuration object for {@link ListAdapter}, {@link AsyncListDiffer}, and similar
+ * Configuration object for {@link ListAdapter}, {@link androidx.recyclerview.widget.AsyncListDiffer}, and similar
  * background-thread list diffing adapter logic.
  * <p>
- * At minimum, defines item diffing behavior with a {@link DiffUtil.ItemCallback}, used to compute
+ * At minimum, defines item diffing behavior with a {@link androidx.recyclerview.widget.DiffUtil.ItemCallback}, used to compute
  * item differences to pass to a RecyclerView adapter.
  *
  * @param <T> Type of items in the lists, and being compared.
@@ -70,7 +71,7 @@ public final class AsyncDifferConfig<T> {
     }
 
     /**
-     * Builder class for {@link AsyncDifferConfig}.
+     * Builder class for {@link androidx.recyclerview.widget.AsyncDifferConfig}.
      *
      * @param <T>
      */
@@ -97,7 +98,7 @@ public final class AsyncDifferConfig<T> {
          */
         @RestrictTo(RestrictTo.Scope.LIBRARY)
         @NonNull
-        public Builder<T> setMainThreadExecutor(Executor executor) {
+        public AsyncDifferConfig.Builder<T> setMainThreadExecutor(Executor executor) {
             mMainThreadExecutor = executor;
             return this;
         }
@@ -113,7 +114,7 @@ public final class AsyncDifferConfig<T> {
          */
         @SuppressWarnings({"unused", "WeakerAccess"})
         @NonNull
-        public Builder<T> setBackgroundThreadExecutor(Executor executor) {
+        public AsyncDifferConfig.Builder<T> setBackgroundThreadExecutor(Executor executor) {
             mBackgroundThreadExecutor = executor;
             return this;
         }

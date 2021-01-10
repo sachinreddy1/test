@@ -15,6 +15,7 @@
  */
 
 package com.example.timelineview;
+
 import android.graphics.PointF;
 import android.view.View;
 
@@ -26,7 +27,7 @@ import androidx.annotation.Nullable;
  * orientation.
  * <p>
  * The implementation will snap the center of the target child view to the center of
- * the attached {@link TimelineView}. If you intend to change this behavior then override
+ * the attached {@link RecyclerView}. If you intend to change this behavior then override
  * {@link SnapHelper#calculateDistanceToFinalSnap}.
  */
 public class LinearSnapHelper extends SnapHelper {
@@ -41,17 +42,17 @@ public class LinearSnapHelper extends SnapHelper {
 
     @Override
     public int[] calculateDistanceToFinalSnap(
-            @NonNull TimelineView.LayoutManager layoutManager, @NonNull View targetView) {
+            @NonNull RecyclerView.LayoutManager layoutManager, @NonNull View targetView) {
         int[] out = new int[2];
         if (layoutManager.canScrollHorizontally()) {
-            out[0] = distanceToCenter(targetView,
+            out[0] = distanceToCenter(layoutManager, targetView,
                     getHorizontalHelper(layoutManager));
         } else {
             out[0] = 0;
         }
 
         if (layoutManager.canScrollVertically()) {
-            out[1] = distanceToCenter(targetView,
+            out[1] = distanceToCenter(layoutManager, targetView,
                     getVerticalHelper(layoutManager));
         } else {
             out[1] = 0;
@@ -60,36 +61,36 @@ public class LinearSnapHelper extends SnapHelper {
     }
 
     @Override
-    public int findTargetSnapPosition(TimelineView.LayoutManager layoutManager, int velocityX,
+    public int findTargetSnapPosition(RecyclerView.LayoutManager layoutManager, int velocityX,
                                       int velocityY) {
-        if (!(layoutManager instanceof TimelineView.SmoothScroller.ScrollVectorProvider)) {
-            return TimelineView.NO_POSITION;
+        if (!(layoutManager instanceof RecyclerView.SmoothScroller.ScrollVectorProvider)) {
+            return RecyclerView.NO_POSITION;
         }
 
         final int itemCount = layoutManager.getItemCount();
         if (itemCount == 0) {
-            return TimelineView.NO_POSITION;
+            return RecyclerView.NO_POSITION;
         }
 
         final View currentView = findSnapView(layoutManager);
         if (currentView == null) {
-            return TimelineView.NO_POSITION;
+            return RecyclerView.NO_POSITION;
         }
 
         final int currentPosition = layoutManager.getPosition(currentView);
-        if (currentPosition == TimelineView.NO_POSITION) {
-            return TimelineView.NO_POSITION;
+        if (currentPosition == RecyclerView.NO_POSITION) {
+            return RecyclerView.NO_POSITION;
         }
 
-        TimelineView.SmoothScroller.ScrollVectorProvider vectorProvider =
-                (TimelineView.SmoothScroller.ScrollVectorProvider) layoutManager;
+        RecyclerView.SmoothScroller.ScrollVectorProvider vectorProvider =
+                (RecyclerView.SmoothScroller.ScrollVectorProvider) layoutManager;
         // deltaJumps sign comes from the velocity which may not match the order of children in
         // the LayoutManager. To overcome this, we ask for a vector from the LayoutManager to
         // get the direction.
         PointF vectorForEnd = vectorProvider.computeScrollVectorForPosition(itemCount - 1);
         if (vectorForEnd == null) {
             // cannot get a vector for the given position.
-            return TimelineView.NO_POSITION;
+            return RecyclerView.NO_POSITION;
         }
 
         int vDeltaJump, hDeltaJump;
@@ -114,7 +115,7 @@ public class LinearSnapHelper extends SnapHelper {
 
         int deltaJump = layoutManager.canScrollVertically() ? vDeltaJump : hDeltaJump;
         if (deltaJump == 0) {
-            return TimelineView.NO_POSITION;
+            return RecyclerView.NO_POSITION;
         }
 
         int targetPos = currentPosition + deltaJump;
@@ -128,7 +129,7 @@ public class LinearSnapHelper extends SnapHelper {
     }
 
     @Override
-    public View findSnapView(TimelineView.LayoutManager layoutManager) {
+    public View findSnapView(RecyclerView.LayoutManager layoutManager) {
         if (layoutManager.canScrollVertically()) {
             return findCenterView(layoutManager, getVerticalHelper(layoutManager));
         } else if (layoutManager.canScrollHorizontally()) {
@@ -137,7 +138,8 @@ public class LinearSnapHelper extends SnapHelper {
         return null;
     }
 
-    private int distanceToCenter(@NonNull View targetView, OrientationHelper helper) {
+    private int distanceToCenter(@NonNull RecyclerView.LayoutManager layoutManager,
+                                 @NonNull View targetView, OrientationHelper helper) {
         final int childCenter = helper.getDecoratedStart(targetView)
                 + (helper.getDecoratedMeasurement(targetView) / 2);
         final int containerCenter = helper.getStartAfterPadding() + helper.getTotalSpace() / 2;
@@ -147,15 +149,15 @@ public class LinearSnapHelper extends SnapHelper {
     /**
      * Estimates a position to which SnapHelper will try to scroll to in response to a fling.
      *
-     * @param layoutManager The {@link TimelineView.LayoutManager} associated with the attached
-     *                      {@link TimelineView}.
+     * @param layoutManager The {@link RecyclerView.LayoutManager} associated with the attached
+     *                      {@link RecyclerView}.
      * @param helper        The {@link OrientationHelper} that is created from the LayoutManager.
      * @param velocityX     The velocity on the x axis.
      * @param velocityY     The velocity on the y axis.
      *
      * @return The diff between the target scroll position and the current position.
      */
-    private int estimateNextPositionDiffForFling(TimelineView.LayoutManager layoutManager,
+    private int estimateNextPositionDiffForFling(RecyclerView.LayoutManager layoutManager,
                                                  OrientationHelper helper, int velocityX, int velocityY) {
         int[] distances = calculateScrollDistance(velocityX, velocityY);
         float distancePerChild = computeDistancePerChild(layoutManager, helper);
@@ -170,14 +172,14 @@ public class LinearSnapHelper extends SnapHelper {
     /**
      * Return the child view that is currently closest to the center of this parent.
      *
-     * @param layoutManager The {@link TimelineView.LayoutManager} associated with the attached
-     *                      {@link TimelineView}.
-     * @param helper The relevant {@link OrientationHelper} for the attached {@link TimelineView}.
+     * @param layoutManager The {@link RecyclerView.LayoutManager} associated with the attached
+     *                      {@link RecyclerView}.
+     * @param helper The relevant {@link OrientationHelper} for the attached {@link RecyclerView}.
      *
      * @return the child view that is currently closest to the center of this parent.
      */
     @Nullable
-    private View findCenterView(TimelineView.LayoutManager layoutManager,
+    private View findCenterView(RecyclerView.LayoutManager layoutManager,
                                 OrientationHelper helper) {
         int childCount = layoutManager.getChildCount();
         if (childCount == 0) {
@@ -208,15 +210,15 @@ public class LinearSnapHelper extends SnapHelper {
      * <p>
      * Returns a negative value if it cannot be calculated.
      *
-     * @param layoutManager The {@link TimelineView.LayoutManager} associated with the attached
-     *                      {@link TimelineView}.
+     * @param layoutManager The {@link RecyclerView.LayoutManager} associated with the attached
+     *                      {@link RecyclerView}.
      * @param helper        The relevant {@link OrientationHelper} for the attached
-     *                      {@link TimelineView.LayoutManager}.
+     *                      {@link RecyclerView.LayoutManager}.
      *
      * @return A float value that is the average number of pixels needed to scroll by one view in
      * the relevant direction.
      */
-    private float computeDistancePerChild(TimelineView.LayoutManager layoutManager,
+    private float computeDistancePerChild(RecyclerView.LayoutManager layoutManager,
                                           OrientationHelper helper) {
         View minPosView = null;
         View maxPosView = null;
@@ -230,7 +232,7 @@ public class LinearSnapHelper extends SnapHelper {
         for (int i = 0; i < childCount; i++) {
             View child = layoutManager.getChildAt(i);
             final int pos = layoutManager.getPosition(child);
-            if (pos == TimelineView.NO_POSITION) {
+            if (pos == RecyclerView.NO_POSITION) {
                 continue;
             }
             if (pos < minPos) {
@@ -257,7 +259,7 @@ public class LinearSnapHelper extends SnapHelper {
     }
 
     @NonNull
-    private OrientationHelper getVerticalHelper(@NonNull TimelineView.LayoutManager layoutManager) {
+    private OrientationHelper getVerticalHelper(@NonNull RecyclerView.LayoutManager layoutManager) {
         if (mVerticalHelper == null || mVerticalHelper.mLayoutManager != layoutManager) {
             mVerticalHelper = OrientationHelper.createVerticalHelper(layoutManager);
         }
@@ -266,7 +268,7 @@ public class LinearSnapHelper extends SnapHelper {
 
     @NonNull
     private OrientationHelper getHorizontalHelper(
-            @NonNull TimelineView.LayoutManager layoutManager) {
+            @NonNull RecyclerView.LayoutManager layoutManager) {
         if (mHorizontalHelper == null || mHorizontalHelper.mLayoutManager != layoutManager) {
             mHorizontalHelper = OrientationHelper.createHorizontalHelper(layoutManager);
         }

@@ -2,11 +2,10 @@ package com.example.recyclerviewtest.presentation.adapter
 
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import androidx.recyclerview.widget.RecyclerView
-import com.example.timelineview.TimelineView
+import com.example.timelineview.RecyclerView
 
 @BindingAdapter("android:timelineItems")
-fun setTimelineItems(timelineView: TimelineView, items: List<ListItem>) {
+fun setTimelineItems(timelineView: RecyclerView, items: List<ListItem>) {
     if (timelineView.adapter is BottomRecyclerViewAdapter<*>) {
         (timelineView.adapter as BottomRecyclerViewAdapter<ListItem>).itemList = items
     }

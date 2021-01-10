@@ -32,7 +32,7 @@ import java.util.concurrent.Executor;
  * thread.
  * <p>
  * It can be connected to a
- * {@link TimelineView.Adapter RecyclerView.Adapter}, and will signal the
+ * {@link RecyclerView.Adapter RecyclerView.Adapter}, and will signal the
  * adapter of changes between sumbitted lists.
  * <p>
  * For simplicity, the {@link ListAdapter} wrapper class can often be used instead of the
@@ -155,10 +155,10 @@ public class AsyncListDiffer<T> {
      * @param adapter Adapter to dispatch position updates to.
      * @param diffCallback ItemCallback that compares items to dispatch appropriate animations when
      *
-     * @see DiffUtil.DiffResult#dispatchUpdatesTo(TimelineView.Adapter)
+     * @see DiffUtil.DiffResult#dispatchUpdatesTo(RecyclerView.Adapter)
      */
-    public AsyncListDiffer(@NonNull TimelineView.Adapter adapter,
-            @NonNull DiffUtil.ItemCallback<T> diffCallback) {
+    public AsyncListDiffer(@NonNull RecyclerView.Adapter adapter,
+                           @NonNull DiffUtil.ItemCallback<T> diffCallback) {
         this(new AdapterListUpdateCallback(adapter),
             new AsyncDifferConfig.Builder<>(diffCallback).build());
     }
@@ -171,11 +171,11 @@ public class AsyncListDiffer<T> {
      * @param config Config to define background work Executor, and DiffUtil.ItemCallback for
      *               computing List diffs.
      *
-     * @see DiffUtil.DiffResult#dispatchUpdatesTo(TimelineView.Adapter)
+     * @see DiffUtil.DiffResult#dispatchUpdatesTo(RecyclerView.Adapter)
      */
     @SuppressWarnings("WeakerAccess")
     public AsyncListDiffer(@NonNull ListUpdateCallback listUpdateCallback,
-            @NonNull AsyncDifferConfig<T> config) {
+                           @NonNull AsyncDifferConfig<T> config) {
         mUpdateCallback = listUpdateCallback;
         mConfig = config;
         if (config.getMainThreadExecutor() != null) {
@@ -198,7 +198,7 @@ public class AsyncListDiffer<T> {
 
     // Max generation of currently scheduled runnable
     @SuppressWarnings("WeakerAccess") /* synthetic access */
-    int mMaxScheduledGeneration;
+            int mMaxScheduledGeneration;
 
     /**
      * Get the current List - any diffing to present this list has already been computed and
@@ -249,7 +249,7 @@ public class AsyncListDiffer<T> {
      */
     @SuppressWarnings("WeakerAccess")
     public void submitList(@Nullable final List<T> newList,
-            @Nullable final Runnable commitCallback) {
+                           @Nullable final Runnable commitCallback) {
         // incrementing generation means any currently-running diffs are discarded when they finish
         final int runGeneration = ++mMaxScheduledGeneration;
 
@@ -370,7 +370,7 @@ public class AsyncListDiffer<T> {
     }
 
     private void onCurrentListChanged(@NonNull List<T> previousList,
-            @Nullable Runnable commitCallback) {
+                                      @Nullable Runnable commitCallback) {
         // current list is always mReadOnlyList
         for (ListListener<T> listener : mListeners) {
             listener.onCurrentListChanged(previousList, mReadOnlyList);

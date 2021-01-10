@@ -28,7 +28,7 @@ import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import java.util.Arrays;
 
 /**
- * A {@link TimelineView.LayoutManager} implementations that lays out items in a grid.
+ * A {@link RecyclerView.LayoutManager} implementations that lays out items in a grid.
  * <p>
  * By default, each item occupies 1 span. You can change it by providing a custom
  * {@link SpanSizeLookup} instance via {@link #setSpanSizeLookup(SpanSizeLookup)}.
@@ -94,7 +94,7 @@ public class GridLayoutManager extends LinearLayoutManager {
      * @param reverseLayout When set to true, layouts from end to start.
      */
     public GridLayoutManager(Context context, int spanCount,
-                             @TimelineView.Orientation int orientation, boolean reverseLayout) {
+                             @RecyclerView.Orientation int orientation, boolean reverseLayout) {
         super(context, orientation, reverseLayout);
         setSpanCount(spanCount);
     }
@@ -114,8 +114,8 @@ public class GridLayoutManager extends LinearLayoutManager {
     }
 
     @Override
-    public int getRowCountForAccessibility(TimelineView.Recycler recycler,
-                                           TimelineView.State state) {
+    public int getRowCountForAccessibility(RecyclerView.Recycler recycler,
+                                           RecyclerView.State state) {
         if (mOrientation == HORIZONTAL) {
             return mSpanCount;
         }
@@ -128,8 +128,8 @@ public class GridLayoutManager extends LinearLayoutManager {
     }
 
     @Override
-    public int getColumnCountForAccessibility(TimelineView.Recycler recycler,
-                                              TimelineView.State state) {
+    public int getColumnCountForAccessibility(RecyclerView.Recycler recycler,
+                                              RecyclerView.State state) {
         if (mOrientation == VERTICAL) {
             return mSpanCount;
         }
@@ -142,8 +142,8 @@ public class GridLayoutManager extends LinearLayoutManager {
     }
 
     @Override
-    public void onInitializeAccessibilityNodeInfoForItem(TimelineView.Recycler recycler,
-                                                         TimelineView.State state, View host, AccessibilityNodeInfoCompat info) {
+    public void onInitializeAccessibilityNodeInfoForItem(RecyclerView.Recycler recycler,
+                                                         RecyclerView.State state, View host, AccessibilityNodeInfoCompat info) {
         ViewGroup.LayoutParams lp = host.getLayoutParams();
         if (!(lp instanceof LayoutParams)) {
             super.onInitializeAccessibilityNodeInfoForItem(host, info);
@@ -163,7 +163,7 @@ public class GridLayoutManager extends LinearLayoutManager {
     }
 
     @Override
-    public void onLayoutChildren(TimelineView.Recycler recycler, TimelineView.State state) {
+    public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
         if (state.isPreLayout()) {
             cachePreLayoutSpanMapping();
         }
@@ -175,7 +175,7 @@ public class GridLayoutManager extends LinearLayoutManager {
     }
 
     @Override
-    public void onLayoutCompleted(TimelineView.State state) {
+    public void onLayoutCompleted(RecyclerView.State state) {
         super.onLayoutCompleted(state);
         mPendingSpanCountChange = false;
     }
@@ -196,38 +196,38 @@ public class GridLayoutManager extends LinearLayoutManager {
     }
 
     @Override
-    public void onItemsAdded(TimelineView recyclerView, int positionStart, int itemCount) {
+    public void onItemsAdded(RecyclerView recyclerView, int positionStart, int itemCount) {
         mSpanSizeLookup.invalidateSpanIndexCache();
         mSpanSizeLookup.invalidateSpanGroupIndexCache();
     }
 
     @Override
-    public void onItemsChanged(TimelineView recyclerView) {
+    public void onItemsChanged(RecyclerView recyclerView) {
         mSpanSizeLookup.invalidateSpanIndexCache();
         mSpanSizeLookup.invalidateSpanGroupIndexCache();
     }
 
     @Override
-    public void onItemsRemoved(TimelineView recyclerView, int positionStart, int itemCount) {
+    public void onItemsRemoved(RecyclerView recyclerView, int positionStart, int itemCount) {
         mSpanSizeLookup.invalidateSpanIndexCache();
         mSpanSizeLookup.invalidateSpanGroupIndexCache();
     }
 
     @Override
-    public void onItemsUpdated(TimelineView recyclerView, int positionStart, int itemCount,
+    public void onItemsUpdated(RecyclerView recyclerView, int positionStart, int itemCount,
                                Object payload) {
         mSpanSizeLookup.invalidateSpanIndexCache();
         mSpanSizeLookup.invalidateSpanGroupIndexCache();
     }
 
     @Override
-    public void onItemsMoved(TimelineView recyclerView, int from, int to, int itemCount) {
+    public void onItemsMoved(RecyclerView recyclerView, int from, int to, int itemCount) {
         mSpanSizeLookup.invalidateSpanIndexCache();
         mSpanSizeLookup.invalidateSpanGroupIndexCache();
     }
 
     @Override
-    public TimelineView.LayoutParams generateDefaultLayoutParams() {
+    public RecyclerView.LayoutParams generateDefaultLayoutParams() {
         if (mOrientation == HORIZONTAL) {
             return new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);
@@ -238,12 +238,12 @@ public class GridLayoutManager extends LinearLayoutManager {
     }
 
     @Override
-    public TimelineView.LayoutParams generateLayoutParams(Context c, AttributeSet attrs) {
+    public RecyclerView.LayoutParams generateLayoutParams(Context c, AttributeSet attrs) {
         return new LayoutParams(c, attrs);
     }
 
     @Override
-    public TimelineView.LayoutParams generateLayoutParams(ViewGroup.LayoutParams lp) {
+    public RecyclerView.LayoutParams generateLayoutParams(ViewGroup.LayoutParams lp) {
         if (lp instanceof ViewGroup.MarginLayoutParams) {
             return new LayoutParams((ViewGroup.MarginLayoutParams) lp);
         } else {
@@ -252,7 +252,7 @@ public class GridLayoutManager extends LinearLayoutManager {
     }
 
     @Override
-    public boolean checkLayoutParams(TimelineView.LayoutParams lp) {
+    public boolean checkLayoutParams(RecyclerView.LayoutParams lp) {
         return lp instanceof LayoutParams;
     }
 
@@ -354,7 +354,7 @@ public class GridLayoutManager extends LinearLayoutManager {
     }
 
     @Override
-    void onAnchorReady(TimelineView.Recycler recycler, TimelineView.State state,
+    void onAnchorReady(RecyclerView.Recycler recycler, RecyclerView.State state,
                        AnchorInfo anchorInfo, int itemDirection) {
         super.onAnchorReady(recycler, state, anchorInfo, itemDirection);
         updateMeasurements();
@@ -371,23 +371,23 @@ public class GridLayoutManager extends LinearLayoutManager {
     }
 
     @Override
-    public int scrollHorizontallyBy(int dx, TimelineView.Recycler recycler,
-                                    TimelineView.State state) {
+    public int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler,
+                                    RecyclerView.State state) {
         updateMeasurements();
         ensureViewSet();
         return super.scrollHorizontallyBy(dx, recycler, state);
     }
 
     @Override
-    public int scrollVerticallyBy(int dy, TimelineView.Recycler recycler,
-                                  TimelineView.State state) {
+    public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler,
+                                  RecyclerView.State state) {
         updateMeasurements();
         ensureViewSet();
         return super.scrollVerticallyBy(dy, recycler, state);
     }
 
-    private void ensureAnchorIsInCorrectSpan(TimelineView.Recycler recycler,
-                                             TimelineView.State state, AnchorInfo anchorInfo, int itemDirection) {
+    private void ensureAnchorIsInCorrectSpan(RecyclerView.Recycler recycler,
+                                             RecyclerView.State state, AnchorInfo anchorInfo, int itemDirection) {
         final boolean layingOutInPrimaryDirection =
                 itemDirection == LayoutState.ITEM_DIRECTION_TAIL;
         int span = getSpanIndex(recycler, state, anchorInfo.mPosition);
@@ -416,26 +416,14 @@ public class GridLayoutManager extends LinearLayoutManager {
     }
 
     @Override
-    View findReferenceChild(TimelineView.Recycler recycler, TimelineView.State state,
-                            boolean layoutFromEnd, boolean traverseChildrenInReverseOrder) {
-
-        int start = 0;
-        int end = getChildCount();
-        int diff = 1;
-        if (traverseChildrenInReverseOrder) {
-            start = getChildCount() - 1;
-            end = -1;
-            diff = -1;
-        }
-
-        int itemCount = state.getItemCount();
-
+    View findReferenceChild(RecyclerView.Recycler recycler, RecyclerView.State state,
+                            int start, int end, int itemCount) {
         ensureLayoutState();
         View invalidMatch = null;
         View outOfBoundsMatch = null;
-
         final int boundsStart = mOrientationHelper.getStartAfterPadding();
         final int boundsEnd = mOrientationHelper.getEndAfterPadding();
+        final int diff = end > start ? 1 : -1;
 
         for (int i = start; i != end; i += diff) {
             final View view = getChildAt(i);
@@ -445,7 +433,7 @@ public class GridLayoutManager extends LinearLayoutManager {
                 if (span != 0) {
                     continue;
                 }
-                if (((TimelineView.LayoutParams) view.getLayoutParams()).isItemRemoved()) {
+                if (((RecyclerView.LayoutParams) view.getLayoutParams()).isItemRemoved()) {
                     if (invalidMatch == null) {
                         invalidMatch = view; // removed item, least preferred
                     }
@@ -462,7 +450,7 @@ public class GridLayoutManager extends LinearLayoutManager {
         return outOfBoundsMatch != null ? outOfBoundsMatch : invalidMatch;
     }
 
-    private int getSpanGroupIndex(TimelineView.Recycler recycler, TimelineView.State state,
+    private int getSpanGroupIndex(RecyclerView.Recycler recycler, RecyclerView.State state,
                                   int viewPosition) {
         if (!state.isPreLayout()) {
             return mSpanSizeLookup.getCachedSpanGroupIndex(viewPosition, mSpanCount);
@@ -479,7 +467,7 @@ public class GridLayoutManager extends LinearLayoutManager {
         return mSpanSizeLookup.getCachedSpanGroupIndex(adapterPosition, mSpanCount);
     }
 
-    private int getSpanIndex(TimelineView.Recycler recycler, TimelineView.State state, int pos) {
+    private int getSpanIndex(RecyclerView.Recycler recycler, RecyclerView.State state, int pos) {
         if (!state.isPreLayout()) {
             return mSpanSizeLookup.getCachedSpanIndex(pos, mSpanCount);
         }
@@ -500,7 +488,7 @@ public class GridLayoutManager extends LinearLayoutManager {
         return mSpanSizeLookup.getCachedSpanIndex(adapterPosition, mSpanCount);
     }
 
-    private int getSpanSize(TimelineView.Recycler recycler, TimelineView.State state, int pos) {
+    private int getSpanSize(RecyclerView.Recycler recycler, RecyclerView.State state, int pos) {
         if (!state.isPreLayout()) {
             return mSpanSizeLookup.getSpanSize(pos);
         }
@@ -522,7 +510,7 @@ public class GridLayoutManager extends LinearLayoutManager {
     }
 
     @Override
-    void collectPrefetchPositionsForLayoutState(TimelineView.State state, LayoutState layoutState,
+    void collectPrefetchPositionsForLayoutState(RecyclerView.State state, LayoutState layoutState,
                                                 LayoutPrefetchRegistry layoutPrefetchRegistry) {
         int remainingSpan = mSpanCount;
         int count = 0;
@@ -537,7 +525,7 @@ public class GridLayoutManager extends LinearLayoutManager {
     }
 
     @Override
-    void layoutChunk(TimelineView.Recycler recycler, TimelineView.State state,
+    void layoutChunk(RecyclerView.Recycler recycler, RecyclerView.State state,
                      LayoutState layoutState, LayoutChunkResult result) {
         final int otherDirSpecMode = mOrientationHelper.getModeInOther();
         final boolean flexibleInOtherDir = otherDirSpecMode != View.MeasureSpec.EXACTLY;
@@ -551,6 +539,7 @@ public class GridLayoutManager extends LinearLayoutManager {
         final boolean layingOutInPrimaryDirection =
                 layoutState.mItemDirection == LayoutState.ITEM_DIRECTION_TAIL;
         int count = 0;
+        int consumedSpanCount = 0;
         int remainingSpan = mSpanCount;
         if (!layingOutInPrimaryDirection) {
             int itemSpanIndex = getSpanIndex(recycler, state, layoutState.mCurrentPosition);
@@ -573,6 +562,7 @@ public class GridLayoutManager extends LinearLayoutManager {
             if (view == null) {
                 break;
             }
+            consumedSpanCount += spanSize;
             mSet[count] = view;
             count++;
         }
@@ -763,8 +753,8 @@ public class GridLayoutManager extends LinearLayoutManager {
     }
 
     private void measureChildWithDecorationsAndMargin(View child, int widthSpec, int heightSpec,
-            boolean alreadyMeasured) {
-        TimelineView.LayoutParams lp = (TimelineView.LayoutParams) child.getLayoutParams();
+                                                      boolean alreadyMeasured) {
+        RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) child.getLayoutParams();
         final boolean measure;
         if (alreadyMeasured) {
             measure = shouldReMeasureChild(child, widthSpec, heightSpec, lp);
@@ -776,7 +766,7 @@ public class GridLayoutManager extends LinearLayoutManager {
         }
     }
 
-    private void assignSpans(TimelineView.Recycler recycler, TimelineView.State state, int count,
+    private void assignSpans(RecyclerView.Recycler recycler, RecyclerView.State state, int count,
                              boolean layingOutInPrimaryDirection) {
         // spans are always assigned from 0 to N no matter if it is RTL or not.
         // RTL is used only when positioning the view.
@@ -1074,7 +1064,7 @@ public class GridLayoutManager extends LinearLayoutManager {
 
     @Override
     public View onFocusSearchFailed(View focused, int focusDirection,
-                                    TimelineView.Recycler recycler, TimelineView.State state) {
+                                    RecyclerView.Recycler recycler, RecyclerView.State state) {
         View prevFocusedChild = findContainingItemView(focused);
         if (prevFocusedChild == null) {
             return null;
@@ -1172,7 +1162,7 @@ public class GridLayoutManager extends LinearLayoutManager {
                         assignAsWeek = true;
                     } else if (overlap == unfocusableWeakCandidateOverlap
                             && preferLastSpan == (candidateStart
-                                    > unfocusableWeakCandidateSpanIndex)) {
+                            > unfocusableWeakCandidateSpanIndex)) {
                         assignAsWeek = true;
                     }
                 }
@@ -1201,7 +1191,7 @@ public class GridLayoutManager extends LinearLayoutManager {
     }
 
     @Override
-    public int computeHorizontalScrollRange(TimelineView.State state) {
+    public int computeHorizontalScrollRange(RecyclerView.State state) {
         if (mUsingSpansToEstimateScrollBarDimensions) {
             return computeScrollRangeWithSpanInfo(state);
         } else {
@@ -1210,7 +1200,7 @@ public class GridLayoutManager extends LinearLayoutManager {
     }
 
     @Override
-    public int computeVerticalScrollRange(TimelineView.State state) {
+    public int computeVerticalScrollRange(RecyclerView.State state) {
         if (mUsingSpansToEstimateScrollBarDimensions) {
             return computeScrollRangeWithSpanInfo(state);
         } else {
@@ -1219,7 +1209,7 @@ public class GridLayoutManager extends LinearLayoutManager {
     }
 
     @Override
-    public int computeHorizontalScrollOffset(TimelineView.State state) {
+    public int computeHorizontalScrollOffset(RecyclerView.State state) {
         if (mUsingSpansToEstimateScrollBarDimensions) {
             return computeScrollOffsetWithSpanInfo(state);
         } else {
@@ -1228,7 +1218,7 @@ public class GridLayoutManager extends LinearLayoutManager {
     }
 
     @Override
-    public int computeVerticalScrollOffset(TimelineView.State state) {
+    public int computeVerticalScrollOffset(RecyclerView.State state) {
         if (mUsingSpansToEstimateScrollBarDimensions) {
             return computeScrollOffsetWithSpanInfo(state);
         } else {
@@ -1277,7 +1267,7 @@ public class GridLayoutManager extends LinearLayoutManager {
         return mUsingSpansToEstimateScrollBarDimensions;
     }
 
-    private int computeScrollRangeWithSpanInfo(TimelineView.State state) {
+    private int computeScrollRangeWithSpanInfo(RecyclerView.State state) {
         if (getChildCount() == 0 || state.getItemCount() == 0) {
             return 0;
         }
@@ -1310,7 +1300,7 @@ public class GridLayoutManager extends LinearLayoutManager {
         return (int) (((float) laidOutArea / laidOutSpans) * totalSpans);
     }
 
-    private int computeScrollOffsetWithSpanInfo(TimelineView.State state) {
+    private int computeScrollOffsetWithSpanInfo(RecyclerView.State state) {
         if (getChildCount() == 0 || state.getItemCount() == 0) {
             return 0;
         }
@@ -1349,7 +1339,7 @@ public class GridLayoutManager extends LinearLayoutManager {
         final float avgSizePerSpan = (float) laidOutArea / laidOutSpans;
 
         return Math.round(spansBefore * avgSizePerSpan + (mOrientationHelper.getStartAfterPadding()
-            - mOrientationHelper.getDecoratedStart(startChild)));
+                - mOrientationHelper.getDecoratedStart(startChild)));
     }
 
     /**
@@ -1375,7 +1365,7 @@ public class GridLayoutManager extends LinearLayoutManager {
      * orientation is {@link #HORIZONTAL} the height parameter is ignored because child view is
      * expected to fill all of the space given to it.
      */
-    public static class LayoutParams extends TimelineView.LayoutParams {
+    public static class LayoutParams extends RecyclerView.LayoutParams {
 
         /**
          * Span Id for Views that are not laid out yet.
@@ -1402,7 +1392,7 @@ public class GridLayoutManager extends LinearLayoutManager {
             super(source);
         }
 
-        public LayoutParams(TimelineView.LayoutParams source) {
+        public LayoutParams(RecyclerView.LayoutParams source) {
             super(source);
         }
 
