@@ -6,7 +6,7 @@
     <data>
         <variable
             name="rowHeader"
-            type="com.example.recyclerviewtest.presentation.table.data.RowHeader" />
+            type="com.evrencoskun.tableview.data.RowHeader" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

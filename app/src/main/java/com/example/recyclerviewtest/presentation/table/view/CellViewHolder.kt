@@ -4,7 +4,7 @@ import android.view.View
 import androidx.databinding.DataBindingUtil
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder
 import com.example.recyclerviewtest.databinding.TableViewCellLayoutBinding
-import com.example.recyclerviewtest.presentation.table.data.Cell
+import com.evrencoskun.tableview.data.Cell
 
 class CellViewHolder(
     itemView: View

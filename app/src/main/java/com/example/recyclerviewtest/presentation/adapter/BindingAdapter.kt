@@ -3,9 +3,9 @@ package com.example.recyclerviewtest.presentation.adapter
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.evrencoskun.tableview.TableView
-import com.example.recyclerviewtest.presentation.table.data.Cell
-import com.example.recyclerviewtest.presentation.table.data.ColumnHeader
-import com.example.recyclerviewtest.presentation.table.data.RowHeader
+import com.evrencoskun.tableview.data.Cell
+import com.evrencoskun.tableview.data.ColumnHeader
+import com.evrencoskun.tableview.data.RowHeader
 
 @BindingAdapter("android:items")
 fun setItems(recyclerView: RecyclerView, items: List<ListItem>) {
@@ -19,7 +19,6 @@ fun setCells(tableView: TableView, cells: List<List<Cell>>) {
     if (tableView.adapter is TableViewAdapter) {
         (tableView.adapter as TableViewAdapter).let {
             it.setCellItems(cells)
-            it.cells = cells
         }
     }
 }
@@ -29,7 +28,6 @@ fun setRowHeaders(tableView: TableView, rowHeaders: List<RowHeader>) {
     if (tableView.adapter is TableViewAdapter) {
         (tableView.adapter as TableViewAdapter).let {
             it.setRowHeaderItems(rowHeaders)
-            it.rowHeaders = rowHeaders
         }
     }
 }
@@ -39,7 +37,6 @@ fun setColumnHeaders(tableView: TableView, columnHeaders: List<ColumnHeader>) {
     if (tableView.adapter is TableViewAdapter) {
         (tableView.adapter as TableViewAdapter).let {
             it.setColumnHeaderItems(columnHeaders)
-            it.columnHeaders = columnHeaders
         }
     }
 }

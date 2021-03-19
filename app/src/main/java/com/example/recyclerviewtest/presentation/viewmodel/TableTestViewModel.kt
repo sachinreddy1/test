@@ -3,9 +3,9 @@ package com.example.recyclerviewtest.presentation.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.recyclerviewtest.presentation.adapter.ListItem
-import com.example.recyclerviewtest.presentation.table.data.Cell
-import com.example.recyclerviewtest.presentation.table.data.ColumnHeader
-import com.example.recyclerviewtest.presentation.table.data.RowHeader
+import com.evrencoskun.tableview.data.Cell
+import com.evrencoskun.tableview.data.ColumnHeader
+import com.evrencoskun.tableview.data.RowHeader
 import javax.inject.Inject
 
 class TableTestViewModel @Inject constructor() : ViewModel() {

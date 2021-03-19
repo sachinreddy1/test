@@ -3,10 +3,8 @@ package com.example.recyclerviewtest.presentation.table.view
 import android.view.View
 import androidx.databinding.DataBindingUtil
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder
-import com.example.recyclerviewtest.databinding.TableViewCellLayoutBinding
 import com.example.recyclerviewtest.databinding.TableViewColumnHeaderLayoutBinding
-import com.example.recyclerviewtest.presentation.table.data.Cell
-import com.example.recyclerviewtest.presentation.table.data.ColumnHeader
+import com.evrencoskun.tableview.data.ColumnHeader
 
 class ColumnHeaderViewHolder(
     itemView: View

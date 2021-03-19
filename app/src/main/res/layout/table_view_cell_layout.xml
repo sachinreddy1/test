@@ -6,7 +6,7 @@
     <data>
         <variable
             name="cell"
-            type="com.example.recyclerviewtest.presentation.table.data.Cell" />
+            type="com.evrencoskun.tableview.data.Cell" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,12 +16,14 @@
 
         <TextView
             android:id="@+id/textView"
-            android:background="@color/cellColor"
+            android:background="@color/colorPrimaryDark"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="8dp"
 
             android:gravity="center"
             android:textSize="24sp"
+            android:textColor="@color/whitesmoke"
             android:text="@{cell.data}"
             tools:text="0"
 

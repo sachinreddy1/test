@@ -1,2 +1,3 @@
+include ':tableview'
 include ':app'
 rootProject.name = "RecyclerViewTest"
